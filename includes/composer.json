@@ -1,0 +1,16 @@
+{
+    "name": "carissafarry/siami",
+    "autoload": {
+        "psr-4": {
+            "app\\":"../",
+            "Carissafarry\\Siami\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carissa Farry",
+            "email": "carissafarry@gmail.com"
+        }
+    ],
+    "require": {}
+}
