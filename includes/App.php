@@ -33,35 +33,35 @@ class App
         $this->router = new Router($this->request, $this->response);        // go check to Router class
 
         // ! MVC System 1
-        $url = $this->parseURL();
-        $next_url_index = 0;
-
-        if ($url) {
-            $this->path = ($url[0] === 'api') ? $this->path . 'api/' :  $this->path;
-            $next_url_index = ($url[0] === 'api') ? 1 : 0;
-
-            // Check controller
-            if (isset($url[$next_url_index])) {
-                if (file_exists($this->path . ucwords($url[$next_url_index]) . '.php')) {
-                    $this->controller2 = ucwords($url[$next_url_index]);
-                    unset($url[$next_url_index]);
-                }
-            }
-        }
-
-        require_once $this->path . $this->controller2 . '.php';
-        $this->controller2 = new $this->controller2;
-
-        // Check method
-        if (isset($url[$next_url_index + 1])) {
-            if (method_exists($this->controller2, $url[$next_url_index + 1])) {
-                $this->method = $url[$next_url_index + 1];
-                unset($url[$next_url_index + 1]);
-            }
-        }
-
-        // Check params           
-        $this->params = $url ? array_values($url) : [];
+//        $url = $this->parseURL();
+//        $next_url_index = 0;
+//
+//        if ($url) {
+//            $this->path = ($url[0] === 'api') ? $this->path . 'api/' :  $this->path;
+//            $next_url_index = ($url[0] === 'api') ? 1 : 0;
+//
+//            // Check controller
+//            if (isset($url[$next_url_index])) {
+//                if (file_exists($this->path . ucwords($url[$next_url_index]) . '.php')) {
+//                    $this->controller2 = ucwords($url[$next_url_index]);
+//                    unset($url[$next_url_index]);
+//                }
+//            }
+//        }
+//
+//        require_once $this->path . $this->controller2 . '.php';
+//        $this->controller2 = new $this->controller2;
+//
+//        // Check method
+//        if (isset($url[$next_url_index + 1])) {
+//            if (method_exists($this->controller2, $url[$next_url_index + 1])) {
+//                $this->method = $url[$next_url_index + 1];
+//                unset($url[$next_url_index + 1]);
+//            }
+//        }
+//
+//        // Check params
+//        $this->params = $url ? array_values($url) : [];
 
         // ! Run MVC System 1
         // Call a callback with array of params

@@ -9,7 +9,7 @@ class AuthController extends Controller
 {
     public function login()
     {
-        $this->setLayout('auth');       // !  masih belum kepake
+        $this->setLayout('main');
         return $this->view('auth/login');
     }
 
@@ -18,7 +18,7 @@ class AuthController extends Controller
         if ($request->isPost()) {
             return 'Handle submitted data';
         }
-        $this->setLayout('auth');       // !  masih belum kepake
+        $this->setLayout('main');
         return $this->view('auth/register');
     }
 }
