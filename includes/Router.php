@@ -78,8 +78,12 @@ class Router
      * Looking for the view file, and display it as a view without layout/template
      *
      */
-    public function render($view)
+    public function render($view, $data = [])
     {
+        extract($data);
+        ob_start();
         require_once APPROOT . '/views/' . $view . '.php';
+        unset($data);
+        return ob_get_clean();
     }
 }

@@ -23,13 +23,9 @@ class App
 
     public function __construct()
     {
-        // ! MVC System 2
-        // Access App instance from any other class
         self::$app = $this;
         $this->request = new Request();
         $this->response = new Response();
-        //  $this->controller = new Controller();       // Controller will be instanced when requested in Router class
-        //  $this->router = new Router($this->request, $this->response, $this->controller);        // go check to Router class
         $this->router = new Router($this->request, $this->response);        // go check to Router class
 
         // ! MVC System 1
