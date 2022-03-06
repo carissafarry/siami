@@ -82,7 +82,7 @@ class Router
     {
         extract($data);
         ob_start();
-        require_once APPROOT . '/views/' . $view . '.php';
+        require_once APP_ROOT . '/views/' . $view . '.php';
         unset($data);
         return ob_get_clean();
     }

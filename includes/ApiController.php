@@ -22,7 +22,7 @@ class ApiController
     public function model($model)
     {
         //Requires Model FIle
-        require_once APPROOT . '/API/models/' . $model . '.php';
+        require_once APP_ROOT . '/API/models/' . $model . '.php';
 
         //Instantiate Model
         return new $model();
@@ -32,8 +32,8 @@ class ApiController
     public function view($view, $data = [])
     {
         # check for view file
-        if (file_exists(APPROOT . '/admin/views/' . $view . '.php')) {
-            require_once APPROOT . '/admin/views/' . $view . '.php';
+        if (file_exists(APP_ROOT . '/admin/views/' . $view . '.php')) {
+            require_once APP_ROOT . '/admin/views/' . $view . '.php';
         } else {
             die('view does not exist');
         }

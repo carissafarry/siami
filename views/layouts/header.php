@@ -1,13 +1,8 @@
-<?php
-require_once dirname(__DIR__) . '/../API/config/app.php';
-// echo $_ENV['BASE_DIR'];
-?>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../contents/assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../contents/assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?= APP_ROOT ?>/contents/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="<?= APP_ROOT ?>/contents/assets/img/favicon.png">
     <title>
         Soft UI Dashboard by Creative Tim
     </title>

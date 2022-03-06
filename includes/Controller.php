@@ -8,13 +8,13 @@ namespace app\includes;
 class Controller
 {
     //  Default layout
-    public string $layout = 'main';
+    public string $layout = 'layout_example';
 
     // Load Model
     public function model($model)
     {
         // Requires Model FIle
-        require_once APPROOT . '/admin/models/' . $model . '.php';
+        require_once APP_ROOT . '/admin/models/' . $model . '.php';
 
         // Instantiate Model
         return new $model();
@@ -23,7 +23,7 @@ class Controller
     // Load View
     public function view($view, $data = [])
     {
-        if (file_exists(APPROOT . '/views/' . $view . '.php')) {
+        if (file_exists(APP_ROOT . '/views/' . $view . '.php')) {
             $layoutContent = $this->layoutContent();
             $viewContent = $this->renderOnlyView($view, $data);
             return str_replace('{{content}}', $viewContent, $layoutContent);
@@ -53,7 +53,7 @@ class Controller
     {
         $layout = $this->layout;
         ob_start();         // start caching the output
-        include_once APPROOT . "/views/layouts/$layout.php";       // actual output
+        include_once APP_ROOT . "/views/layouts/$layout.php";       // actual output
         return ob_get_clean();          // return whatever is already buffered, and clears the buffer
     }
 
@@ -65,7 +65,7 @@ class Controller
     {
         extract($data);
         ob_start();         // start caching the output
-        include_once APPROOT . "/views/$view.php";       // actual output
+        include_once APP_ROOT . "/views/$view.php";       // actual output
         unset($data);
         return ob_get_clean();          // return whatever is already buffered, and clears the buffer
     }

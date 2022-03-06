@@ -12,14 +12,10 @@ class App
 {
     public Request $request;
     public Response $response;
-    public Controller $controller;
     public Router $router;
+    public Database $db;
+    public Controller $controller;
     public static App $app;
-
-    protected $controller2 = 'Home';
-    protected $method = 'index';
-    protected $params = [];
-    protected $path = APPROOT . '/admin/controllers/';
 
     public function __construct()
     {
@@ -27,6 +23,7 @@ class App
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Router($this->request, $this->response);        // go check to Router class
+        $this->db = new Database();
 
         // ! MVC System 1
 //        $url = $this->parseURL();

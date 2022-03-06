@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function login()
     {
-        $this->setLayout('main');
+        $this->setLayout('layout_example');
         return $this->view('auth/login');
     }
 
@@ -31,9 +31,20 @@ class AuthController extends Controller
             ]);
         }
 
-        $this->setLayout('main');
+        $this->setLayout('layout_example');
         return $this->view('auth/register', [
             'rule' => $registerRule
         ]);
+    }
+
+    public function layout1()
+    {
+        $this->setLayout('layout1');
+        return $this->view('spm/dashboard');
+    }
+
+    public function storage()
+    {
+        return APP_ROOT;
     }
 }
