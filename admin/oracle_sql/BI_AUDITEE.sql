@@ -1,0 +1,16 @@
+--------------------------------------------------------
+--  DDL for Trigger BI_AUDITEE
+--------------------------------------------------------
+
+  CREATE OR REPLACE TRIGGER "SIAMI"."BI_AUDITEE" 
+BEFORE INSERT ON AUDITEE 
+FOR EACH ROW 
+BEGIN
+  <<COLUMN_SEQUENCES>>
+  BEGIN
+    IF INSERTING AND :NEW.USER_ID IS NULL THEN
+      SELECT AUDITEE_SEQ.NEXTVAL INTO :NEW.USER_ID FROM SYS.DUAL;
+    END IF;
+  END COLUMN_SEQUENCES;
+END;
+ALTER TRIGGER "SIAMI"."BI_AUDITEE" ENABLE

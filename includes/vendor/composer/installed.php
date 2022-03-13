@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'de62d1bee9e6dea1a5db70f07d55d877673f717e',
+        'reference' => 'c154b0085f95391da11b5a2286c2b6b74d4f1f2b',
         'name' => 'carissafarry/siami',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'de62d1bee9e6dea1a5db70f07d55d877673f717e',
+            'reference' => 'c154b0085f95391da11b5a2286c2b6b74d4f1f2b',
             'dev_requirement' => false,
         ),
         'graham-campbell/result-type' => array(
@@ -45,7 +45,7 @@
             'aliases' => array(
                 0 => '9999999-dev',
             ),
-            'reference' => '6c48c3048166dc4142a1a5f28a325faed3a578a3',
+            'reference' => '57a3432393ef9539465dc9c36d8cf5b045fe0800',
             'dev_requirement' => true,
         ),
         'symfony/polyfill-ctype' => array(

@@ -1,8 +1,9 @@
 <?php
+require_once dirname(__DIR__) . '/admin/init.php';
 
-namespace app\includes;
+use app\admin\controllers\auth\AuthController;
+use \app\includes\App;
 
-class Migration
-{
+$app = new App();
 
-}
+$app->db->applyMigrations();

@@ -1,0 +1,14 @@
+--------------------------------------------------------
+--  DDL for Table AMI
+--------------------------------------------------------
+
+  CREATE TABLE "SIAMI"."AMI" 
+   (	"ID" NUMBER, 
+	"SPM_ID" NUMBER, 
+	"TAHUN" VARCHAR2(20 BYTE), 
+	"JADWAL_MULAI" DATE, 
+	"JADWAL_SELESAI" DATE, 
+	"IS_TINDAK_LANJUT" VARCHAR2(1 BYTE), 
+	"CREATED_AT" TIMESTAMP (6) WITH LOCAL TIME ZONE DEFAULT CURRENT_TIMESTAMP, 
+	"UPDATED_AT" TIMESTAMP (6) WITH LOCAL TIME ZONE DEFAULT CURRENT_TIMESTAMP
+   )
