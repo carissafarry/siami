@@ -2,19 +2,22 @@
 
 namespace app\admin\rules\auth;
 
+use app\includes\Model;
 use app\includes\Rule;
 
-class RegisterRule extends Rule
+class UserRule extends Rule
 {
-    public string $firstname = '';
-    public string $lastname = '';
-    public string $email = '';
-    public string $password = '';
-    public string $confirmPassword = '';
+//    public string $firstname = '';
+//    public string $lastname = '';
+//    public string $email = '';
+//    public string $password = '';
+//    public string $confirmPassword = '';
+    public Model $model;
 
-    public function register()
+    public function __construct(Model $model)
     {
-        echo 'Creating new user';
+        parent::__construct($model);
+        $this->model = $model;
     }
 
     public function rules(): array

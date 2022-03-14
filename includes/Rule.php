@@ -5,6 +5,8 @@ namespace app\includes;
 //  Abstracted this class to avoid creating an instance of this model
 abstract class Rule
 {
+    public Model $model;
+
     public const RULE_REQUIRED = 'required';
     public const RULE_EMAIL = 'email';
     public const RULE_MIN = 'min';
@@ -12,18 +14,9 @@ abstract class Rule
     public const RULE_MATCH = 'match';
     public array $errors = [];
 
-    /**
-     * Take any input data and assign to property of the Child Model
-     *
-     */
-    public function loadData($data)
+    public function __construct(Model $model)
     {
-        foreach ($data as $key => $value) {
-            //  Check if each property exists, and assigns to properties of the Child Model
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
+        $this->model = $model;
     }
 
     /**
@@ -40,7 +33,7 @@ abstract class Rule
     {
         foreach ($this->rules() as $attribute => $rules) {
             // Take the value from the Child Model properties that has been loaded in loadData()
-            $value = $this->{$attribute};
+            $value = $this->model->{$attribute};
 
             foreach ($rules as $rule) {
                 $ruleName = $rule;
@@ -71,7 +64,7 @@ abstract class Rule
                 }
 
                 //  Check if "confirm password" data is match `with password
-                if ($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
+                if ($ruleName === self::RULE_MATCH && $value !== $this->model->{$rule['match']}) {
                     $this->addError($attribute, self::RULE_MATCH, $rule);
                 }
             }

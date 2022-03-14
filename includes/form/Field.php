@@ -2,6 +2,7 @@
 
 namespace app\includes\form;
 
+use app\includes\Model;
 use app\includes\Rule;
 
 class Field
@@ -11,14 +12,17 @@ class Field
     public const TYPE_NUMBER = 'number';
 
     public string $type;
+    public Model $model;
     public Rule $rule;
     public string $attribute;
 
     /**
      * @param Rule $rule
+//     * @param Model $model
      * @param string $attribute
      */
     public function __construct(Rule $rule, string $attribute)
+//    public function __construct(Rule $rule, Model $model, string $attribute)
     {
         $this->type = self::TYPE_TEXT;
         $this->rule = $rule;
@@ -42,7 +46,9 @@ class Field
             $this->attribute,
             $this->type,
             $this->attribute,
-            $this->rule->{$this->attribute},
+
+//            $this->rule->{$this->attribute},
+            $this->rule->model->{$this->attribute},
             $this->rule->hasError($this->attribute) ? 'is-invalid' : '',
             $this->rule->getFirstError($this->attribute)
         );
