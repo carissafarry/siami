@@ -105,11 +105,19 @@ abstract class Rule
         ];
     }
 
+    /**
+     * Check if attribute violates the rule
+     *
+     */
     public function hasError($attribute)
     {
         return $this->errors[$attribute] ?? false;
     }
 
+    /**
+     * Return first error of certain attribute
+     *
+     */
     public function getFirstError($attribute)
     {
         return $this->errors[$attribute][0] ?? false;

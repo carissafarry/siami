@@ -22,7 +22,6 @@ class Field
      * @param string $attribute
      */
     public function __construct(Rule $rule, string $attribute)
-//    public function __construct(Rule $rule, Model $model, string $attribute)
     {
         $this->type = self::TYPE_TEXT;
         $this->rule = $rule;

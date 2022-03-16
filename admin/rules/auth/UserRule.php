@@ -7,11 +7,6 @@ use app\includes\Rule;
 
 class UserRule extends Rule
 {
-//    public string $firstname = '';
-//    public string $lastname = '';
-//    public string $email = '';
-//    public string $password = '';
-//    public string $confirmPassword = '';
     public Model $model;
 
     public function __construct(Model $model)

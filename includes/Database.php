@@ -7,6 +7,14 @@ class Database
     protected $connection;
 
     /**
+     * @return oci_resource|false|resource
+     */
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
      * Database constructor
      */
     public function __construct($username=DB_USERNAME, $password=DB_PASSWORD, $connection_string='//' . DB_HOST . ':' . DB_PORT . '/' . DB_SERVICE, $characterSet=null, $sessionMode=null)

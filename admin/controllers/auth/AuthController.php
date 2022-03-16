@@ -29,10 +29,29 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         if ($request->isPost()) {
-            $request = $request->getBody();
+            // Using default request data from GET / POST method
+              $request = $request->getBody();
+
+//            $data = [
+//                'role_id' => 1,
+//                'area_id' => 1,
+//                'email' => 'carissafarry@gmail.com',
+//                'password' => 'carissa31',
+//                'nip' => '2103191050',
+//                'nama' => 'Carissa Farry',
+//                'foto' => 'rissa.jpg',
+//                'telp' => '085784166229',
+//                'jabatan' => 'Direktur',
+//                'periode' => '2022/2023'
+//            ];
+
+            //  Using custom request data
+            //  $request = $request->getBody($data);
+
             $this->userModel->loadData($request);
 
-            if ($this->userRule->validate() && $this->userModel->register()) {
+//            if ($this->userRule->validate() && $this->userModel->register()) {
+            if ($this->userRule->validate() && $this->userModel->save()) {
                 return 'Success';
             }
 

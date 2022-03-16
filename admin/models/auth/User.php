@@ -4,50 +4,54 @@ namespace app\admin\models\auth;
 
 class User extends DbModel
 {
+    const ROLE_SPM = 0;
+    const ROLE_AUDITEE = 1;
+    const ROLE_AUDITOR = 2;
+    const ROLE_INACTIVE = 3;
+
     public string $firstname = '';
     public string $lastname = '';
+    public string $confirmPassword = '';
+
+    public int $role_id = self::ROLE_AUDITEE;
+    public int $area_id = 1;
     public string $email = '';
     public string $password = '';
-    public string $confirmPassword = '';
+    public string $nip = '';
+    public string $nama = '';
+    public string $foto = '';
+    public string $telp = '';
+    public string $jabatan = '';
+    public string $periode = '';
+    public int $user_type = 1;
 
     public function tableName(): string
     {
-        return 'user';
+//        return 'users';
+        return 'users2';
     }
 
-    public function register()
+    public function save(): bool
     {
-//        echo 'Creating new user';
-        return $this->save();
-    }
-
-    /**
-     * Take any input data and assign to property of the Child Model
-     *
-     */
-    public function loadData($data): void
-    {
-        foreach ($data as $key => $value) {
-            //  Check if each property exists, and assigns to properties of the Child Model
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+        return parent::save();
     }
 
     public function attributes(): array
     {
         return ['firstname', 'lastname', 'email', 'password'];
-    }
-
-//    public function rules(): array
-//    {
 //        return [
-//            'firstname' => [self::RULE_REQUIRED],
-//            'lastname' => [self::RULE_REQUIRED],
-//            'email' => [self::RULE_REQUIRED, self::RULE_EMAIL],
-//            'password' => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 8], [self::RULE_MAX, 'max' => 24]],
-//            'confirmPassword' => [self::RULE_REQUIRED, [self::RULE_MATCH, 'match' => 'password']],
+//            'role_id',
+//            'area_id',
+//            'email',
+//            'password',
+//            'nip',
+//            'nama',
+//            'foto',
+//            'telp',
+//            'jabatan',
+//            'periode',
+//            'user_type'
 //        ];
-//    }
+    }
 }
