@@ -7,11 +7,11 @@ where OWNER='SIAMI';
 select * from user_sequences;
 
 -- Hapus semua data
-DELETE FROM area
+DELETE FROM users
 WHERE EXISTS (
-    SELECT * FROM area
+    SELECT * FROM users
 );
 
 -- Reset urutan Sequence
-drop sequence AREA_SEQ ;
-CREATE SEQUENCE AREA_SEQ MINVALUE 1 INCREMENT BY 1 START WITH 1 NOCYCLE
+drop sequence USERS_SEQ;
+CREATE SEQUENCE USERS_SEQ MINVALUE 1 INCREMENT BY 1 START WITH 1 NOCYCLE;

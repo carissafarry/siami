@@ -74,4 +74,20 @@ class Controller
     {
         $this->layout = $layout;
     }
+
+    /**
+     * Generate random string
+     *
+     */
+    public function randomString($length = 10) {
+        return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+    }
+
+    /**
+     * Generate random integer
+     *
+     */
+    public function randomInteger($length = 10) {
+        return substr(str_shuffle(str_repeat($x='0123456789', ceil($length/strlen($x)) )),1,$length);
+    }
 }

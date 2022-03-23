@@ -1,3 +1,7 @@
+<?php
+use app\includes\App;
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -29,7 +33,14 @@
     </div>
 </nav>
 
-{{content}}
+<div class="container">
+    <?php if (App::$app->session->getFlash('success')) :  ?>
+        <div class="alert alert-success">
+            <?= App::$app->session->getFlash('success') ?>
+        </div>
+    <?php endif; ?>
+    {{content}}
+</div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

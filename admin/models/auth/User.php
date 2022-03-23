@@ -11,12 +11,12 @@ class User extends DbModel
 
     public string $firstname = '';
     public string $lastname = '';
-    public string $confirmPassword = '';
 
     public int $role_id = self::ROLE_AUDITEE;
     public int $area_id = 1;
     public string $email = '';
     public string $password = '';
+    public string $confirmPassword = '';
     public string $nip = '';
     public string $nama = '';
     public string $foto = '';
@@ -25,10 +25,9 @@ class User extends DbModel
     public string $periode = '';
     public int $user_type = 1;
 
-    public function tableName(): string
+    public static function tableName(): string
     {
-//        return 'users';
-        return 'users2';
+        return 'users';
     }
 
     public function save(): bool
@@ -39,19 +38,28 @@ class User extends DbModel
 
     public function attributes(): array
     {
-        return ['firstname', 'lastname', 'email', 'password'];
-//        return [
-//            'role_id',
-//            'area_id',
-//            'email',
-//            'password',
-//            'nip',
-//            'nama',
-//            'foto',
-//            'telp',
-//            'jabatan',
-//            'periode',
+        return [
+            'role_id',
+            'area_id',
+            'email',
+            'password',
+            'nip',
+            'nama',
+            'foto',
+            'telp',
+            'jabatan',
+            'periode'
 //            'user_type'
-//        ];
+        ];
+    }
+
+    public function labels(): array {
+        return [
+            'firstname' => 'First Name',
+            'lastname' => 'Last Name',
+            'email' => 'Email',
+            'password' => 'Password',
+            'confirmPassword' => 'Confirm Password',
+        ];
     }
 }

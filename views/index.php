@@ -6,10 +6,11 @@ use \app\includes\App;
 
 $app = new App();
 
-$app->router->get('/', function () {
-    return 'Hello World dari router "/"';
-});
+//$app->router->get('/', function () {
+//    return 'Hello World dari router "/"';
+//});
 
+$app->router->get('/', [new AuthController(), 'index']);
 $app->router->get('/storage', [new AuthController(), 'storage']);
 
 //$app->router->get('/contact', 'contact');       // use string argument to display directly from a view file

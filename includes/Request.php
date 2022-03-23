@@ -6,9 +6,9 @@ class Request
 {
     /**
      * Get the server request path
-     *
+     * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         $path = $_SERVER['REQUEST_URI'] ?? '/';
 
@@ -24,36 +24,37 @@ class Request
 
     /**
      * Check request method
-     *
+     * @return string
      */
-    public function method()
+    public function method(): string
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
     /**
      * Check if request is from GET method
-     *
+     * @return bool
      */
-    public function isGet()
+    public function isGet(): bool
     {
         return $this->method() === 'get';
     }
 
     /**
      * Check if request is from POST method
-     *
+     * @return bool
      */
-    public function isPost()
+    public function isPost(): bool
     {
         return $this->method() === 'post';
     }
 
     /**
      * Filter some malicious characters or invalid symbols from inputted data to have secure body data
-     *
+     * @param array $data
+     * @return array
      */
-    public function getBody($data = [])
+    public function getBody(array $data = []): array
     {
         $body = [];
 

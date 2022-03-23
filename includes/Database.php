@@ -19,31 +19,21 @@ class Database
      */
     public function __construct($username=DB_USERNAME, $password=DB_PASSWORD, $connection_string='//' . DB_HOST . ':' . DB_PORT . '/' . DB_SERVICE, $characterSet=null, $sessionMode=null)
     {
-        //  Connect using MySQL PDO Service
-        //  $this->pdo = new \PDO(DB_DSN, DB_USERNAME, DB_PASSWORD);
-        //  $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
         //  Connection to PENS Database
         //  $connection = $this->konekDb('PA0004', '473098', "10.252.209.213/orcl.mis.pens.ac.id");
 
         //  Connection to a local Oracle Database
         $this->connection = $this->konekDb($username, $password, $connection_string, $characterSet, $sessionMode);
-
-        // Close connection
-        //  oci_close($this->connection);
     }
 
     public function applyMigrations()
     {
         $this->createMigrationsTable();
         $appliedMigrations = $this->getAppliedMigrations();
-//        var_dump($appliedMigrations);
 
         $newMigrations = [];
         $files = scandir(APP_ROOT . '/admin/migrations');
-//        var_dump($files);
         $toApplyMigrations = array_diff($files, $appliedMigrations);
-//        var_dump($toApplyMigrations);
 
         foreach ($toApplyMigrations as $migration) {
             if ($migration === '.' || $migration === '..') {
@@ -298,7 +288,7 @@ class Database
             return "Failed Delete";
     }
 
-    function query($sql, $data=[])
+    public function query($sql, $data=[])
     {
         $parse = oci_parse($this->connection, $sql);
         foreach ($data as $key => $val) {
@@ -306,9 +296,10 @@ class Database
         }
         oci_execute($parse);
         if (oci_num_rows($parse)>0)
-            return "Success";
+            echo ">=1 rows effected" . PHP_EOL;
         else
-            return "Failed";
-    }
+            echo "0 row effected" . PHP_EOL;
 
+        return $parse;
+    }
 }

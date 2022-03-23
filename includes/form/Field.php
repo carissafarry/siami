@@ -18,7 +18,6 @@ class Field
 
     /**
      * @param Rule $rule
-//     * @param Model $model
      * @param string $attribute
      */
     public function __construct(Rule $rule, string $attribute)
@@ -29,9 +28,10 @@ class Field
     }
 
     /**
-     * Method used to print the object as a string
+     * Print the object as a string
+     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf('
             <div class="form-group">
@@ -42,7 +42,8 @@ class Field
                 </div>
             </div>
         ',
-            $this->attribute,
+//            $this->attribute,
+            $this->rule->model->getLabel($this->attribute),
             $this->type,
             $this->attribute,
 
@@ -55,8 +56,9 @@ class Field
 
     /**
      * Define type of password field
+     * @return Field
      */
-    public function passwordField()
+    public function passwordField(): Field
     {
         $this->type = self::TYPE_PASSWORD;
         return $this;

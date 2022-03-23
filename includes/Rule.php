@@ -12,6 +12,7 @@ abstract class Rule
     public const RULE_MIN = 'min';
     public const RULE_MAX = 'max';
     public const RULE_MATCH = 'match';
+    public const RULE_UNIQUE = 'unique';
     public array $errors = [];
 
     public function __construct(Model $model)
@@ -27,7 +28,7 @@ abstract class Rule
 
     /**
      * Validate data based on the defined rule and return error message if it is invalid
-     *
+     * @return bool
      */
     public function validate(): bool
     {
@@ -65,7 +66,25 @@ abstract class Rule
 
                 //  Check if "confirm password" data is match `with password
                 if ($ruleName === self::RULE_MATCH && $value !== $this->model->{$rule['match']}) {
+                    $rule['match'] = $this->model->getLabel($rule['match']);
                     $this->addError($attribute, self::RULE_MATCH, $rule);
+                }
+
+                //  Check if data is unique in defined class, inside defined column
+                if ($ruleName === self::RULE_UNIQUE) {
+                    $className = $rule['class'];
+                    $uniqueAttribute = $rule['attribute'] ?? $attribute;
+                    $tableName = $className::tableName();
+
+                    $query = App::$app->db->query(
+                        "SELECT count(*) FROM $tableName WHERE $uniqueAttribute = :attr",
+                        [':attr' => $value]
+                    );
+                    $row = oci_fetch_array($query, OCI_NUM);
+                    if ((int)$row[0] > 0) {
+//                        $this->addError($attribute, self::RULE_UNIQUE, ['field' => $attribute]);
+                        $this->addError($attribute, self::RULE_UNIQUE, ['field' => $this->model->getLabel($attribute)] );
+                    }
                 }
             }
         }
@@ -102,6 +121,7 @@ abstract class Rule
             self::RULE_MIN => 'Min length of this field must be {min}',
             self::RULE_MAX => 'Max length of this field must be {max}',
             self::RULE_MATCH => 'This field must be the same as {match}',
+            self::RULE_UNIQUE => 'This {field} already used',
         ];
     }
 

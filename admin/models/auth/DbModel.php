@@ -5,14 +5,22 @@ namespace app\admin\models\auth;
 use app\includes\App;
 use app\includes\Model;
 
-//abstract class DbRule extends Rule
 abstract class DbModel extends Model
 {
     /**
      * Define the name of table
      *
      */
-    abstract public function tableName(): string;
+    abstract public static function tableName(): string;
+
+    /**
+     * Get table name data as a getter of abstract static function tableName()
+     *
+     */
+    public static function getTableName(): string
+    {
+        return static::tableName();
+    }
 
     /**
      * Define attribute of table
@@ -22,42 +30,23 @@ abstract class DbModel extends Model
 
     /**
      * Save request data to defined database table as attributes defined in child model
-     *
+     * @return bool
      */
     public function save(): bool
     {
-        $tableName = $this->tableName();
+        $tableName = $this::getTableName();
         $attributes = $this->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
 
-        $statement = oci_parse(
-            App::$app->db->getConnection(),
-            "INSERT INTO $tableName (".implode(',', $attributes).")
-            VALUES(".implode(',', $params).")    
-        ");
+        $statement = "INSERT INTO $tableName (".implode(',', $attributes).")
+            VALUES(".implode(',', $params).")";
 
-        foreach ($attributes as $index => $attr_name) {
-            oci_bind_by_name($statement, ":$attr_name", $this->{$attr_name});
-        }
-//        oci_bind_by_name($statement, ":role_id", $this->{'role_id'}, -1, SQLT_INT);
-//        oci_bind_by_name($statement, ":area_id", $this->{'area_id'}, -1, SQLT_INT);
-//        oci_bind_by_name($statement, ":user_type", $this->{'user_type'}, -1, SQLT_INT);
+        $data = array_combine(
+            $params,
+            array_map(fn($attr) => $this->{$attr}, $attributes)
+        );
 
-        oci_execute($statement);
+        App::$app->db->query_insert($statement, $data);
         return True;
-    }
-
-    /**
-     * Take any input data and assign to property of the Child Model
-     *
-     */
-    public function loadData($data): void
-    {
-        foreach ($data as $key => $value) {
-            //  Check if each property exists, and assigns to properties of the Child Model
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
     }
 }
