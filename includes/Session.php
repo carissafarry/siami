@@ -8,6 +8,7 @@ class Session
 
     /**
      * Constructor will be called whenever request is made
+     *
      */
     public function __construct()
     {
@@ -22,6 +23,7 @@ class Session
 
     /**
      * Set new flash message
+     *
      */
     public function setFlash($key, $message)
     {
@@ -32,7 +34,8 @@ class Session
     }
 
     /**
-     * Return flash value
+     * Get flash value
+     *
      */
     public function getFlash($key)
     {
@@ -40,7 +43,35 @@ class Session
     }
 
     /**
+     * Set session based on the given key and value
+     *
+     */
+    public function set($key, $value): void
+    {
+        $_SESSION[$key] = [$value];
+    }
+
+    /**
+     * Get session based on the given key and value
+     *
+     */
+    public function get($key)
+    {
+        return $_SESSION[$key] ?? false;
+    }
+
+    /**
+     * Remove session based on the given key
+     *
+     */
+    public function remove($key): void
+    {
+        unset($_SESSION[$key]);
+    }
+
+    /**
      * Unset flash session
+     *
      */
     public function __destruct()
     {

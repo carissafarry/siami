@@ -18,7 +18,6 @@ class UserRule extends Rule
     public function rules(): array
     {
         return [
-//            'firstname' => [self::RULE_REQUIRED],
             'email' => [self::RULE_REQUIRED, self::RULE_EMAIL, [
                 self::RULE_UNIQUE,
                 'class' => get_class($this->model),

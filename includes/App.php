@@ -8,6 +8,8 @@ namespace app\includes;
      * URL FORMAT  /controller/method/params
 */
 
+use app\admin\models\auth\User;
+
 class App
 {
     public Request $request;
@@ -16,18 +18,43 @@ class App
     public Router $router;
     public Database $db;
     public Controller $controller;
+    public ?User $user;
     public static App $app;
+
+    public string $userClass;
 
     public function __construct()
     {
+        $this->userClass = USER_CLASS;
         self::$app = $this;
         $this->request = new Request();
         $this->response = new Response();
         $this->session = new Session();
         $this->router = new Router($this->request, $this->response);        // go check to Router class
         $this->db = new Database();
+
+        $this->fetchUser();
     }
 
+    /**
+     * Fetch the user data with session
+     *
+     */
+    public function fetchUser()
+    {
+        $primaryValue = $this->session->get('user');
+        if ($primaryValue) {
+            $primaryKey = $this->userClass::primaryKey();
+            $this->user = $this->userClass::findOne([$primaryKey => $primaryValue[0]]);
+        } else {
+            $this->user = null;
+        }
+    }
+
+    /**
+     * Parse the URL from request
+     *
+     */
     public function parseURL()
     {
         if (isset($_GET['url'])) {
@@ -46,5 +73,25 @@ class App
     public function run()
     {
         echo $this->router->resolve();
+    }
+
+    public function login(User $user)
+    {
+        $this->user = $user;
+        $primaryKey = $user->primaryKey();
+        $primaryValue = $user->{$primaryKey};
+        $this->session->set('user', $primaryValue);     // create user session using user id from PK
+        return true;
+    }
+
+    public function logout()
+    {
+        $this->user = null;
+        $this->session->remove('user');
+    }
+
+    public static function isGuest()
+    {
+        return !self::$app->user;
     }
 }

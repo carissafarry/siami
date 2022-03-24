@@ -71,7 +71,7 @@ class Router
         }
         
         // If it is a closure/function, execute the callback
-        return call_user_func($callback, $this->request);
+        return call_user_func($callback, $this->request, $this->response);
     }
 
     /**

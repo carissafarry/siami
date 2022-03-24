@@ -46,28 +46,28 @@ abstract class Rule
 
                 //  Check if loadData() called before the validate()
                 if ($ruleName === self::RULE_REQUIRED && !$value) {
-                    $this->addError($attribute, self::RULE_REQUIRED);
+                    $this->addRuleError($attribute, self::RULE_REQUIRED);
                 }
 
                 //  Check if the email is valid
                 if ($ruleName === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $this->addError($attribute, self::RULE_EMAIL);
+                    $this->addRuleError($attribute, self::RULE_EMAIL);
                 }
 
                 //  Check if input data is less than rule of minimum
                 if ($ruleName === self::RULE_MIN && strlen($value) < $rule['min']) {
-                    $this->addError($attribute, self::RULE_MIN, $rule);
+                    $this->addRuleError($attribute, self::RULE_MIN, $rule);
                 }
 
                 //  Check if input data is greater than rule of maximum
                 if ($ruleName === self::RULE_MAX && strlen($value) > $rule['max']) {
-                    $this->addError($attribute, self::RULE_MAX, $rule);
+                    $this->addRuleError($attribute, self::RULE_MAX, $rule);
                 }
 
                 //  Check if "confirm password" data is match `with password
                 if ($ruleName === self::RULE_MATCH && $value !== $this->model->{$rule['match']}) {
                     $rule['match'] = $this->model->getLabel($rule['match']);
-                    $this->addError($attribute, self::RULE_MATCH, $rule);
+                    $this->addRuleError($attribute, self::RULE_MATCH, $rule);
                 }
 
                 //  Check if data is unique in defined class, inside defined column
@@ -82,8 +82,7 @@ abstract class Rule
                     );
                     $row = oci_fetch_array($query, OCI_NUM);
                     if ((int)$row[0] > 0) {
-//                        $this->addError($attribute, self::RULE_UNIQUE, ['field' => $attribute]);
-                        $this->addError($attribute, self::RULE_UNIQUE, ['field' => $this->model->getLabel($attribute)] );
+                        $this->addRuleError($attribute, self::RULE_UNIQUE, ['field' => $this->model->getLabel($attribute)] );
                     }
                 }
             }
@@ -94,10 +93,10 @@ abstract class Rule
     }
 
     /**
-     * Add list of errors if it finds input data not valid each request received
+     * Add list of errors if it finds input data not valid on each received request based on defined rules
      *
      */
-    public function addError(string $attribute, string $rule, $params = []): void
+    private function addRuleError(string $attribute, string $rule, $params = []): void
     {
         $message = $this->errorMessages()[$rule] ?? '';
 
@@ -106,6 +105,15 @@ abstract class Rule
             $message = str_replace("{{$key}}", $value, $message);
         }
 
+        $this->errors[$attribute][] = $message;
+    }
+
+    /**
+     * Add list of errors if it finds received data not valid on each received request
+     *
+     */
+    public function addError(string $attribute, string $message): void
+    {
         $this->errors[$attribute][] = $message;
     }
 

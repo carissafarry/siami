@@ -24,12 +24,20 @@ use app\includes\App;
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/register">Register</a>
-            </li>
+            <?php if (App::isGuest()): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+            <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Welcome <?= App::$app->user->getDisplay('nama') ?>
+                        (Logout)
+                    </a>
+                </li>
+            <?php endif; ?>
     </div>
 </nav>
 

@@ -12,6 +12,7 @@ class User extends DbModel
     public string $firstname = '';
     public string $lastname = '';
 
+    public int $id;
     public int $role_id = self::ROLE_AUDITEE;
     public int $area_id = 1;
     public string $email = '';
@@ -23,11 +24,16 @@ class User extends DbModel
     public string $telp = '';
     public string $jabatan = '';
     public string $periode = '';
-    public int $user_type = 1;
+    public $user_type = 1;
 
     public static function tableName(): string
     {
         return 'users';
+    }
+
+    public static function primaryKey(): string
+    {
+        return 'id';
     }
 
     public function save(): bool
@@ -39,6 +45,7 @@ class User extends DbModel
     public function attributes(): array
     {
         return [
+            'id',
             'role_id',
             'area_id',
             'email',
@@ -61,5 +68,10 @@ class User extends DbModel
             'password' => 'Password',
             'confirmPassword' => 'Confirm Password',
         ];
+    }
+
+    public function getDisplay(string $attribute): string
+    {
+        return $this->$attribute;
     }
 }

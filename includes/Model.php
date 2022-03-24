@@ -2,6 +2,9 @@
 
 namespace app\includes;
 
+use Psr\Log\InvalidArgumentException;
+use stdClass;
+
 abstract class Model
 {
     /**
@@ -14,7 +17,6 @@ abstract class Model
             //  Check if each property exists, and assigns to properties of the Child Model
             if (property_exists($this, $key)) {
                 $this->{$key} = $value;
-//                var_dump($this->{$key});
             }
         }
     }
@@ -35,4 +37,5 @@ abstract class Model
     {
         return $this->labels()[$attribute] ?? $attribute;
     }
+
 }

@@ -1,3 +1,7 @@
+<?php
+//** @var $rule \app\admin\rules\auth\UserRule */
+?>
+
 <h1>Create your account</h1>
 <?php $form = \app\includes\form\Form::begin('', "post") ?>
     <div class="row">

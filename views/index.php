@@ -19,5 +19,6 @@ $app->router->post('/login', [new AuthController(), 'login']);
 $app->router->get('/register', [new AuthController(), 'register']);
 $app->router->post('/register', [new AuthController(), 'register']);
 $app->router->get('/layout1', [new AuthController(), 'layout1']);
+$app->router->get('/logout', [new AuthController(), 'logout']);
 
 $app->run();
