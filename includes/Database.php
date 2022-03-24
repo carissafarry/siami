@@ -206,9 +206,10 @@ class Database
         if (!$con) {
             echo '<b>Connection failed!</b><br>' . PHP_EOL;
 //               responseError('ERR-DB');
-        } else {
-            echo '<b>Oracle DB and PHP Connected!</b><br>' . PHP_EOL;
         }
+//        else {
+//            echo '<b>Oracle DB and PHP Connected!</b><br>' . PHP_EOL;
+//        }
 
         return $con;
     }
@@ -295,10 +296,10 @@ class Database
             oci_bind_by_name($parse, $key, $data[$key]);
         }
         oci_execute($parse);
-        if (oci_num_rows($parse)>0)
-            echo ">=1 rows effected" . PHP_EOL;
-        else
-            echo "0 row effected" . PHP_EOL;
+//        if (oci_num_rows($parse)>0)
+//            echo ">=1 rows effected" . PHP_EOL;
+//        else
+//            echo "0 row effected" . PHP_EOL;
 
         return $parse;
     }

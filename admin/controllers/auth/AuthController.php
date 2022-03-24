@@ -8,6 +8,7 @@ use app\admin\rules\auth\LoginRule;
 use app\admin\rules\auth\UserRule;
 use app\includes\App;
 use app\includes\Controller;
+use app\includes\middleware\AuthMiddleware;
 use app\includes\Model;
 use app\includes\Request;
 use app\includes\Response;
@@ -20,8 +21,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->userModel = new User();
-        $this->userRule = new UserRule($this->userModel);
+        $this->registerMiddleware(new AuthMiddleware(['profile']));
     }
 
     public function index()
@@ -46,12 +46,6 @@ class AuthController extends Controller
         return $this->view('auth/login', [
             'rule' => $loginRule,
         ]);
-    }
-
-    public function logout(Request $request, Response $response)
-    {
-        App::$app->logout();
-        $response->redirect('/login');
     }
 
     /**
@@ -122,14 +116,21 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout(Request $request, Response $response): void
+    {
+        App::$app->logout();
+        $response->redirect('/login');
+    }
+
+    public function profile()
+    {
+        $this->setLayout('layout_example');
+        return $this->view('auth/profile');
+    }
+
     public function layout1()
     {
         $this->setLayout('layout1');
         return $this->view('spm/dashboard');
-    }
-
-    public function storage()
-    {
-        return APP_ROOT;
     }
 }

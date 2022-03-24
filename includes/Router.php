@@ -7,6 +7,8 @@ namespace app\includes;
      *  Manage routing and execute requests
 */
 
+use app\includes\exception\NotFoundException;
+
 class Router
 {
     public Request $request;
@@ -45,6 +47,7 @@ class Router
     /**
      * Get path and method from URL Request, and Execute request
      *
+     * @throws NotFoundException
      */
     public function resolve()
     {
@@ -55,7 +58,7 @@ class Router
         $callback = $this->routes[$method][$path] ?? false;
         if ($callback === false) {
             $this->response->setStatusCode(404);
-            return $this->render('_404');
+            throw new NotFoundException();
         }
 
         // If it is a string, render as a View
@@ -65,9 +68,23 @@ class Router
 
         // If it is an array, first array is a controller class, and second is the method inside the controller
         if (is_array($callback)) {
+            //  Define type of controller
+            /** @var Controller $controller */
+
             //  Create new instance of Controller class from App
-            App::$app->controller = new $callback[0]();
-            $callback[0] = App::$app->controller;
+            $controller = new $callback[0]();
+            App::$app->controller = $controller;
+
+            //  Take the action/method from router callback, and assign to controller
+            $controller->action = $callback[1];
+
+            //  Check if user have access to specific action
+            foreach ($controller->getMiddlewares() as $middleware) {
+                $middleware->execute();
+            }
+
+            //  Assign instantiated controller back to callback
+            $callback[0] = $controller;
         }
         
         // If it is a closure/function, execute the callback

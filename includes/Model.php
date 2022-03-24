@@ -22,7 +22,7 @@ abstract class Model
     }
 
     /**
-     * Define labels corresponds to each attribute and display to the user
+     * Define labels corresponds to each attribute which will be displayed to the user
      *
      */
     public function labels(): array {

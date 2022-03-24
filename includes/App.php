@@ -9,6 +9,7 @@ namespace app\includes;
 */
 
 use app\admin\models\auth\User;
+use Exception;
 
 class App
 {
@@ -67,15 +68,27 @@ class App
     }
 
     /**
-     * Run the application with defined router links
+     * Run the application with defined router links or display error page
      *
+     * @throws Exception
      */
-    public function run()
+    public function run(): void
     {
-        echo $this->router->resolve();
+        try {
+            echo $this->router->resolve();
+        } catch (Exception $e) {
+            $this->response->setStatusCode($e->getCode());
+            echo $this->router->render('_error', [
+                'exception' => $e
+            ]);
+        }
     }
 
-    public function login(User $user)
+    /**
+     * Main app login method and set user session
+     *
+     */
+    public function login(User $user): bool
     {
         $this->user = $user;
         $primaryKey = $user->primaryKey();
@@ -84,13 +97,13 @@ class App
         return true;
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->user = null;
         $this->session->remove('user');
     }
 
-    public static function isGuest()
+    public static function isGuest(): bool
     {
         return !self::$app->user;
     }

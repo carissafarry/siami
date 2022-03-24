@@ -5,10 +5,26 @@ namespace app\includes;
     * This is the Base Controller
     * Loads the Models and Views
 */
+
+use app\includes\middleware\BaseMiddleware;
+
 class Controller
 {
-    //  Default layout
-    public string $layout = 'layout_example';
+    public string $layout = 'layout_example';       //  Default layout
+    public string $action = '';
+
+    /**
+     * @var BaseMiddleware[]
+     */
+    protected array $middlewares = [];
+
+    /**
+     * @return BaseMiddleware[]
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
 
     // Load Model
     public function model($model)
@@ -31,6 +47,11 @@ class Controller
         }
 
         die('view does not exist');
+    }
+
+    public function registerMiddleware(BaseMiddleware $middleware)
+    {
+        $this->middlewares[] = $middleware;
     }
 
     /**
