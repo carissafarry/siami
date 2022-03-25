@@ -8,7 +8,7 @@ use app\admin\rules\auth\LoginRule;
 use app\admin\rules\auth\UserRule;
 use app\includes\App;
 use app\includes\Controller;
-use app\includes\middleware\AuthMiddleware;
+use app\admin\middleware\AuthMiddleware;
 use app\includes\Model;
 use app\includes\Request;
 use app\includes\Response;
@@ -26,8 +26,8 @@ class AuthController extends Controller
 
     public function index()
     {
-        $this->setLayout('layout_example');
-        return $this->view('spm/home');
+        App::setLayout('layout_example');
+        return App::view('spm/home');
     }
 
     public function login(Request $request, Response $response)
@@ -42,8 +42,8 @@ class AuthController extends Controller
                 return;
             }
         }
-        $this->setLayout('layout_example');
-        return $this->view('auth/login', [
+        App::setLayout('layout_example');
+        return App::view('auth/login', [
             'rule' => $loginRule,
         ]);
     }
@@ -52,7 +52,7 @@ class AuthController extends Controller
      * Verify if the user account is exist with the valid password
      *
      */
-    public function verify(Model $loginModel, Rule $loginRule)
+    public function verify(Model $loginModel, Rule $loginRule): bool
     {
         $user = User::findOne(['email' => $loginModel->email]);
 
@@ -105,13 +105,13 @@ class AuthController extends Controller
                 App::$app->response->redirect('/');
             }
 
-            return $this->view('auth/register', [
+            return App::view('auth/register', [
                 'rule' => $userRule,
             ]);
         }
 
-        $this->setLayout('layout_example');
-        return $this->view('auth/register', [
+        App::setLayout('layout_example');
+        return App::view('auth/register', [
             'rule' => $this->userRule,
         ]);
     }
@@ -124,13 +124,13 @@ class AuthController extends Controller
 
     public function profile()
     {
-        $this->setLayout('layout_example');
-        return $this->view('auth/profile');
+        App::setLayout('layout_example');
+        return App::view('auth/profile');
     }
 
     public function layout1()
     {
-        $this->setLayout('layout1');
-        return $this->view('spm/dashboard');
+        App::setLayout('layout1');
+        return App::view('spm/dashboard');
     }
 }

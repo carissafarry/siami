@@ -1,11 +1,12 @@
 <?php
 
-namespace app\includes\middleware;
+namespace app\admin\middleware;
 
 use app\includes\App;
 use app\includes\exception\ForbiddenException;
+use app\includes\Middleware;
 
-class AuthMiddleware extends BaseMiddleware
+class AuthMiddleware extends Middleware
 {
     public array $actions = [];
 

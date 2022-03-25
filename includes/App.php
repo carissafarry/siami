@@ -18,6 +18,8 @@ class App
     public Session $session;
     public Router $router;
     public Database $db;
+    public View $view;
+
     public Controller $controller;
     public ?User $user;
     public static App $app;
@@ -28,6 +30,7 @@ class App
     {
         $this->userClass = USER_CLASS;
         self::$app = $this;
+        $this->view = new View();
         $this->request = new Request();
         $this->response = new Response();
         $this->session = new Session();
@@ -78,7 +81,7 @@ class App
             echo $this->router->resolve();
         } catch (Exception $e) {
             $this->response->setStatusCode($e->getCode());
-            echo $this->router->render('_error', [
+            echo self::view('_error', [
                 'exception' => $e
             ]);
         }
@@ -106,5 +109,23 @@ class App
     public static function isGuest(): bool
     {
         return !self::$app->user;
+    }
+
+    /**
+     * Render given View file from view instance of App
+     * @return View|array|false|string|string[]|void
+     */
+    public static function view($data, $param = [])
+    {
+        return self::$app->view->view($data, $param);
+    }
+
+    /**
+     * Set layout of new view file that will be rendered from view instance of App
+     *
+     */
+    public static function setLayout($layout)
+    {
+        return self::$app->view->setLayout($layout);
     }
 }

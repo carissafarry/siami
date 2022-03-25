@@ -63,7 +63,7 @@ class Router
 
         // If it is a string, render as a View
         if (is_string($callback)) {
-            return $this->render($callback);
+            return App::view($callback);
         }
 
         // If it is an array, first array is a controller class, and second is the method inside the controller
@@ -89,18 +89,5 @@ class Router
         
         // If it is a closure/function, execute the callback
         return call_user_func($callback, $this->request, $this->response);
-    }
-
-    /**
-     * Looking for the view file, and display it as a view without layout/template
-     *
-     */
-    public function render($view, $data = [])
-    {
-        extract($data);
-        ob_start();
-        require_once APP_ROOT . '/views/' . $view . '.php';
-        unset($data);
-        return ob_get_clean();
     }
 }

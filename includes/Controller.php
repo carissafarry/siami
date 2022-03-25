@@ -6,20 +6,19 @@ namespace app\includes;
     * Loads the Models and Views
 */
 
-use app\includes\middleware\BaseMiddleware;
+use app\includes\Middleware;
 
 class Controller
 {
-    public string $layout = 'layout_example';       //  Default layout
     public string $action = '';
 
     /**
-     * @var BaseMiddleware[]
+     * @var Middleware[]
      */
     protected array $middlewares = [];
 
     /**
-     * @return BaseMiddleware[]
+     * @return Middleware[]
      */
     public function getMiddlewares(): array
     {
@@ -36,64 +35,9 @@ class Controller
         return new $model();
     }
 
-    // Load View
-    public function view($view, $data = [])
-    {
-        if (file_exists(APP_ROOT . '/views/' . $view . '.php')) {
-            $layoutContent = $this->layoutContent();
-            $viewContent = $this->renderOnlyView($view, $data);
-            return str_replace('{{content}}', $viewContent, $layoutContent);
-//            require_once APPROOT . '/views/' . $view . '.php';
-        }
-
-        die('view does not exist');
-    }
-
-    public function registerMiddleware(BaseMiddleware $middleware)
+    public function registerMiddleware(Middleware $middleware)
     {
         $this->middlewares[] = $middleware;
-    }
-
-    /**
-     * Render view that has been merged with layout template
-     *
-     */
-    public function renderView($view, $data = [])           // ! BELUM KEPAKE
-    {
-        // Shift content template in layout with view
-        $layoutContent = $this->layoutContent();
-        $viewContent = $this->renderOnlyView($view, $data);
-        return str_replace('{{content}}', $viewContent, $layoutContent);
-    }
-
-    /**
-     * Render main.php as a layout, which later will be used as a template and merged with custom content
-     *
-     */
-    protected function layoutContent()
-    {
-        $layout = $this->layout;
-        ob_start();         // start caching the output
-        include_once APP_ROOT . "/views/layouts/$layout.php";       // actual output
-        return ob_get_clean();          // return whatever is already buffered, and clears the buffer
-    }
-
-    /**
-     * Render pure only from a view file
-     *
-     */
-    protected function renderOnlyView($view, $data = [])
-    {
-        extract($data);
-        ob_start();         // start caching the output
-        include_once APP_ROOT . "/views/$view.php";       // actual output
-        unset($data);
-        return ob_get_clean();          // return whatever is already buffered, and clears the buffer
-    }
-
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
     }
 
     /**
