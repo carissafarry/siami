@@ -20,5 +20,6 @@ $app->router->post('/register', [new AuthController(), 'register']);
 $app->router->get('/layout1', [new AuthController(), 'layout1']);
 $app->router->get('/logout', [new AuthController(), 'logout']);
 $app->router->get('/profile', [new AuthController(), 'profile']);
+$app->router->get('/role', [new AuthController(), 'role']);
 
 $app->run();

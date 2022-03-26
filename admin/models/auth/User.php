@@ -74,4 +74,12 @@ class User extends DbModel
     {
         return $this->$attribute;
     }
+
+    /**
+     * @return int
+     */
+    public function getRole(): int
+    {
+        return $this->role_id;
+    }
 }

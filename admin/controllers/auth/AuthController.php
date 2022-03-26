@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\auth;
 
+use app\admin\middleware\RoleMiddleware;
 use app\admin\models\auth\LoginForm;
 use app\admin\models\auth\User;
 use app\admin\rules\auth\LoginRule;
@@ -22,6 +23,8 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->registerMiddleware(new AuthMiddleware(['profile']));
+        $this->registerMiddleware(new RoleMiddleware(['role']));
+
     }
 
     public function index()
@@ -124,6 +127,7 @@ class AuthController extends Controller
 
     public function profile()
     {
+
         App::setLayout('layout_example');
         return App::view('auth/profile');
     }
@@ -132,5 +136,11 @@ class AuthController extends Controller
     {
         App::setLayout('layout1');
         return App::view('spm/dashboard');
+    }
+
+    public function role()
+    {
+        App::setLayout('layout_example');
+        return App::view('role');
     }
 }

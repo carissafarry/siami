@@ -3,7 +3,7 @@
 namespace app\includes;
 /*
     * This is the Base Controller
-    * Loads the Models and Views
+    * Loads the Models
 */
 
 use app\includes\Middleware;
@@ -16,6 +16,7 @@ class Controller
      * @var Middleware[]
      */
     protected array $middlewares = [];
+    protected array $middlewares_to_run = [];
 
     /**
      * @return Middleware[]
@@ -23,6 +24,11 @@ class Controller
     public function getMiddlewares(): array
     {
         return $this->middlewares;
+    }
+
+    public function getToRunMiddleware(): array
+    {
+        return $this->middlewares_to_run;
     }
 
     // Load Model
@@ -35,7 +41,7 @@ class Controller
         return new $model();
     }
 
-    public function registerMiddleware(Middleware $middleware)
+    public function registerMiddleware($middleware): void
     {
         $this->middlewares[] = $middleware;
     }

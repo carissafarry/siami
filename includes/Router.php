@@ -90,4 +90,12 @@ class Router
         // If it is a closure/function, execute the callback
         return call_user_func($callback, $this->request, $this->response);
     }
+
+    public function applyMiddleware()
+    {
+//        $callback = $this->routes[$method][$path] ?? false;
+        foreach (App::$app->controller->getToRunMiddleware() as $middleware) {
+            $middleware->execute();
+        }
+    }
 }

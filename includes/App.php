@@ -19,9 +19,9 @@ class App
     public Router $router;
     public Database $db;
     public View $view;
-
     public Controller $controller;
     public ?User $user;
+    public Role $role;
     public static App $app;
 
     public string $userClass;
@@ -30,26 +30,34 @@ class App
     {
         $this->userClass = USER_CLASS;
         self::$app = $this;
+        $this->session = new Session();
         $this->view = new View();
         $this->request = new Request();
         $this->response = new Response();
-        $this->session = new Session();
-        $this->router = new Router($this->request, $this->response);        // go check to Router class
         $this->db = new Database();
-
+        $this->role = new Role();
+        $this->router = new Router($this->request, $this->response);        // go check to Router class
         $this->fetchUser();
+
     }
 
     /**
      * Fetch the user data with session
      *
      */
-    public function fetchUser()
+    public function fetchUser(): void
     {
-        $primaryValue = $this->session->get('user');
+        $primaryValue = $this->session->get('user');        // access session value that has been created from login method below
         if ($primaryValue) {
             $primaryKey = $this->userClass::primaryKey();
             $this->user = $this->userClass::findOne([$primaryKey => $primaryValue[0]]);
+//            $this->role = new Role();
+//            $this->role->setRole($this->user->getRole());
+//            $this->role->fetchPermissions();
+
+//            $permission = new Permission();
+//            $permission->setPermission($this->user->getRole());
+//            $permission->fetchRoles();
         } else {
             $this->user = null;
         }
@@ -97,6 +105,8 @@ class App
         $primaryKey = $user->primaryKey();
         $primaryValue = $user->{$primaryKey};
         $this->session->set('user', $primaryValue);     // create user session using user id from PK
+        $this->role->setRole($this->user->getRole());
+        $this->role->fetchPermissions();
         return true;
     }
 

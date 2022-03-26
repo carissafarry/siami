@@ -75,13 +75,11 @@ abstract class DbModel extends Model
 
         $stmt = "SELECT * FROM $tableName WHERE $conditions";
         $query = App::$app->db->query($stmt, $where);
-        //  return oci_fetch_object($query);
 
         $oci_obj = oci_fetch_object($query);
         if ($oci_obj) {
             $arr_oci_obj = (array)$oci_obj;
             $userObj = new User();
-            //  array_walk($arr_oci_obj, function(&$val, $key) use ($userObj) {
             foreach ($arr_oci_obj as $key => $val) {
                 $varName = strtolower($key);
                 $userObj->{$varName} = $val;
