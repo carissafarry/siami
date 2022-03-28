@@ -13,6 +13,7 @@ use app\includes\Model;
 use app\includes\Request;
 use app\includes\Response;
 use app\includes\Rule;
+use Casbin\Enforcer;
 
 class AuthController extends Controller
 {
@@ -30,6 +31,9 @@ class AuthController extends Controller
         return App::view('spm/home');
     }
 
+    /**
+     * @throws \Casbin\Exceptions\CasbinException
+     */
     public function login(Request $request, Response $response)
     {
         $loginFormModel = new LoginForm();
@@ -38,6 +42,12 @@ class AuthController extends Controller
         if ($request->isPost()) {
             $loginFormModel->loadData($request->getBody());
             if ($loginRule->validate() && $this->verify($loginFormModel, $loginRule)) {
+//                App::$app->createEnforcer();
+//                $role = App::$app->enforcer->addRoleForUser(App::$app->user->email, App::$app->user->getRole()->role);
+
+//                var_dump($e->hasRoleForUser(App::$app->user->email, App::$app->user->getRole()->role));
+//                var_dump(App::$app->e->hasRoleForUser(App::$app->user->email, App::$app->user->getRole()->role));
+//                exit;
                 $response->redirect('/');
                 return;
             }
@@ -122,8 +132,37 @@ class AuthController extends Controller
         $response->redirect('/login');
     }
 
+    /**
+     * @throws \Casbin\Exceptions\CasbinException
+     */
     public function profile()
     {
+        $e = App::$app->createEnforcer();
+        $user = App::$app->user;
+        $role = $user->getRole()->role;
+
+        echo '<pre>';
+//        $role = $e->addRoleForUser(App::$app->user->email, App::$app->user->getRole()->role);
+        $e->hasRoleForUser(App::$app->user->email, App::$app->user->getRole()->role);
+//        $role = $e->deleteRoleForUser('carissafarry@gmail.com', 'SPM');
+//        $role = App::$app->e->deleteRolesForUser('carissafarry@gmail.com');
+//        var_dump($role);
+        echo '</pre>';
+//        exit;
+
+        if (App::$app->e->addRoleForUser('carissafarry@gmail.com', 'SPM')){
+            echo 'success delete';
+        } else {
+            echo 'failed';
+        }
+
+//        App::$app->enforcer->addPermissionForUser(App::$app->user->email, '/profile', 'GET');
+        if ($e->enforce(App::$app->user->email, '/profile', 'GET') === true) {
+            echo 'bisa permit';
+        } else {
+            echo 'ga bisa';
+        }
+
         App::setLayout('layout_example');
         return App::view('auth/profile');
     }

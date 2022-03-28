@@ -2,4 +2,5 @@
 /** @var $exception Exception */
 ?>
 
-<h2><?= $exception->getCode() ?> - <?= $exception->getMessage() ?></h2>
+<p><?= $exception->getCode() ?> - <?= $exception->getMessage() ?></p>
+<pre><?=$exception?></pre>

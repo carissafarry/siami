@@ -9,6 +9,8 @@ namespace app\includes;
 */
 
 use app\admin\models\auth\User;
+use CasbinAdapter\LaminasDb\Adapter;
+use Casbin\Enforcer;
 use Exception;
 
 class App
@@ -22,6 +24,8 @@ class App
 
     public Controller $controller;
     public ?User $user;
+    public Adapter $adapter;
+    public Enforcer $e;
     public static App $app;
 
     public string $userClass;
@@ -127,5 +131,52 @@ class App
     public static function setLayout($layout)
     {
         return self::$app->view->setLayout($layout);
+    }
+
+    /**
+     * Create Enforcer Instance for Casbin RBAC Management API
+     * @throws \Casbin\Exceptions\CasbinException
+     */
+    public function createEnforcer()
+    {
+        //  Create casbin_rule table to store Casbin Policy
+        $this->db->query_insert("
+            DECLARE
+            v_sql LONG;
+            BEGIN
+            v_sql:='
+                    CREATE TABLE casbin_rule (
+                        ptype varchar(255) NOT NULL,
+                        v0 varchar(255) DEFAULT NULL,
+                        v1 varchar(255) DEFAULT NULL,
+                        v2 varchar(255) DEFAULT NULL,
+                        v3 varchar(255) DEFAULT NULL,
+                        v4 varchar(255) DEFAULT NULL,
+                        v5 varchar(255) DEFAULT NULL
+                    )
+                   ';
+            EXECUTE IMMEDIATE v_sql;
+            EXCEPTION
+                WHEN OTHERS THEN
+                    IF SQLCODE = -955 THEN
+                        NULL;
+                    ELSE
+                        RAISE;
+                    END IF;
+            END;
+        ");
+
+        //  Create new database adapter for casbin
+        $adapter = new Adapter([
+            'driver' => 'Oci8', // IbmDb2, Mysqli, Oci8, Pgsql, Sqlsrv, Pdo_Mysql, Pdo_Sqlite, Pdo_Pgsql
+            'hostname' => DB_HOST,
+            'database' => DB_DATABASE,
+            'username' => DB_USERNAME,
+            'password' => DB_PASSWORD,
+            'port' => DB_PORT,
+        ]);
+        $this->e = new Enforcer(APP_ROOT . '/admin/rbac/rbac_model.conf', $adapter );
+        return $this->e;
+//        return new Enforcer(APP_ROOT . '/admin/rbac/rbac_model.conf', $adapter );
     }
 }

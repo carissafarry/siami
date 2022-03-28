@@ -2,6 +2,8 @@
 
 namespace app\admin\models\auth;
 
+use app\includes\App;
+
 class User extends DbModel
 {
     const ROLE_SPM = 0;
@@ -25,6 +27,8 @@ class User extends DbModel
     public string $jabatan = '';
     public string $periode = '';
     public $user_type = 1;
+
+    public Role $role;
 
     public static function tableName(): string
     {
@@ -73,5 +77,10 @@ class User extends DbModel
     public function getDisplay(string $attribute): string
     {
         return $this->$attribute;
+    }
+
+    public function getRole()
+    {
+        return self::findOne(['id' => $this->role_id], 'role', Role::class);
     }
 }

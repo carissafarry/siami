@@ -13,10 +13,12 @@
         }
     ],
     "require": {
-        "php": "7.4",
+        "php": "7.4.*",
         "vlucas/phpdotenv": "^5.4",
         "ext-pdo": "*",
-        "ext-oci8": "*"
+        "ext-oci8": "*",
+        "casbin/casbin": "~1.0|^3.20",
+        "casbin/laminas-db-adapter": "^1.0"
     }
     ,
     "require-dev": {

@@ -2,6 +2,8 @@
 
 namespace app\includes;
 
+use CasbinAdapter\LaminasDb\Adapter;
+
 class Database
 {
     protected $connection;
