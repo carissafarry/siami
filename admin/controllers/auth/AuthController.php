@@ -16,9 +16,6 @@ use app\includes\Rule;
 
 class AuthController extends Controller
 {
-    public Model $userModel;
-    public Rule $userRule;
-
     public function __construct()
     {
         $this->registerMiddleware(new AuthMiddleware(['profile']));
@@ -112,7 +109,7 @@ class AuthController extends Controller
 
         App::setLayout('layout_example');
         return App::view('auth/register', [
-            'rule' => $this->userRule,
+            'rule' => $userRule,
         ]);
     }
 

@@ -5,7 +5,6 @@ define('APP_URL', $_ENV['APP_URL']);
 define('APP_ROOT', dirname(__FILE__, 2));
 
 //DB Params
-define('DB_CONNECTION', $_ENV['DB_CONNECTION']);
 define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_PORT', $_ENV['DB_PORT']);
 define('DB_SERVICE', $_ENV['DB_SERVICE']);

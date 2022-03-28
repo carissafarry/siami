@@ -5,7 +5,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none"
                 aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href="">
-                <img src="<?= APP_ROOT ?>/contents/assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
+                <img src="/contents/assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
                 <span class="ms-1 font-weight-bold">Soft UI Dashboard</span>
             </a>
         </div>
@@ -69,5 +69,5 @@
     <?php
     require  APP_ROOT . '/views/layouts/scripts.php';
     ?>
-    <script src="<?= APP_ROOT ?>/contents/assets/js/pages/dashboard.js"></script>
+    <script src="/contents/assets/js/pages/dashboard.js"></script>
 </body>
