@@ -115,7 +115,16 @@ abstract class DbModel extends Model
         return $data;
     }
 
-    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class, $where=null)
+    /**
+     * Find data related with defined table, in many-to-many relationship
+     * @param $table String From which table the query will be executed.
+     * @param $on_params_with_pivot array Define table and column that will have relation both from first table and pivot table.
+     * @param $on_params_with_target array Define table and column that will have relation both from pivot table and target table.
+     * @param $return_class object Define what type of object/class that will be returned.
+     * @param $where array Define conditions that will be used in Where clause.
+     * @return array The result of executed query from findAll() function.
+     */
+    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class, $where=null): array
     {
         $tableName = $table;
         $table_on_params = implode(" ON ", array_map(function($val, $key) {

@@ -30,7 +30,7 @@ class User extends DbModel
 
     public static function tableName(): string
     {
-        return 'users';
+        return 'USERS';
     }
 
     public static function primaryKey(): string
@@ -81,9 +81,4 @@ class User extends DbModel
     {
         return self::findOne(['id' => $this->role_id], 'role', Role::class);
     }
-
-//    public function role()
-//    {
-//        
-//    }
 }

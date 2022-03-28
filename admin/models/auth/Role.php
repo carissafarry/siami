@@ -12,7 +12,7 @@ class Role extends DbModel
 
     public static function tableName(): string
     {
-        // TODO: Implement tableName() method.
+        return 'ROLE';
     }
 
     public function attributes(): array
@@ -46,11 +46,11 @@ class Role extends DbModel
     public function getPermissions()
     {
         return $this->findManyToMany(
-            'role',
-            ['role.id' => 'role_has_permissions.ROLE_ID'],
-            ['role_has_permissions.ROLE_ID' => 'permission.id'],
+            self::tableName(),
+            ['ROLE.ID' => 'ROLE_HAS_PERMISSIONS.ROLE_ID'],
+            ['ROLE_HAS_PERMISSIONS.PERMISSION_ID' => 'PERMISSION.ID'],
             Permission::class,
-            ['role.id' => 1]
+            ['ROLE.ID' => $this->id]
         );
     }
 }
