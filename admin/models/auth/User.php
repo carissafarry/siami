@@ -26,6 +26,8 @@ class User extends DbModel
     public string $periode = '';
     public $user_type = 1;
 
+    public Role $role;
+
     public static function tableName(): string
     {
         return 'users';
@@ -74,4 +76,14 @@ class User extends DbModel
     {
         return $this->$attribute;
     }
+
+    public function getRole()
+    {
+        return self::findOne(['id' => $this->role_id], 'role', Role::class);
+    }
+
+//    public function role()
+//    {
+//        
+//    }
 }

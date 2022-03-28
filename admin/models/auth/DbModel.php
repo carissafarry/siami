@@ -67,20 +67,24 @@ abstract class DbModel extends Model
      * Find data from records that fulfill specified conditions
      *
      */
-    public static function findOne($where)
+    public static function findOne($where=null, $table=null, $return_class=null, $fetched_data=null)
     {
-        $tableName = self::getTableName();
-        $attributes = array_keys($where);
-        $conditions = implode("AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+        $oci_obj = $fetched_data;
 
-        $stmt = "SELECT * FROM $tableName WHERE $conditions";
-        $query = App::$app->db->query($stmt, $where);
-        //  return oci_fetch_object($query);
+        if ($where) {
+            $tableName = $table ?: self::getTableName();
+            $attributes = array_keys($where);
+            $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
 
-        $oci_obj = oci_fetch_object($query);
+            $stmt = "SELECT * FROM $tableName WHERE $conditions";
+            $query = App::$app->db->query($stmt, $where);
+            $oci_obj = oci_fetch_object($query);
+        }
+
         if ($oci_obj) {
             $arr_oci_obj = (array)$oci_obj;
-            $userObj = new User();
+            $called_class = static::class;
+            $userObj = $return_class ? new $return_class() : new $called_class();
             //  array_walk($arr_oci_obj, function(&$val, $key) use ($userObj) {
             foreach ($arr_oci_obj as $key => $val) {
                 $varName = strtolower($key);
@@ -89,5 +93,56 @@ abstract class DbModel extends Model
             return $userObj;
         }
         return $oci_obj;
+    }
+
+    public static function findAll($where, $table=null, $return_class=null, $sql=null)
+    {
+        $tableName = $table ?: self::getTableName();
+        $attributes = array_keys($where);
+        $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+
+        $stmt = "SELECT * FROM $tableName WHERE $conditions";
+        $query = App::$app->db->query($sql ?: $stmt, $where);
+
+        $oci_obj = oci_fetch_all($query, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+        $data = [];
+
+        if ($oci_obj) {
+            foreach ($res as $row) {
+                $data[] = self::findOne(null, $table, $return_class, $row);
+            }
+        }
+        return $data;
+    }
+
+    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class, $where=null)
+    {
+        $tableName = $table;
+        $table_on_params = implode(" ON ", array_map(function($val, $key) {
+                return "$key = $val";
+            }, $on_params_with_pivot, array_keys($on_params_with_pivot)));
+
+        $pivotName = strtok(array_values($on_params_with_pivot)[0], '.');
+        $pivot_on_params = implode(" ON ", array_map(function($val, $key) {
+            return "$key = $val";
+        }, $on_params_with_target, array_keys($on_params_with_target)));
+
+        $targetName = strtok(array_values($on_params_with_target)[0], '.');
+        $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :" . explode('.',$attr)[1], array_keys($where)));
+        foreach ($where as $key => $val) {
+            $where_value[explode('.',$key)[1]] = $val;
+        }
+
+        $sql = "
+          SELECT $targetName.*
+          FROM $tableName
+            INNER JOIN $pivotName
+                ON $table_on_params
+            INNER JOIN $targetName
+                ON $pivot_on_params
+          WHERE $conditions
+        ";
+
+        return self::findAll($where_value, $table, $return_class, $sql);
     }
 }
