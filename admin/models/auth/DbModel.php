@@ -4,7 +4,6 @@ namespace app\admin\models\auth;
 
 use app\includes\App;
 use app\includes\Model;
-use phpDocumentor\Reflection\Types\This;
 
 abstract class DbModel extends Model
 {
@@ -67,19 +66,22 @@ abstract class DbModel extends Model
      * Find data from records that fulfill specified conditions
      *
      */
-    public static function findOne($where)
+    public static function findOne($where, $table = null, $class = null)
     {
-        $tableName = self::getTableName();
+        $tableName = $table ?: self::getTableName();
         $attributes = array_keys($where);
         $conditions = implode("AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
 
         $stmt = "SELECT * FROM $tableName WHERE $conditions";
         $query = App::$app->db->query($stmt, $where);
+        //  return oci_fetch_object($query);
 
         $oci_obj = oci_fetch_object($query);
         if ($oci_obj) {
             $arr_oci_obj = (array)$oci_obj;
-            $userObj = new User();
+            $called_class = static::class;
+            $userObj = $class ? new $class() : new $called_class();
+            //  array_walk($arr_oci_obj, function(&$val, $key) use ($userObj) {
             foreach ($arr_oci_obj as $key => $val) {
                 $varName = strtolower($key);
                 $userObj->{$varName} = $val;

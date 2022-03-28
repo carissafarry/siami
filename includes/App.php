@@ -8,6 +8,7 @@ namespace app\includes;
      * URL FORMAT  /controller/method/params
 */
 
+use app\admin\models\auth\Role;
 use app\admin\models\auth\User;
 use Exception;
 
@@ -105,8 +106,10 @@ class App
         $primaryKey = $user->primaryKey();
         $primaryValue = $user->{$primaryKey};
         $this->session->set('user', $primaryValue);     // create user session using user id from PK
-        $this->role->setRole($this->user->getRole());
-        $this->role->fetchPermissions();
+
+//        $this->role->setRole($this->user->getRole());
+//        $this->role->fetchPermissions();
+
         return true;
     }
 

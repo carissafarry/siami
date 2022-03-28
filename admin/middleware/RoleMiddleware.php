@@ -27,16 +27,16 @@ class RoleMiddleware extends Middleware
 //            }
 //        }
 
-        if (App::$app->user->role_id == 1){
-            echo '<pre>';
-            var_dump('SPM');
-            echo '</pre>';
-            exit;
-        } else {
-            echo '<pre>';
-            var_dump('no spm');
-            echo '</pre>';
-            exit;
-        }
+//        if (App::$app->user->role_id == 1){
+//            echo '<pre>';
+////            var_dump('SPM');
+//            echo '</pre>';
+//            exit;
+//        } else {
+//            echo '<pre>';
+////            var_dump('no spm');
+//            echo '</pre>';
+//            exit;
+//        }
     }
 }

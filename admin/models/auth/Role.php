@@ -1,16 +1,40 @@
 <?php
 
-namespace app\includes;
+namespace app\admin\models\auth;
 
-class Role
+use app\admin\models\auth\DbModel;
+use app\admin\models\auth\User;
+
+class Role extends DbModel
 {
     public int $id;
     public string $role;
+    public string $deskripsi;
+    public User $user;
     private array $permissions = [];
 
-    public function __construct()
+    public static function tableName(): string
     {
+        return 'role';
+    }
 
+    public static function primaryKey(): string
+    {
+        return 'id';
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'id',
+            'role',
+            'deskripsi',
+        ];
+    }
+
+    public function getDisplay(string $attribute): string
+    {
+        // TODO: Implement getDisplay() method.
     }
 
     public function setRole(int $role_id): Role
@@ -19,9 +43,9 @@ class Role
         return $this;
     }
 
-    public function getRole(): int
+    public function getRole()
     {
-        return $this->id;
+        return $this;
     }
 
     public function getPermissions(): array
@@ -51,6 +75,4 @@ class Role
 //        $permission->setPermission();
         $this->permissions[] = $permission;
     }
-
-//    abstract public function setPermission(int $id);
 }

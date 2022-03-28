@@ -1,10 +1,11 @@
 <?php
 
-namespace app\includes;
+namespace app\admin\models\auth;
 
+use app\admin\models\auth\DbModel;
 use app\admin\models\auth\User;
 
-class Permission
+class Permission extends DbModel
 {
     public int $id;
     public string $permission;
@@ -14,6 +15,26 @@ class Permission
 
     public function __construct()
     {
+    }
+
+    public static function tableName(): string
+    {
+        // TODO: Implement tableName() method.
+    }
+
+    public function attributes(): array
+    {
+        // TODO: Implement attributes() method.
+    }
+
+    public static function primaryKey(): string
+    {
+        // TODO: Implement primaryKey() method.
+    }
+
+    public function getDisplay(string $attribute): string
+    {
+        // TODO: Implement getDisplay() method.
     }
 
     public function setPermission(int $id): Permission

@@ -1,5 +1,5 @@
 <?php
-/** @var $this \app\includes\View */
+/** @var $this \app\admin\models\auth\View */
 
 $this->title = 'Halaman Profile';
 ?>

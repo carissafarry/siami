@@ -1,6 +1,6 @@
 <?php
 
-namespace app\includes\middleware;
+namespace app\admin\models\auth\middleware;
 
 class PermissionMiddleware
 {

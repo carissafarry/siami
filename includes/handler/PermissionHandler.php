@@ -1,9 +1,9 @@
 <?php
 
-namespace app\includes\handler;
+namespace app\admin\models\auth\handler;
 
 use app\admin\models\auth\User;
-use app\includes\Role;
+use app\admin\models\auth\Role;
 
 class PermissionHandler
 {
