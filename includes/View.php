@@ -5,7 +5,7 @@ namespace app\includes;
 class View
 {
     public string $title = '';
-    public string $layout = 'layout_example';       //  Default layout
+    public $layout = 'layout_example';       //  Default layout
 
     // Load View
     public function view($view, $data = [])
@@ -21,12 +21,15 @@ class View
      * Render view that has been merged with layout template
      *
      */
-    public function renderView($view, $data = [])           // ! BELUM KEPAKE
+    public function renderView($view, $data = [])
     {
         // Shift content template in layout with view
         $viewContent = $this->render($view, $data);
-        $layoutContent = $this->layoutContent();
-        return str_replace('{{content}}', $viewContent, $layoutContent);
+        if ($this->layout) {
+            $layoutContent = $this->layoutContent();
+            return str_replace('{{content}}', $viewContent, $layoutContent);
+        }
+        return $viewContent;
     }
 
     /**

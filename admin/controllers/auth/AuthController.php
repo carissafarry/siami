@@ -2,7 +2,7 @@
 
 namespace app\admin\controllers\auth;
 
-use app\admin\models\auth\LoginForm;
+use app\admin\form\Login;
 use app\admin\models\auth\User;
 use app\admin\rules\auth\LoginRule;
 use app\admin\rules\auth\UserRule;
@@ -21,25 +21,19 @@ class AuthController extends Controller
         $this->registerMiddleware(new AuthMiddleware(['profile']));
     }
 
-    public function index()
-    {
-        App::setLayout('layout_example');
-        return App::view('spm/home');
-    }
-
     public function login(Request $request, Response $response)
     {
-        $loginFormModel = new LoginForm();
+        $loginFormModel = new Login();
         $loginRule = new LoginRule($loginFormModel);
 
         if ($request->isPost()) {
             $loginFormModel->loadData($request->getBody());
             if ($loginRule->validate() && $this->verify($loginFormModel, $loginRule)) {
-                $response->redirect('/');
+                $response->redirect('/dashboard');
                 return;
             }
         }
-        App::setLayout('layout_example');
+        App::setLayout(null);
         return App::view('auth/login', [
             'rule' => $loginRule,
         ]);
@@ -125,9 +119,9 @@ class AuthController extends Controller
         return App::view('auth/profile');
     }
 
-    public function layout1()
+    public function dashboard()
     {
-        App::setLayout('layout1');
+        App::setLayout('layout_template');
         return App::view('spm/dashboard');
     }
 }
