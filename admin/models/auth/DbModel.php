@@ -138,8 +138,11 @@ abstract class DbModel extends Model
 
         $targetName = strtok(array_values($on_params_with_target)[0], '.');
         $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :" . explode('.',$attr)[1], array_keys($where)));
-        foreach ($where as $key => $val) {
-            $where_value[explode('.',$key)[1]] = $val;
+        $where_value = null;
+        if ($where) {
+            foreach ($where as $key => $val) {
+                $where_value[explode('.',$key)[1]] = $val;
+            }
         }
 
         $sql = "
