@@ -18,7 +18,23 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->registerMiddleware(new AuthMiddleware(['profile']));
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'dashboard',
+                'profile',
+            ])
+        );
+    }
+
+    public function index(Request $request, Response $response)
+    {
+        if (App::isGuest()) {
+            $response->redirect('/login');
+            return;
+        } else {
+            $response->redirect('/dashboard');
+            return;
+        }
     }
 
     public function login(Request $request, Response $response)
@@ -121,7 +137,7 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        App::setLayout('layout_template');
+        App::setLayout('layout');
         return App::view('spm/dashboard');
     }
 }

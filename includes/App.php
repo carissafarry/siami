@@ -128,4 +128,9 @@ class App
     {
         return self::$app->view->setLayout($layout);
     }
+
+    public static function getRoute()
+    {
+        return $_SERVER['REQUEST_URI'];
+    }
 }

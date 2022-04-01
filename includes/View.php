@@ -5,6 +5,8 @@ namespace app\includes;
 class View
 {
     public string $title = '';
+    public string $breadcrumbs = '';
+    public string $header_title = '';
     public $layout = 'layout_example';       //  Default layout
 
     // Load View

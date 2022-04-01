@@ -95,13 +95,16 @@ abstract class DbModel extends Model
         return $oci_obj;
     }
 
-    public static function findAll($where, $table=null, $return_class=null, $sql=null)
+    public static function findAll($table=null, $where=null, $return_class=null, $sql=null)
     {
         $tableName = $table ?: self::getTableName();
-        $attributes = array_keys($where);
-        $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
 
-        $stmt = "SELECT * FROM $tableName WHERE $conditions";
+        if ($where) {
+            $attributes = array_keys($where);
+            $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+        }
+
+        $stmt = "SELECT * FROM $tableName " . ($where ? "WHERE $conditions" : '');
         $query = App::$app->db->query($sql ?: $stmt, $where);
 
         $oci_obj = oci_fetch_all($query, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
@@ -137,9 +140,10 @@ abstract class DbModel extends Model
         }, $on_params_with_target, array_keys($on_params_with_target)));
 
         $targetName = strtok(array_values($on_params_with_target)[0], '.');
-        $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :" . explode('.',$attr)[1], array_keys($where)));
+        $conditions = '';
         $where_value = null;
         if ($where) {
+            $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :" . explode('.',$attr)[1], array_keys($where)));
             foreach ($where as $key => $val) {
                 $where_value[explode('.',$key)[1]] = $val;
             }
@@ -151,10 +155,9 @@ abstract class DbModel extends Model
             INNER JOIN $pivotName
                 ON $table_on_params
             INNER JOIN $targetName
-                ON $pivot_on_params
-          WHERE $conditions
-        ";
+                ON $pivot_on_params 
+        " . $where ? " WHERE $conditions" : '';
 
-        return self::findAll($where_value, $table, $return_class, $sql);
+        return self::findAll($table, $where_value, $return_class, $sql);
     }
 }

@@ -292,8 +292,10 @@ class Database
     public function query($sql, $data=[])
     {
         $parse = oci_parse($this->connection, $sql);
-        foreach ($data as $key => $val) {
-            oci_bind_by_name($parse, $key, $data[$key]);
+        if ($data) {
+            foreach ($data as $key => $val) {
+                oci_bind_by_name($parse, $key, $data[$key]);
+            }
         }
         oci_execute($parse);
 //        if (oci_num_rows($parse)>0)

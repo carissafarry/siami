@@ -44,7 +44,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-xd.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-xd.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -56,19 +56,19 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-1.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-1.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-2.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-2.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Alexander Smith">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-3.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-3.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                 </div>
                             </td>
@@ -93,7 +93,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-atlassian.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-atlassian.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -105,11 +105,11 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-2.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-2.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                 </div>
                             </td>
@@ -134,7 +134,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-slack.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-slack.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -146,11 +146,11 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-3.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-3.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-1.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-1.jpg">
                                     </a>
                                 </div>
                             </td>
@@ -175,7 +175,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-spotify.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-spotify.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -187,19 +187,19 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-3.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-3.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Alexander Smith">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-1.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-1.jpg">
                                     </a>
                                 </div>
                             </td>
@@ -224,7 +224,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-jira.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-jira.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -236,7 +236,7 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                 </div>
                             </td>
@@ -261,7 +261,7 @@
                             <td>
                                 <div class="d-flex px-2 py-1">
                                     <div>
-                                        <img src="../contents/assets/img/small-logos/logo-invision.svg"
+                                        <img src="/contents/assets/img/small-logos/logo-invision.svg"
                                             class="avatar avatar-sm me-3">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
@@ -273,11 +273,11 @@
                                 <div class="avatar-group mt-2">
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-1.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-1.jpg">
                                     </a>
                                     <a href="javascript:;" class="avatar avatar-xs rounded-circle"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                                        <img alt="Image placeholder" src="../contents/assets/img/team-4.jpg">
+                                        <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
                                     </a>
                                 </div>
                             </td>

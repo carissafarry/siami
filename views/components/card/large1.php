@@ -15,9 +15,9 @@
                 </div>
                 <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
                     <div class="bg-gradient-primary border-radius-lg h-100">
-                        <img src="../contents/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
+                        <img src="/contents/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
                         <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                            <img class="w-100 position-relative z-index-2 pt-4" src="../contents/assets/img/illustrations/rocket-white.png">
+                            <img class="w-100 position-relative z-index-2 pt-4" src="/contents/assets/img/illustrations/rocket-white.png">
                         </div>
                     </div>
                 </div>

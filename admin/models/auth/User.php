@@ -2,6 +2,8 @@
 
 namespace app\admin\models\auth;
 
+use app\admin\models\Area;
+
 class User extends DbModel
 {
     const ROLE_SPM = 0;
@@ -77,8 +79,13 @@ class User extends DbModel
         return $this->$attribute;
     }
 
-    public function getRole()
+    public function role()
     {
         return self::findOne(['id' => $this->role_id], 'role', Role::class);
+    }
+
+    public function area()
+    {
+        return self::findOne(['id' => $this->area_id], 'area', Area::class);
     }
 }
