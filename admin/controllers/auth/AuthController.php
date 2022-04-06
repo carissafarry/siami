@@ -49,7 +49,13 @@ class AuthController extends Controller
                 return;
             }
         }
-        App::setLayout(null);
+
+        if (!App::isGuest()){
+            $response->redirect('/dashboard');
+            return;
+        }
+
+         App::setLayout(null);
         return App::view('auth/login', [
             'rule' => $loginRule,
         ]);

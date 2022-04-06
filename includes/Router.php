@@ -69,45 +69,19 @@ class Router
         $method = $this->request->method();
         $path = $this->request->getPath();
 
-        $route_names = array_keys($this->routes[$method]);
-        $path_elements = explode("/", $path);
-        $fitted_routes = [];
-
-        //  Looking for all routes that fit with requested route
-        foreach ($route_names as $route_name) {
-            $route_name_elements = explode("/", $route_name);
-            foreach ($path_elements as $path_element) {
-                if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
-                    $fitted_routes[] = $route_name;
-                }
-            }
-        }
-        //  Looking for fitted routes which has the same route name with the same number of arguments
-        $main_path = null;
-        $path_arguments = [];
-        foreach ($fitted_routes as $route_name) {
-            $current_route = $this->routes[$method][$route_name];
-            if (isset($current_route[2])) {
-                $num_of_args = count($current_route[2]);
-                $to_merge_path_element = [];
-                $path_arguments[$route_name] = [];
-                foreach ($path_elements as $index => $path_element) {
-                    if ($index < (count($path_elements) - $num_of_args)) {
-                        $to_merge_path_element[] = $path_element;
-                    } else {
-                        $path_arguments[$route_name][] = $path_element;
-                    }
-                }
-                $main_path = implode("/", $to_merge_path_element);
-            } else {
-                $main_path = $route_name;
-            }
+        //  Remove trailing slash from path request
+        if(substr($path, -1) === '/') {
+            $path = substr($path, 0, -1);
         }
 
-        // Take callback for the given method and path that has been searched, if it exists
+        $routes_result = $this->searchRoutes($method, $path);
+        $main_path = $routes_result[0];
+        $path_arguments = $routes_result[1];
+
+        //  Take callback for the given method and path that has been searched, if it exists
         $callback = $this->routes[$method][$main_path] ?? false;
         $arguments = null;
-        if (isset($callback[2])) {
+        if (isset($callback[2]) && !empty($path_arguments)) {
             $arguments = array_combine(array_keys($callback[2]), $path_arguments[$main_path]);
         }
 
@@ -126,12 +100,12 @@ class Router
             throw new NotFoundException();
         }
 
-        // If it is a string, render as a View
+        //  If it is a string, render as a View
         if (is_string($callback)) {
             return App::view($callback);
         }
 
-        // If it is an array, first array is a controller class, and second is the method inside the controller
+        //  If it is an array, first array is a controller class, and second is the method inside the controller
         if (is_array($callback)) {
             //  Define type of controller
             /** @var Controller $controller */
@@ -152,13 +126,53 @@ class Router
             $callback[0] = $controller;
         }
 
-        // If it is a closure/function, execute the callback
-//        return call_user_func($callback, $this->request, $this->response);
+        //  If it is a closure/function, execute the callback
         return call_user_func(
             [$callback[0], $callback[1]],
             $this->request,
             $this->response,
             $arguments
         );
+    }
+
+    public function searchRoutes($method, $path)
+    {
+        $route_names = array_keys($this->routes[$method]);
+        $path_elements = explode("/", $path);
+        $fitted_routes = [];
+        foreach ($route_names as $route_name) {
+            $route_name_elements = explode("/", $route_name);
+            foreach ($path_elements as $path_element) {
+                if (($path_element !== '') && in_array($path_element, $route_name_elements, true) && !in_array($route_name, $fitted_routes, true)) {
+                    $fitted_routes[] = $route_name;
+                }
+            }
+        }
+        //  Looking for fitted routes which has the same route name with the same number of arguments
+        $main_path = '';
+        $path_arguments = array();
+        foreach ($fitted_routes as $route_name) {
+            if ($route_name === $path) {
+                $main_path = $path;
+                break;
+            }
+            $current_route = $this->routes[$method][$route_name];
+            if (isset($current_route[2])) {
+                $num_of_args = count($current_route[2]);
+                $to_merge_path_element = [];
+                $path_arguments[$route_name] = [];
+                foreach ($path_elements as $index => $path_element) {
+                    if ($index < (count($path_elements) - $num_of_args)) {
+                        $to_merge_path_element[] = $path_element;
+                    } else {
+                        $path_arguments[$route_name][] = $path_element;
+                    }
+                }
+                $main_path = implode("/", $to_merge_path_element);
+            } else {
+                $main_path = $route_name;
+            }
+        }
+        return [$main_path, $path_arguments];
     }
 }
