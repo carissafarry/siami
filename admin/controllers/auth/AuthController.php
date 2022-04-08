@@ -69,16 +69,11 @@ class AuthController extends Controller
     {
 //        $user = User::findOne(['email' => $loginModel->email]);
         $user_data_server = User::getUserServerData($loginModel->email, $loginModel->password);
-        $user = User::findOne(['nrp_id' => (int) $user_data_server->NIP], 'USER_DETAILS');
+        $user = User::findOne(['net_id' => $user_data_server->netid]);
 
         if (!$user) {
             $loginRule->addError('email', 'User does not exist with this email address');
             return false;
-        } else {
-            $user->nama = $user_data_server->Name;
-            $user->email = $user_data_server->netid;
-            $user->status = $user_data_server->Status;
-            $user->group = $user_data_server->Group;
         }
 
         //  User data from PENS Server does not require password verify yet

@@ -12,7 +12,8 @@ class User extends DbModel
     const ROLE_AUDITOR = 2;
     const ROLE_INACTIVE = 3;
 
-    public int $nrp_id;
+    public int $id;
+    public string $net_id;
     public int $role_id = self::ROLE_AUDITEE;
     public int $area_id = 1;
     public string $foto = '';
@@ -20,8 +21,8 @@ class User extends DbModel
     public string $jabatan = '';
     public string $periode = '';
     public int $user_type = 1;
+    public string $nip = '';
     public string $nama = '';
-    public string $email = '';
     public string $status = '';
     public string $group = '';
 //    public string $password = '';
@@ -48,13 +49,12 @@ class User extends DbModel
 
     public static function tableName(): string
     {
-//        return 'USERS';
         return 'USER_DETAILS';
     }
 
     public static function primaryKey(): string
     {
-        return 'nrp_id';
+        return 'net_id';
     }
 
     public function save(): bool
@@ -66,7 +66,8 @@ class User extends DbModel
     public function attributes(): array
     {
         return [
-            'nrp_id',
+            'id',
+            'net_id',
             'role_id',
             'area_id',
             'foto',
@@ -74,8 +75,8 @@ class User extends DbModel
             'jabatan',
             'periode',
             'user_type',
+            'nip',
             'nama',
-            'email',
             'status',
             'group',
 //            'password',

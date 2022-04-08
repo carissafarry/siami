@@ -84,12 +84,22 @@ abstract class DbModel extends Model
         if ($oci_obj) {
             $arr_oci_obj = (array)$oci_obj;
             $called_class = static::class;
-            $userObj = $return_class_type ? new $return_class_type() : new $called_class();
+            $newObj = $return_class_type ? new $return_class_type() : new $called_class();
             foreach ($arr_oci_obj as $key => $val) {
                 $varName = strtolower($key);
-                $userObj->{$varName} = $val;
+                $newObj->{$varName} = $val;
             }
-            return $userObj;
+
+            //  If the object looked for is user, assign user data from server to each user model
+            if (get_class($newObj) === User::class) {
+                $user_server_data = User::getUserServerData($newObj->net_id);
+                $newObj->nip = $user_server_data->NIP;
+                $newObj->nama = $user_server_data->Name;
+                $newObj->status = $user_server_data->Status;
+                $newObj->group = $user_server_data->Group;
+            }
+
+            return $newObj;
         }
         return $oci_obj;
     }
@@ -157,6 +167,6 @@ abstract class DbModel extends Model
                 ON $pivot_on_params 
         " . $where ? " WHERE $conditions" : '';
 
-        return self::findAll($table, $where_value, $return_class, $sql);
+        return self::findAll($table, $where_value, $return_class_type, $sql);
     }
 }

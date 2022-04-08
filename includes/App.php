@@ -50,10 +50,6 @@ class App
         if ($logged_user) {
             $primaryKey = $this->userClass::primaryKey();
             $this->user = $this->userClass::findOne([$primaryKey => $logged_user[$primaryKey]]);
-            $this->user->nama = $logged_user['nama'];
-            $this->user->email = $logged_user['email'];
-            $this->user->status = $logged_user['status'];
-            $this->user->group = $logged_user['group'];
         } else {
             $this->user = null;
         }
@@ -103,8 +99,8 @@ class App
         //  Create user session using data from PENS server
         $this->session->set('user', [
             $primaryKey => $user->{$primaryKey},
+            "nip" => $this->user->nip,
             "nama" => $this->user->nama,
-            "email" => $this->user->email,
             "status" => $this->user->status,
             "group" => $this->user->group,
         ]);
@@ -142,6 +138,10 @@ class App
 
     public static function getRoute()
     {
+        //  Remove trailing slash from path request
+        if(substr($_SERVER['REQUEST_URI'], -1) === '/') {
+            return substr($_SERVER['REQUEST_URI'], 0, -1);
+        }
         return $_SERVER['REQUEST_URI'];
     }
 }

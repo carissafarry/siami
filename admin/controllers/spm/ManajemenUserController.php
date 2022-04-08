@@ -22,7 +22,8 @@ class ManajemenUserController extends Controller
 
     public function index(Request $request, Response $response)
     {
-        $res = User::findAll('users',null);
+        $res = User::findAll('user_details');
+
         App::setLayout('layout');
         return App::view('spm/manajemen_user/index', [
             'users' => $res
@@ -31,7 +32,7 @@ class ManajemenUserController extends Controller
 
     public function detail(Request $request, Response $response, $param)
     {
-        $res = User::findAll('users',null);
+        $res = User::findAll('users');
         App::setLayout('layout');
         return App::view('spm/manajemen_user/detail', [
             'users' => $res
@@ -40,14 +41,10 @@ class ManajemenUserController extends Controller
 
     public function add(Request $request, Response $response, $param)
     {
-        $res = User::findAll('users',null);
+        $res = User::findAll('users');
         App::setLayout('layout');
         return App::view('spm/manajemen_user/add', [
             'users' => $res
         ]);
-//        echo '<pre>';
-//        var_dump($param['id']);
-//        echo '</pre>';
-//        exit;
     }
 }
