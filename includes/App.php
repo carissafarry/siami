@@ -46,10 +46,14 @@ class App
      */
     public function fetchUser()
     {
-        $primaryValue = $this->session->get('user');
-        if (isset($primaryValue[0])) {
+        $logged_user = $this->session->get('user');
+        if ($logged_user) {
             $primaryKey = $this->userClass::primaryKey();
-            $this->user = $this->userClass::findOne([$primaryKey => $primaryValue[0]]);
+            $this->user = $this->userClass::findOne([$primaryKey => $logged_user[$primaryKey]]);
+            $this->user->nama = $logged_user['nama'];
+            $this->user->email = $logged_user['email'];
+            $this->user->status = $logged_user['status'];
+            $this->user->group = $logged_user['group'];
         } else {
             $this->user = null;
         }
@@ -95,8 +99,15 @@ class App
     {
         $this->user = $user;
         $primaryKey = $user->primaryKey();
-        $primaryValue = $user->{$primaryKey};
-        $this->session->set('user', $primaryValue);     // create user session using user id from PK
+
+        //  Create user session using data from PENS server
+        $this->session->set('user', [
+            $primaryKey => $user->{$primaryKey},
+            "nama" => $this->user->nama,
+            "email" => $this->user->email,
+            "status" => $this->user->status,
+            "group" => $this->user->group,
+        ]);
         return true;
     }
 

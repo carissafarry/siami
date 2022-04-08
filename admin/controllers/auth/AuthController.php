@@ -67,16 +67,25 @@ class AuthController extends Controller
      */
     public function verify(Model $loginModel, Rule $loginRule): bool
     {
-        $user = User::findOne(['email' => $loginModel->email]);
+//        $user = User::findOne(['email' => $loginModel->email]);
+        $user_data_server = User::getUserServerData($loginModel->email, $loginModel->password);
+        $user = User::findOne(['nrp_id' => (int) $user_data_server->NIP], 'USER_DETAILS');
 
         if (!$user) {
             $loginRule->addError('email', 'User does not exist with this email address');
             return false;
+        } else {
+            $user->nama = $user_data_server->Name;
+            $user->email = $user_data_server->netid;
+            $user->status = $user_data_server->Status;
+            $user->group = $user_data_server->Group;
         }
-        if (!password_verify($loginModel->password, $user->password)) {
-            $loginRule->addError('password', 'Password is incorrect');
-            return false;
-        }
+
+        //  User data from PENS Server does not require password verify yet
+//        if (!password_verify($loginModel->password, $user->password)) {
+//            $loginRule->addError('password', 'Password is incorrect');
+//            return false;
+//        }
 
         return App::$app->login($user);
     }
@@ -139,7 +148,7 @@ class AuthController extends Controller
 
     public function profile()
     {
-        App::setLayout('layout_example');
+        App::setLayout('layout');
         return App::view('auth/profile');
     }
 

@@ -298,11 +298,6 @@ class Database
             }
         }
         oci_execute($parse);
-//        if (oci_num_rows($parse)>0)
-//            echo ">=1 rows effected" . PHP_EOL;
-//        else
-//            echo "0 row effected" . PHP_EOL;
-
         return $parse;
     }
 }
