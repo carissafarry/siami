@@ -96,18 +96,20 @@ class AuthController extends Controller
 
             //  Using custom request data
             $request_data = [
-//                    'role_id' => 1,
-//                    'area_id' => 1,
+                    'nrp_id' => 2,
+                    'role_id' => 1,
+                    'area_id' => 1,
 //                    'email' => $this->randomString() . '@gmail.com',
                 'email' => 'carissafarry3@gmail.com',
                 'password' => 'carissa31',
-                'nip' => $this->randomInteger(10),
-                'nama' => 'Carissa Farry',
+//                'nip' => $this->randomInteger(10),
+//                'nama' => 'Carissa Farry',
                 'foto' => 'rissa.jpg',
                 'telp' => '085784166229',
                 'jabatan' => 'Direktur',
                 'periode' => '2022/2023',
-                'confirmPassword' => 'carissa31a'
+                'user_type' => 1,
+                'confirmPassword' => 'carissa31'
             ];
             $request = $request->getBody($request_data);
 
@@ -115,7 +117,7 @@ class AuthController extends Controller
 
             if ($userRule->validate() && $userModel->save()) {
                 App::$app->session->setFlash('success', 'Thanks for registering!');
-                App::$app->response->redirect('/');
+                App::$app->response->redirect('/login');
             }
 
             return App::view('auth/register', [

@@ -47,7 +47,7 @@ class App
     public function fetchUser()
     {
         $primaryValue = $this->session->get('user');
-        if ($primaryValue) {
+        if (isset($primaryValue[0])) {
             $primaryKey = $this->userClass::primaryKey();
             $this->user = $this->userClass::findOne([$primaryKey => $primaryValue[0]]);
         } else {

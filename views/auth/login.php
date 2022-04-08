@@ -52,7 +52,7 @@ require_once APP_ROOT . '/views/layouts/header.php';
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link me-2" href="../pages/sign-up.html">
+                                <a class="nav-link me-2" href="/register">
                                     <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
                                     Sign Up
                                 </a>
@@ -115,7 +115,7 @@ require_once APP_ROOT . '/views/layouts/header.php';
                         <div class="card-footer text-center pt-0 px-lg-2 px-1">
                             <p class="mb-4 text-sm mx-auto">
                                 Don't have an account?
-                                <a href="javascript:;" class="text-info text-gradient font-weight-bold">Sign up</a>
+                                <a href="/register" class="text-info text-gradient font-weight-bold">Sign up</a>
                             </p>
                         </div>
                     </div>

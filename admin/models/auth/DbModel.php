@@ -67,7 +67,7 @@ abstract class DbModel extends Model
      * Find data from records that fulfill specified conditions
      *
      */
-    public static function findOne($where=null, $table=null, $return_class=null, $fetched_data=null)
+    public static function findOne($where=null, $table=null, $return_class_type=null, $fetched_data=null)
     {
         $oci_obj = $fetched_data;
 
@@ -84,8 +84,7 @@ abstract class DbModel extends Model
         if ($oci_obj) {
             $arr_oci_obj = (array)$oci_obj;
             $called_class = static::class;
-            $userObj = $return_class ? new $return_class() : new $called_class();
-            //  array_walk($arr_oci_obj, function(&$val, $key) use ($userObj) {
+            $userObj = $return_class_type ? new $return_class_type() : new $called_class();
             foreach ($arr_oci_obj as $key => $val) {
                 $varName = strtolower($key);
                 $userObj->{$varName} = $val;
@@ -95,7 +94,7 @@ abstract class DbModel extends Model
         return $oci_obj;
     }
 
-    public static function findAll($table=null, $where=null, $return_class=null, $sql=null)
+    public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null)
     {
         $tableName = $table ?: self::getTableName();
 
@@ -112,7 +111,7 @@ abstract class DbModel extends Model
 
         if ($oci_obj) {
             foreach ($res as $row) {
-                $data[] = self::findOne(null, $table, $return_class, $row);
+                $data[] = self::findOne(null, $table, $return_class_type, $row);
             }
         }
         return $data;
@@ -123,11 +122,11 @@ abstract class DbModel extends Model
      * @param $table String From which table the query will be executed.
      * @param $on_params_with_pivot array Define table and column that will have relation both from first table and pivot table.
      * @param $on_params_with_target array Define table and column that will have relation both from pivot table and target table.
-     * @param $return_class object Define what type of object/class that will be returned.
+     * @param $return_class_type object Define what type of object/class that will be returned.
      * @param $where array Define conditions that will be used in Where clause.
      * @return array The result of executed query from findAll() function.
      */
-    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class, $where=null): array
+    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class_type, $where=null): array
     {
         $tableName = $table;
         $table_on_params = implode(" ON ", array_map(function($val, $key) {
