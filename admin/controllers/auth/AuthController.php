@@ -55,7 +55,7 @@ class AuthController extends Controller
             return;
         }
 
-         App::setLayout(null);
+        App::setLayout(null);
         return App::view('auth/login', [
             'rule' => $loginRule,
         ]);
@@ -96,26 +96,26 @@ class AuthController extends Controller
 
         if ($request->isPost()) {
             //  Using default request data from GET / POST method
-//              $request = $request->getBody();
+              $request = $request->getBody();
 
             //  Using custom request data
-            $request_data = [
-                    'nrp_id' => 2,
-                    'role_id' => 1,
-                    'area_id' => 1,
-//                    'email' => $this->randomString() . '@gmail.com',
-                'email' => 'carissafarry3@gmail.com',
-                'password' => 'carissa31',
-//                'nip' => $this->randomInteger(10),
-//                'nama' => 'Carissa Farry',
-                'foto' => 'rissa.jpg',
-                'telp' => '085784166229',
-                'jabatan' => 'Direktur',
-                'periode' => '2022/2023',
-                'user_type' => 1,
-                'confirmPassword' => 'carissa31'
-            ];
-            $request = $request->getBody($request_data);
+//            $request_data = [
+//                    'nrp_id' => 2,
+//                    'role_id' => 1,
+//                    'area_id' => 1,
+////                    'email' => $this->randomString() . '@gmail.com',
+//                'email' => 'carissafarry3@gmail.com',
+//                'password' => 'carissa31',
+////                'nip' => $this->randomInteger(10),
+////                'nama' => 'Carissa Farry',
+//                'foto' => 'rissa.jpg',
+//                'telp' => '085784166229',
+//                'jabatan' => 'Direktur',
+//                'periode' => '2022/2023',
+//                'user_type' => 1,
+//                'confirmPassword' => 'carissa31'
+//            ];
+//            $request = $request->getBody($request_data);
 
             $userModel->loadData($request);
 

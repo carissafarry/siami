@@ -3,7 +3,6 @@
 namespace app\admin\models\auth;
 
 use app\admin\models\Area;
-use app\includes\Model;
 
 class User extends DbModel
 {
@@ -25,8 +24,7 @@ class User extends DbModel
     public string $nama = '';
     public string $status = '';
     public string $group = '';
-//    public string $password = '';
-//    public string $confirmPassword = '';
+    public string $password = '';
 
     public Role $role;
     public Area $area;
@@ -60,7 +58,8 @@ class User extends DbModel
     public function save(): bool
     {
         $this->password = password_hash($this->password, PASSWORD_DEFAULT);
-        return parent::save();
+//        return parent::save();
+        return $this->create();
     }
 
     public function attributes(): array
@@ -80,6 +79,21 @@ class User extends DbModel
             'status',
             'group',
 //            'password',
+        ];
+    }
+
+    public static function dbAttributes(): array
+    {
+        return [
+            'id',
+            'net_id',
+            'role_id',
+            'area_id',
+            'foto',
+            'telp',
+            'jabatan',
+            'periode',
+            'user_type',
         ];
     }
 

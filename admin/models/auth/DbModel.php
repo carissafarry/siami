@@ -3,8 +3,8 @@
 namespace app\admin\models\auth;
 
 use app\includes\App;
+use app\includes\exception\NotFoundException;
 use app\includes\Model;
-use phpDocumentor\Reflection\Types\This;
 
 abstract class DbModel extends Model
 {
@@ -42,30 +42,47 @@ abstract class DbModel extends Model
     abstract public function getDisplay(string $attribute): string;
 
     /**
-     * Save request data to defined database table as attributes defined in child model
+     * Create new record from request data using defined attributes in child model
+     * @param null $where
      * @return bool
      */
-    public function save(): bool
+    public function create($where=null): bool
     {
-        $tableName = $this::getTableName();
-        $attributes = $this->attributes();
-        $params = array_map(fn($attr) => ":$attr", $attributes);
-
-        $statement = "INSERT INTO $tableName (".implode(',', $attributes).")
-            VALUES(".implode(',', $params).")";
-
-        $data = array_combine(
-            $params,
-            array_map(fn($attr) => $this->{$attr}, $attributes)
-        );
-
-        App::$app->db->query_insert($statement, $data);
-        return True;
+        $sql = "INSERT INTO";
+        return $this->query($sql, null, $where);
     }
 
     /**
-     * Find data from records that fulfill specified conditions
-     *
+     * Update existing record from request data using defined attributes in child model
+     * @return bool
+     */
+    public function update(): bool
+    {
+        $primary_key = static::primaryKey();
+        $where = [$primary_key => $this->{$primary_key}];
+        $clause = 'UPDATE';
+        $target_clause = 'SET';
+        return $this->query($clause, $target_clause, $where);
+    }
+
+    /**
+     * Delete record from request data using defined attributes in child model
+     * @param null $where
+     * @return bool
+     */
+    public function delete($where=null): bool
+    {
+        $sql = "DELETE FROM";
+        return $this->query($sql, null, $where);
+    }
+
+    /**
+     * Find single data from records that fulfill specified conditions
+     * @param null $where array Define conditions that will be used in Where clause.
+     * @param null $table String From which table the query will be executed.
+     * @param null $return_class_type object Define what type of object/class that will be returned.
+     * @param null $fetched_data If data has been fetched, returns as specific class object.
+     * @return false|object
      */
     public static function findOne($where=null, $table=null, $return_class_type=null, $fetched_data=null)
     {
@@ -98,12 +115,19 @@ abstract class DbModel extends Model
                 $newObj->status = $user_server_data->Status;
                 $newObj->group = $user_server_data->Group;
             }
-
             return $newObj;
         }
         return $oci_obj;
     }
 
+    /**
+     * Find all data from records that fulfill specified conditions
+     * @param $table String From which table the query will be executed.
+     * @param $where array Define conditions that will be used in Where clause.
+     * @param $return_class_type object Define what type of object/class that will be returned.
+     * @param $sql string Give SQL query defined in string.
+     *
+     */
     public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null)
     {
         $tableName = $table ?: self::getTableName();
@@ -168,5 +192,57 @@ abstract class DbModel extends Model
         " . $where ? " WHERE $conditions" : '';
 
         return self::findAll($table, $where_value, $return_class_type, $sql);
+    }
+
+    /**
+     * Find single data or returns fail if data does not exist
+     * @return DbModel|object
+     * @throws NotFoundException
+     */
+    public static function findOrFail($where=null, $table=null, $return_class_type=null, $fetched_data=null)
+    {
+        $result = self::findOne($where, $table, $return_class_type, $fetched_data);
+        if (!$result) {
+            throw new NotFoundException();
+        }
+        return $result;
+    }
+
+    /**
+     * Query to database using defined params and values from called model attributes
+     * @param $clause
+     * @param string|null $target_clause
+     * @param null $where
+     * @return bool
+     */
+    protected function query($clause, string $target_clause=null, $where=null): bool
+    {
+        $called_function = debug_backtrace()[1]['function'];
+        $tableName = self::getTableName();
+        $attributes = (method_exists(static::class, "dbAttributes")) ? static::dbAttributes() : $this->attributes();
+
+        switch ($called_function) {
+            case "create":
+                $params = array_map(fn($attr) => ":$attr", $attributes);
+                $statement = "$clause $tableName (" . implode(', ', $attributes) . ") VALUES(" . implode(', ', $params) . ");";
+                $data = array_combine(
+                    array_map(fn($attr) => ":$attr", $attributes),
+                    array_map(fn($attr) => $this->{$attr}, $attributes)
+                );
+                App::$app->db->query($statement, $data);
+                break;
+            case "update":
+                $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
+                $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
+                $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions" : '');
+                App::$app->db->query($statement);
+                App::$app->db->commit();
+                break;
+            case "delete":
+                $statement = "$clause $tableName";
+                App::$app->db->query($statement);
+                break;
+        }
+        return True;
     }
 }

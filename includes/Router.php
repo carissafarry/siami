@@ -56,7 +56,22 @@ class Router
      */
     public function post($path, $callback)
     {
-        $this->routes['post'][$path] = $callback;
+        $arguments = [];
+
+        //  Check if route has defined arguments
+        if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
+            $main_path = substr(strtok($path, '{'), 0, strrpos(strtok($path, '{'), '/'));
+            $this->routes['post'][$main_path] = $callback;
+
+            //  Define arguments as array elements
+            preg_match_all('/{(.*?)}/', $path, $matches);
+            foreach ($matches[1] as $argument) {
+                $arguments[$argument] = null;
+            }
+            $this->routes['post'][$main_path][] = $arguments;
+        } else {
+            $this->routes['post'][$path] = $callback;
+        }
     }
 
     /**

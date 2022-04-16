@@ -26,6 +26,67 @@ class Database
         $this->connection = $this->konekDb($username, $password, $connection_string, $characterSet, $sessionMode);
     }
 
+    /**
+     * fungsi untuk mendapat koneksi ke db
+     * @param  string $db_user username untuk login db
+     * @param  string $db_pass password untuk login db
+     * @return oci_resource|false|resource
+     */
+    private function konekDb($db_user, $db_pass, $connection_string='', $characterSet=null, $sessionMode=null) {
+        $con = oci_connect($db_user,$db_pass, $connection_string, $characterSet, $sessionMode);
+
+        if (!$con) {
+            echo '<b>Connection failed!</b><br>' . PHP_EOL;
+//               responseError('ERR-DB');
+        }
+        return $con;
+    }
+
+    /**
+     * Query to database using defined params and values in string statement
+     *
+     * @return oci_resource|resource|bool
+     */
+    public function query($sql, $data=[])
+    {
+        $parse = oci_parse($this->connection, $sql);
+        if ($data) {
+            foreach ($data as $key => $val) {
+                oci_bind_by_name($parse, $key, $data[$key]);
+            }
+        }
+        oci_execute($parse);
+        return $parse;
+    }
+
+    public function commit()
+    {
+        return $this->query('commit');
+    }
+
+    public function rollback(): bool
+    {
+        return oci_rollback($this->connection);
+    }
+
+    /**
+     * Close database connection
+     * @return bool
+     */
+    public function close(): bool
+    {
+        $closed = false;
+        if ($this->connection) {
+            //  set_error_handler(static::getErrorHandler());
+            $closed = oci_close($this->connection);
+            restore_error_handler();
+        }
+        if ($closed) {
+            $this->connection = null;
+        }
+        return $closed;
+    }
+
     public function applyMigrations()
     {
         $this->createMigrationsTable();
@@ -66,7 +127,7 @@ class Database
 
     public function createMigrationsTable()
     {
-//        $this->query_insert('
+//        $this->query('
 //            CREATE TABLE "MIGRATIONS" (
 //                ID INT PRIMARY KEY NOT NULL ,
 //                MIGRATION VARCHAR(255),
@@ -75,7 +136,7 @@ class Database
 //            )
 //        ');
 
-        $this->query_insert("
+        $this->query("
             DECLARE
             v_sql LONG;
             BEGIN
@@ -98,11 +159,11 @@ class Database
             END;
         ");
 
-//        $this->query_insert('
+//        $this->query('
 //            CREATE SEQUENCE "MIGRATION_SEQ" MINVALUE 1 INCREMENT BY 1 START WITH 1 NOCYCLE;
 //        ');
 
-        $this->query_insert("
+        $this->query("
             BEGIN
             EXECUTE IMMEDIATE 'CREATE SEQUENCE MIGRATION_SEQ MINVALUE 1 INCREMENT BY 1 START WITH 1 NOCYCLE';
             EXCEPTION
@@ -115,7 +176,7 @@ class Database
             END;
         ");
 
-//        $this->query_insert('
+//        $this->query('
 //            CREATE trigger "BI_MIGRATION"
 //            before insert on "MIGRATIONS"
 //            for each row
@@ -126,7 +187,7 @@ class Database
 //            end;
 //        ');
 
-        $this->query_insert("
+        $this->query("
             DECLARE
             v_sql LONG;
             BEGIN
@@ -163,141 +224,18 @@ class Database
         return $res['MIGRATION'];
     }
 
-    public function saveMigrations(array $migrations)
+    public function saveMigrations(array $migrations): void
     {
         //  $str = implode(",", array_map(fn($m) => "('$m')", $migrations));
 
         foreach ($migrations as $migration => $val) {
-            $msg = $this->query_insert("INSERT INTO MIGRATIONS (MIGRATION) VALUES ('$val')");
+            $msg = $this->query("INSERT INTO MIGRATIONS (MIGRATION) VALUES ('$val')");
             echo $msg . " " . $val . PHP_EOL;
         }
     }
 
-    protected function log($message)
+    protected function log($message): void
     {
         echo '['.date('Y-m-d H:i:s').'] - ' . $message . PHP_EOL;
-    }
-
-    public function close()     // belum kepake
-    {
-        $isSuccess = false;
-        if ($this->connection) {
-            //  set_error_handler(static::getErrorHandler());
-            $isSuccess = oci_close($this->connection);
-            restore_error_handler();
-        }
-
-        if ($isSuccess) {
-            $this->connection = null;
-        }
-
-        return $isSuccess;
-    }
-
-    /**
-     * fungsi untuk mendapat koneksi ke db
-     * @param  string $db_user username untuk login db
-     * @param  string $db_pass password untuk login db
-     * @return oci_resource|false|resource
-     */
-    function konekDb($db_user, $db_pass, $connection_string='') {
-        $con = oci_connect($db_user,$db_pass, $connection_string);
-
-        if (!$con) {
-            echo '<b>Connection failed!</b><br>' . PHP_EOL;
-//               responseError('ERR-DB');
-        }
-//        else {
-//            echo '<b>Oracle DB and PHP Connected!</b><br>' . PHP_EOL;
-//        }
-
-        return $con;
-    }
-
-    function query_select($sql)
-    {
-        $stmt = oci_parse($this->connection, $sql);
-        oci_execute($stmt, OCI_DEFAULT);
-
-        while (oci_fetch($stmt)) {
-            echo "    " . oci_result($stmt, "TEST") . "<br>\n";
-        }
-        echo "----done<br>\n";
-    }
-
-    /**
-     * eksekusi query db
-     * untuk memudahkan penulisan saja
-     * karena oracle membutuhkan
-     * beberapa langkah
-     *
-     * @param  oci_resource $con variable koneksi oci
-     * @param  string $sql query yang di jalankan
-     * @return oci_resource|false|resource
-     */
-    function query_view($sql, $data)
-    {
-        $parse = oci_parse($this->connection, $sql);
-        foreach ($data as $key => $val) {
-            oci_bind_by_name($parse, $key, $data[$key]);
-        }
-        oci_execute($parse);
-        return $parse;
-    }
-
-    function query_insert($sql, $data=[])
-    {
-        $parse = oci_parse($this->connection, $sql);
-        if (!$parse) {
-            $oerr = oci_error($this->connection);
-            echo "Fetch Code 1:". $oerr["message"];
-            exit;
-        }
-        foreach ($data as $key => $val) {
-            oci_bind_by_name($parse, $key, $data[$key]);
-        }
-        oci_execute($parse);
-        if (oci_num_rows($parse)>0)
-            return "Success Insert";
-        else
-            return "Failed Insert";
-    }
-
-    function query_update($sql, $data)
-    {
-        $parse = oci_parse($this->connection, $sql);
-        foreach ($data as $key => $val) {
-            oci_bind_by_name($parse, $key, $data[$key]);
-        }
-        oci_execute($parse);
-        if (oci_num_rows($parse)>0)
-            return "Success Update";
-        else
-            return "Failed Update";
-    }
-
-    function query_delete($sql, $data)
-    {
-        $parse = oci_parse($this->connection, $sql);
-        foreach ($data as $key => $val) {
-            oci_bind_by_name($parse, $key, $data[$key]);
-        }
-        oci_execute($parse);
-        if (oci_num_rows($parse)>0)
-            return "Success Delete";
-        else
-            return "Failed Delete";
-    }
-
-    public function query($sql, $data=[])
-    {
-        $parse = oci_parse($this->connection, $sql);
-        if ($data) {
-            foreach ($data as $key => $val) {
-                oci_bind_by_name($parse, $key, $data[$key]);
-            }
-        }
-        oci_execute($parse);
-        return $parse;
     }
 }
