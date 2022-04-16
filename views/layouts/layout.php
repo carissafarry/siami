@@ -11,7 +11,21 @@ use app\includes\App;
     <?php require_once APP_ROOT . '/views/layouts/sidebar.php'; ?>
     <main class="main-content mt-1 border-radius-lg">
         <?php require_once APP_ROOT . '/views/layouts/navbar.php'; ?>
-        <div class="container-fluid py-4" style="min-height: 80vh;">
+        <div class="container-fluid py-1" style="min-height: 80vh;">
+            <!-- Alert -->
+            <?php if (App::$app->session->getFlash('success')) :  ?>
+                <div class="alert alert-success text-white alert-dismissible fade show" role="alert">
+                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                    <span class="alert-text"><strong>Success!</strong> <?= App::$app->session->getFlash('success') ?></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    let data = <?= json_encode(App::$app->session->getFlash('success'), JSON_THROW_ON_ERROR) ?>;
+                    setAlert(data, 'success');
+                </script>
+            <?php endif; ?>
             {{content}}
             <?php require  APP_ROOT . '/views/layouts/footer.php'; ?>
         </div>

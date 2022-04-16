@@ -1,0 +1,54 @@
+.center-table {
+    padding: 0.75rem 1.5rem !important;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: 4rem;
+    display: inline-block;
+}
+
+table.dataTable td.dt-control:before {
+    font-family: "Open Sans", Open Sans, sans-serif;
+}
+
+table.dataTable > thead .sorting:before, table.dataTable > thead .sorting:after, table.dataTable > thead .sorting_asc:before, table.dataTable > thead .sorting_asc:after, table.dataTable > thead .sorting_desc:before, table.dataTable > thead .sorting_desc:after, table.dataTable > thead .sorting_asc_disabled:before, table.dataTable > thead .sorting_asc_disabled:after, table.dataTable > thead .sorting_desc_disabled:before, table.dataTable > thead .sorting_desc_disabled:after {
+    position: absolute;
+    bottom: 1.3em;
+    display: block;
+    opacity: 1
+}
+
+.inline-icon {
+    display: inline-block;
+    padding-right: 0.5rem;
+    font-size: small;
+    cursor: pointer;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0.85em;
+    font-size: small!important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+    font-size: small!important;
+}
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin: 2px 0;
+    white-space: nowrap;
+    justify-content: flex-end;
+    font-size: small!important;
+}
+
+@media screen and (max-width: 768px) {
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination,
+    div.dataTables_wrapper div.row div {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
