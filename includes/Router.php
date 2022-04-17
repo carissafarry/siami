@@ -150,7 +150,7 @@ class Router
         );
     }
 
-    public function searchRoutes($method, $path)
+    protected function searchRoutes($method, $path): array
     {
         $route_names = array_keys($this->routes[$method]);
         $path_elements = explode("/", $path);

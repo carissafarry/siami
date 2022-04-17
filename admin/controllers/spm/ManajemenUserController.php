@@ -25,6 +25,7 @@ class ManajemenUserController extends Controller
     public function index(Request $request, Response $response)
     {
         $res = User::findAll();
+        $user = $this->repo(User::findOrFail(['id' => 3,]));
 
         App::setLayout('layout');
         return App::view('spm/manajemen_user/index', [
@@ -47,6 +48,9 @@ class ManajemenUserController extends Controller
         return App::view('spm/manajemen_user/add');
     }
 
+    /**
+     * @throws \app\includes\exception\NotFoundException
+     */
     public function update(Request $request, Response $response, $param)
     {
         $user = User::findOrFail($param);

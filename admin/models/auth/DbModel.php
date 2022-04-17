@@ -43,13 +43,13 @@ abstract class DbModel extends Model
 
     /**
      * Create new record from request data using defined attributes in child model
-     * @param null $where
+     * @param $attributes
      * @return bool
      */
-    public function create($where=null): bool
+    public function create($attributes): bool
     {
         $sql = "INSERT INTO";
-        return $this->query($sql, null, $where);
+        return $this->query($sql, null, null, $attributes);
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class DbModel extends Model
         $where = [$primary_key => $this->{$primary_key}];
         $clause = 'UPDATE';
         $target_clause = 'SET';
-        return $this->query($clause, $target_clause, $where);
+        return $this->query($clause, $target_clause, $where, null);
     }
 
     /**
@@ -73,7 +73,7 @@ abstract class DbModel extends Model
     public function delete($where=null): bool
     {
         $sql = "DELETE FROM";
-        return $this->query($sql, null, $where);
+        return $this->query($sql, null, $where, null);
     }
 
     /**
@@ -82,7 +82,7 @@ abstract class DbModel extends Model
      * @param null $table String From which table the query will be executed.
      * @param null $return_class_type object Define what type of object/class that will be returned.
      * @param null $fetched_data If data has been fetched, returns as specific class object.
-     * @return false|object
+     * @return object|Model|false
      */
     public static function findOne($where=null, $table=null, $return_class_type=null, $fetched_data=null)
     {
@@ -128,7 +128,7 @@ abstract class DbModel extends Model
      * @param $sql string Give SQL query defined in string.
      *
      */
-    public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null)
+    public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null): array
     {
         $tableName = $table ?: self::getTableName();
 
@@ -213,9 +213,10 @@ abstract class DbModel extends Model
      * @param $clause
      * @param string|null $target_clause
      * @param null $where
+     * @param null $param
      * @return bool
      */
-    protected function query($clause, string $target_clause=null, $where=null): bool
+    public function query($clause, string $target_clause=null, $where=null, $param=null): bool
     {
         $called_function = debug_backtrace()[1]['function'];
         $tableName = self::getTableName();
@@ -235,8 +236,8 @@ abstract class DbModel extends Model
                 $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
                 $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
                 $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions" : '');
-                App::$app->db->query($statement);
-                App::$app->db->commit();
+                $query = App::$app->db->query($statement);
+                $commit = App::$app->db->commit();
                 break;
             case "delete":
                 $statement = "$clause $tableName";

@@ -6,16 +6,24 @@ namespace app\includes;
     * Loads the Models and Views
 */
 
-use app\includes\Middleware;
+use app\admin\repository\BaseRepository;
+use app\includes\interfaces\Repository;
 
 class Controller
 {
     public string $action = '';
+    public Repository $repo;
 
     /**
      * @var Middleware[]
      */
     protected array $middlewares = [];
+
+    public function repo(Model $model)
+    {
+        $this->repo = new BaseRepository($model);
+        return $this->repo;
+    }
 
     /**
      * @return Middleware[]
@@ -23,16 +31,6 @@ class Controller
     public function getMiddlewares(): array
     {
         return $this->middlewares;
-    }
-
-    // Load Model
-    public function model($model)
-    {
-        // Requires Model FIle
-        require_once APP_ROOT . '/admin/models/' . $model . '.php';
-
-        // Instantiate Model
-        return new $model();
     }
 
     public function registerMiddleware(Middleware $middleware)
