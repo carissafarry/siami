@@ -123,10 +123,6 @@ class AuthController extends Controller
                 App::$app->session->setFlash('success', 'Thanks for registering!');
                 App::$app->response->redirect('/login');
             }
-
-            return App::view('auth/register', [
-                'rule' => $userRule,
-            ]);
         }
 
         App::setLayout('layout_example');

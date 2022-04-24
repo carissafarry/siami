@@ -83,7 +83,14 @@ $this->header_title = $this->breadcrumbs;
                                     <ul style="list-style: none; padding-left: 0;">
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/detail/<?= $user->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/update/<?= $user->id ?>"><i class="fas fa-pen"></i></a></li>
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/delete/<?= $user->id ?>"><i class="fas fa-trash"></i></a></li>
+                                        <li class="inline-icon">
+                                            <form method="post" action="<?= App::getRoute() ?>/delete/<?= $user->id ?>" class="inline">
+                                                <input type="hidden" name="delete_<?= $user->id ?>" value="<?= $user->id ?>">
+                                                <button type="submit" class="btn-sm bg-transparent border-0 p-0">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </td>
                             </tr>

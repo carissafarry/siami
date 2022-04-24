@@ -70,7 +70,7 @@ abstract class DbModel extends Model
      * @param null $where
      * @return bool
      */
-    public function delete($where=null): bool
+    public function delete($where): bool
     {
         $sql = "DELETE FROM";
         return $this->query($sql, null, $where, null);
@@ -137,7 +137,7 @@ abstract class DbModel extends Model
             $conditions = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
         }
 
-        $stmt = "SELECT * FROM $tableName " . ($where ? "WHERE $conditions" : '');
+        $stmt = "SELECT * FROM $tableName" . ($where ? " WHERE $conditions" : '');
         $query = App::$app->db->query($sql ?: $stmt, $where);
 
         $oci_obj = oci_fetch_all($query, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
@@ -236,12 +236,14 @@ abstract class DbModel extends Model
                 $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
                 $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
                 $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions" : '');
-                $query = App::$app->db->query($statement);
-                $commit = App::$app->db->commit();
+                App::$app->db->query($statement);
+                App::$app->db->commit();
                 break;
             case "delete":
-                $statement = "$clause $tableName";
+                $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
+                $statement = "$clause $tableName WHERE $conditions";
                 App::$app->db->query($statement);
+                App::$app->db->commit();
                 break;
         }
         return True;

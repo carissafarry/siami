@@ -9,10 +9,18 @@ class UserDataRule extends Rule
 {
     public Model $model;
 
+    public function __construct(Model $model)
+    {
+        parent::__construct($model);
+        $this->model = $model;
+    }
+
     public function rules(): array
     {
         return [
-            'role' => [self::RULE_REQUIRED],
+            'area' => [self::RULE_REQUIRED],
+            'jabatan' => [self::RULE_REQUIRED],
+            'role_id' => [self::RULE_REQUIRED],
             'telp' => [self::RULE_REQUIRED],
             'periode' => [self::RULE_REQUIRED],
         ];

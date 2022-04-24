@@ -17,14 +17,19 @@ use app\includes\App;
                 <div class="alert alert-success text-white alert-dismissible fade show" role="alert">
                     <span class="alert-icon"><i class="ni ni-like-2"></i></span>
                     <span class="alert-text"><strong>Success!</strong> <?= App::$app->session->getFlash('success') ?></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <script>
                     let data = <?= json_encode(App::$app->session->getFlash('success'), JSON_THROW_ON_ERROR) ?>;
                     setAlert(data, 'success');
                 </script>
+            <?php endif; ?>
+            <?php if (App::$app->session->getFlash('failed')) :  ?>
+                <div class="alert alert-danger text-white alert-dismissible fade show" role="alert">
+                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                    <span class="alert-text"><strong>Failed!</strong> <?= App::$app->session->getFlash('failed') ?></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             <?php endif; ?>
             {{content}}
             <?php require  APP_ROOT . '/views/layouts/footer.php'; ?>

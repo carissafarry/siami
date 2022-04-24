@@ -53,12 +53,16 @@ $this->header_title = 'Detail User';
                                 <p><small><?= $user->nip ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Role</small></h6>
-                                <p><small><?= $user->role()->role ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Area</small></h6>
                                 <p><small><?= $user->area->nama ?></small></p>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <h6 class="mb-0"><small>Jabatan</small></h6>
+                                <p><small><?= $user->jabatan ?></small></p>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <h6 class="mb-0"><small>Role</small></h6>
+                                <p><small><?= $user->role()->role ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Telepon</small></h6>

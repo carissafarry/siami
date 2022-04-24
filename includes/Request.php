@@ -49,6 +49,14 @@ class Request
         return $this->method() === 'post';
     }
 
+    public function is($url): bool
+    {
+        if (str_contains($_SERVER['REQUEST_URI'], strtolower($url))) {
+            return True;
+        }
+        return False;
+    }
+
     /**
      * Filter some malicious characters or invalid symbols from inputted data to have secure body data
      * @param array $data

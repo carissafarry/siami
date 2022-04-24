@@ -1,23 +1,7 @@
-Options -Multiviews
-
-RewriteEngine On
-
-# Continue if request is a non existing file and directory (for custom route name purpose)
+RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Continue if there is a file named offline.txt
 RewriteCond %{DOCUMENT_ROOT}/mis100/offline.txt -f
-
-# Continue if request is not offline.php file with offline=on param
 RewriteCond %{REQUEST_URI} !/offline.php?offline=on
 #RewriteCond %{REMOTE_ADDR} !^12\.34\.56\.78$
-
-#RewriteRule ^(.*)$ index.php?url=$1 [L]
-#RewriteRule ^(.*)/?$ /index.php?url=$1 [L]
-
-RewriteRule  ^(.*)  /index.php?offline=on [L]  # PENS confs
-#RewriteRule ^(.*)/?$ /index.php?offline=on?url=$1 [L]
-
-#RewriteRule .*[^/]$ /index.php?url=$0/ [L]
-#RewriteRule (.*)/$ /index.php?url=$1 [L]
+RewriteRule  ^(.*)  /index.php?offline=on [L]

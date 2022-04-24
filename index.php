@@ -27,7 +27,6 @@ $app->router->get('/spm/manajemen-user/add', [new ManajemenUserController(), 'ad
 $app->router->get('/spm/manajemen-user/detail/{id}', [new ManajemenUserController(), 'detail']);
 $app->router->get('/spm/manajemen-user/update/{id}', [new ManajemenUserController(), 'update']);
 $app->router->post('/spm/manajemen-user/update/{id}', [new ManajemenUserController(), 'update']);
-$app->router->get('/spm/manajemen-user/save/{id}', [new ManajemenUserController(), 'save']);
-$app->router->get('/spm/manajemen-user/delete/{id}', [new ManajemenUserController(), 'delete']);
+$app->router->post('/spm/manajemen-user/delete/{id}', [new ManajemenUserController(), 'delete']);
 
 $app->run();

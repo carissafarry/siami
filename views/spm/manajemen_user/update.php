@@ -29,10 +29,6 @@ $this->header_title = 'Edit User';
                         <p><small><?= $user->net_id ?></small></p>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-0"><small>Jabatan</small></h6>
-                        <p><small><?= $user->jabatan ?></small></p>
-                    </div>
-                    <div class="col-md-6">
                         <h6 class="mb-0"><small>Nama</small></h6>
                         <p><small><?= $user->nama ?></small></p>
                     </div>
@@ -40,9 +36,32 @@ $this->header_title = 'Edit User';
                         <h6 class="mb-0"><small>Status</small></h6>
                         <p><small><?= $user->status ?></small></p>
                     </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-0"><small>NIP</small></h6>
+                        <p><small><?= $user->nip ?></small></p>
+                    </div>
                 </div>
+                <?php /** @var $rule \app\admin\rules\spm\UserDataRule */ ?>
                 <form action="" method="post">
                     <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="area" class="h6 text-sm form-control-label">Area</label>
+                                <input name="area" class="form-control <?= $rule->hasError('area') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->area->nama ?>" id="area">
+                                <div class="invalid-feedback">
+                                    <?= $rule->getFirstError('area') ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="jabatan" class="h6 text-sm form-control-label">Jabatan</label>
+                                <input name="jabatan" class="form-control <?= $rule->hasError('jabatan') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->jabatan ?>" id="jabatan">
+                                <div class="invalid-feedback">
+                                    <?= $rule->getFirstError('jabatan') ?>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="role_id" class="h6 text-sm form-control-label">Role</label>
@@ -56,14 +75,20 @@ $this->header_title = 'Edit User';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="example-text-input" class="h6 text-sm form-control-label">Telepon</label>
-                                <input name="telp" class="form-control" type="text" value="<?= $user->telp ?>" id="example-text-input">
+                                <label for="telp" class="h6 text-sm form-control-label">Telepon</label>
+                                <input name="telp" class="form-control <?= $rule->hasError('telp') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->telp ?>" id="telp">
+                                <div class="invalid-feedback">
+                                    <?= $rule->getFirstError('telp') ?>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="example-text-input" class="h6 text-sm form-control-label">Periode</label>
-                                <input name="periode" class="form-control" type="text" value="<?= $user->periode ?>" id="example-text-input">
+                                <label for="periode" class="h6 text-sm form-control-label">Periode</label>
+                                <input name="periode" class="form-control <?= $rule->hasError('periode') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->periode ?>" id="periode">
+                                <div class="invalid-feedback">
+                                    <?= $rule->getFirstError('periode') ?>
+                                </div>
                             </div>
                         </div>
                     </div>

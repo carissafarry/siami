@@ -24,21 +24,11 @@ class ManajemenUserController extends Controller
 
     public function index(Request $request, Response $response)
     {
-        $res = User::findAll();
-        $user = $this->repo(User::findOrFail(['id' => 3,]));
+        $users = User::findAll();
 
         App::setLayout('layout');
         return App::view('spm/manajemen_user/index', [
-            'users' => $res
-        ]);
-    }
-
-    public function detail(Request $request, Response $response, $param)
-    {
-        $res = User::findOrFail($param);
-        App::setLayout('layout');
-        return App::view('spm/manajemen_user/detail', [
-            'user' => $res
+            'users' => $users
         ]);
     }
 
@@ -48,58 +38,54 @@ class ManajemenUserController extends Controller
         return App::view('spm/manajemen_user/add');
     }
 
+    public function detail(Request $request, Response $response, $param)
+    {
+        $user = User::findOrFail($param);
+
+        App::setLayout('layout');
+        return App::view('spm/manajemen_user/detail', [
+            'user' => $user
+        ]);
+    }
+
     /**
      * @throws \app\includes\exception\NotFoundException
      */
     public function update(Request $request, Response $response, $param)
     {
         $user = User::findOrFail($param);
+        $userDataRule = new UserDataRule($user);
         $roles = Role::findAll();
 
         if ($request->isPost()) {
             $request = $request->getBody();
-            $userDataRule = new UserDataRule($user);
             $user->loadData($request);
 
-            if ($user->update()) {
-//                Tampilkan session data berhasil diubah
-//                redirect ke halaman sebelumnya
+            if ($userDataRule->validate() && $user->update()) {
                 App::$app->session->setFlash('success', 'Data berhasil diupdate!');
-//                App::$app->response->redirect('/login');
                 $response->redirect('/spm/manajemen-user');
-                return;
             }
-
-            App::setLayout('layout');
-            return App::view('spm/manajemen_user/update', [
-                'user' => $user
-            ]);
         }
-
 
         App::setLayout('layout');
         return App::view('spm/manajemen_user/update', [
             'user' => $user,
-            'roles' => $roles
+            'roles' => $roles,
+            'rule' => $userDataRule,
         ]);
     }
 
-    public function save(Request $request, Response $response, $param)
+    /**
+     * @throws \app\includes\exception\NotFoundException
+     */
+    public function delete(Request $request, Response $response, $param): void
     {
-//        var_dump($param["id"]);
-        $res = User::findOne($param);
-        App::setLayout('layout');
-        return App::view('spm/manajemen_user/edit', [
-            'user' => $res
-        ]);
-    }
-
-    public function delete(Request $request, Response $response, $param)
-    {
-        $res = User::findOne($param);
-        App::setLayout('layout');
-        return App::view('spm/manajemen_user/detail', [
-            'user' => $res
-        ]);
+        $user = $this->repo(User::findOrFail($param));
+        if ($user->delete($param)) {
+            App::$app->session->setFlash('success', 'Data berhasil dihapus!');
+            $response->back();
+        }
+        App::$app->session->setFlash('failed', 'Data gagal dihapus!');
+        $response->back();
     }
 }
