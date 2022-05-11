@@ -2,9 +2,6 @@
 
 namespace app\includes;
 
-use Psr\Log\InvalidArgumentException;
-use stdClass;
-
 abstract class Model
 {
     /**
@@ -16,7 +13,13 @@ abstract class Model
         foreach ($data as $key => $value) {
             //  Check if each property exists, and assigns to properties of the Child Model
             if (property_exists($this, $key)) {
-                $this->{$key} = $value;
+//                if ($this->$key instanceof DbModel) {
+                if (is_object($this->$key)) {
+                    $key_class = get_class($this->$key);
+                    $this->{$key} = new $key_class();
+                } else {
+                    $this->{$key} = $value;
+                }
             }
         }
     }

@@ -11,15 +11,15 @@ class User extends DbModel
     const ROLE_AUDITOR = 2;
     const ROLE_INACTIVE = 3;
 
-    public int $id;
-    public string $net_id;
+    public int $id=0;
+    public string $net_id = '';
     public int $role_id = self::ROLE_AUDITEE;
     public int $area_id = 1;
-    public string $foto = '';
+    public string $foto = 'a.jpg';
     public string $telp = '';
     public string $jabatan = '';
     public string $periode = '';
-    public int $user_type = 1;
+//    public int $user_type = 1;
     public string $nip = '';
     public string $nama = '';
     public string $status = '';
@@ -55,11 +55,12 @@ class User extends DbModel
         return 'net_id';
     }
 
-    public function save(): bool
+    public function autoIncrements(): array
     {
-        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
-//        return parent::save();
-        return $this->create();
+        return [
+            'id',
+//            'user_type'
+        ];
     }
 
     public function attributes(): array
@@ -73,7 +74,7 @@ class User extends DbModel
             'telp',
             'jabatan',
             'periode',
-            'user_type',
+//            'user_type',
             'nip',
             'nama',
             'status',
@@ -93,8 +94,13 @@ class User extends DbModel
             'telp',
             'jabatan',
             'periode',
-            'user_type',
+//            'user_type',
         ];
+    }
+
+    public function getDisplay(string $attribute): string
+    {
+        return $this->$attribute;
     }
 
     public function labels(): array {
@@ -105,9 +111,11 @@ class User extends DbModel
         ];
     }
 
-    public function getDisplay(string $attribute): string
+    public function save(): bool
     {
-        return $this->$attribute;
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+//        return parent::save();
+        return $this->create();
     }
 
     public function role()

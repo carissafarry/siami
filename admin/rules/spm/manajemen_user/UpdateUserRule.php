@@ -1,11 +1,11 @@
 <?php
 
-namespace app\admin\rules\spm;
+namespace app\admin\rules\spm\manajemen_user;
 
 use app\includes\Model;
 use app\includes\Rule;
 
-class UserDataRule extends Rule
+class UpdateUserRule extends Rule
 {
     public Model $model;
 

@@ -24,16 +24,22 @@ abstract class DbModel extends Model
     }
 
     /**
-     * Define attribute of table
-     *
-     */
-    abstract public function attributes(): array;
-
-    /**
      * Define primary key of record
      *
      */
     abstract public static function primaryKey(): string;
+
+    /**
+     * Define auto incremented attributes of table
+     *
+     */
+    abstract public function autoIncrements(): array;
+
+    /**
+     * Define attribute of table
+     *
+     */
+    abstract public function attributes(): array;
 
     /**
      * Get attribute value that will be displayed to the user
@@ -46,7 +52,7 @@ abstract class DbModel extends Model
      * @param $attributes
      * @return bool
      */
-    public function create($attributes): bool
+    public function create($attributes=null): bool
     {
         $sql = "INSERT INTO";
         return $this->query($sql, null, null, $attributes);
@@ -221,19 +227,26 @@ abstract class DbModel extends Model
         $called_function = debug_backtrace()[1]['function'];
         $tableName = self::getTableName();
         $attributes = (method_exists(static::class, "dbAttributes")) ? static::dbAttributes() : $this->attributes();
+        $fillable_attrs = array_diff($attributes, $this->autoIncrements());
 
         switch ($called_function) {
             case "create":
-                $params = array_map(fn($attr) => ":$attr", $attributes);
-                $statement = "$clause $tableName (" . implode(', ', $attributes) . ") VALUES(" . implode(', ', $params) . ");";
+//                $params = array_map(fn($attr) => ":$attr", $attributes);
+                $params = array_map(fn($attr) => ":$attr", $fillable_attrs);
+//                $statement = "$clause $tableName (" . implode(', ', $attributes) . ") VALUES(" . implode(', ', $params) . ");";
+                $statement = "$clause $tableName (" . implode(', ', $fillable_attrs) . ") VALUES(" . implode(', ', $params) . ")";
                 $data = array_combine(
-                    array_map(fn($attr) => ":$attr", $attributes),
-                    array_map(fn($attr) => $this->{$attr}, $attributes)
+//                    array_map(fn($attr) => ":$attr", $attributes),
+                    array_map(fn($attr) => ":$attr", $fillable_attrs),
+//                    array_map(fn($attr) => $this->{$attr}, $attributes)
+                    array_map(fn($attr) => $this->{$attr}, $fillable_attrs)
                 );
                 App::$app->db->query($statement, $data);
                 break;
             case "update":
-                $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
+                $fillable_attrs = $where ? array_diff($fillable_attrs, array_keys($where)) : $fillable_attrs;
+//                $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
+                $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $fillable_attrs));
                 $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
                 $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions" : '');
                 App::$app->db->query($statement);

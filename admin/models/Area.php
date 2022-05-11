@@ -34,4 +34,10 @@ class Area extends DbModel
         // TODO: Implement getDisplay() method.
         return '';
     }
+
+    public function autoIncrements(): array
+    {
+        // TODO: Implement autoIncrements() method.
+        return [];
+    }
 }
