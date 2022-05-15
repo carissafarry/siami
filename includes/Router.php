@@ -155,14 +155,30 @@ class Router
         $route_names = array_keys($this->routes[$method]);
         $path_elements = explode("/", $path);
         $fitted_routes = [];
+        $match_scores = [];
         foreach ($route_names as $route_name) {
             $route_name_elements = explode("/", $route_name);
             foreach ($path_elements as $path_element) {
-                if (($path_element !== '') && in_array($path_element, $route_name_elements, true) && !in_array($route_name, $fitted_routes, true)) {
+//                if (($path_element !== '') && in_array($path_element, $route_name_elements, true) && !in_array($route_name, $fitted_routes, true)) {
+                if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
                     $fitted_routes[] = $route_name;
+                    if (!isset($match_scores[$route_name])) {
+                        $match_scores[$route_name] = 0;
+                    }
+                    $match_scores[$route_name]++;
                 }
             }
         }
+        array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
+        $sorted_values = array_count_values($match_scores);
+
+        if (count($match_scores) > 1) {
+//        $minimum_values = array_keys(array_diff($match_scores, [array_key_last($sorted_values)]));
+            $fitted_routes = array_keys(array_diff($match_scores, [array_key_last($sorted_values)]));
+        } else {
+            $fitted_routes = array_keys($match_scores);
+        }
+
         //  Looking for fitted routes which has the same route name with the same number of arguments
         $main_path = '';
         $path_arguments = array();
