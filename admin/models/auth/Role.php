@@ -25,10 +25,10 @@ class Role extends DbModel
         // TODO: Implement primaryKey() method.
     }
 
-    public function getDisplay(string $attribute): string
-    {
-        // TODO: Implement getDisplay() method.
-    }
+//    public function getDisplay(string $attribute): string
+//    {
+//        // TODO: Implement getDisplay() method.
+//    }
 
     public function fetchPermissions()
     {
@@ -52,5 +52,10 @@ class Role extends DbModel
             Permission::class,
             ['ROLE.ID' => $this->id]
         );
+    }
+
+    public function autoIncrements(): array
+    {
+        // TODO: Implement autoIncrements() method.
     }
 }

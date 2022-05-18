@@ -19,7 +19,7 @@ class User extends DbModel
     public string $telp = '';
     public string $jabatan = '';
     public string $periode = '';
-//    public int $user_type = 1;
+    public int $user_type = 0;
     public string $nip = '';
     public string $nama = '';
     public string $status = '';
@@ -74,7 +74,7 @@ class User extends DbModel
             'telp',
             'jabatan',
             'periode',
-//            'user_type',
+            'user_type',
             'nip',
             'nama',
             'status',
@@ -94,14 +94,14 @@ class User extends DbModel
             'telp',
             'jabatan',
             'periode',
-//            'user_type',
+            'user_type',
         ];
     }
 
-    public function getDisplay(string $attribute): string
-    {
-        return $this->$attribute;
-    }
+//    public function getDisplay(string $attribute): string
+//    {
+//        return $this->$attribute;
+//    }
 
     public function labels(): array {
         return [

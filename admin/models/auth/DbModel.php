@@ -45,7 +45,10 @@ abstract class DbModel extends Model
      * Get attribute value that will be displayed to the user
      *
      */
-    abstract public function getDisplay(string $attribute): string;
+//    abstract public function getDisplay(string $attribute): string;
+    public function getDisplay(string $attribute) {
+        return $this->$attribute;
+    }
 
     /**
      * Create new record from request data using defined attributes in child model

@@ -11,8 +11,8 @@ class Component
         return new Component();
     }
 
-    public function navItem($title, $icon)
+    public function navItem($title, $route, $icon)
     {
-        return new NavItem($title, $icon);
+        return new NavItem($title, $route, $icon);
     }
 }

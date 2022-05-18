@@ -2,6 +2,7 @@
 require_once __DIR__ . '/admin/init.php';
 
 use app\admin\controllers\auth\AuthController;
+use app\admin\controllers\spm\AmiController;
 use app\admin\controllers\spm\ManajemenUserController;
 use \app\includes\App;
 
@@ -24,9 +25,12 @@ $app->router->get('/profile', [new AuthController(), 'profile']);
 
 $app->router->get('/spm/manajemen-user', [new ManajemenUserController(), 'index']);
 $app->router->get('/spm/manajemen-user/add', [new ManajemenUserController(), 'add']);
+$app->router->post('/spm/manajemen-user/add', [new ManajemenUserController(), 'add']);
 $app->router->get('/spm/manajemen-user/detail/{id}', [new ManajemenUserController(), 'detail']);
 $app->router->get('/spm/manajemen-user/update/{id}', [new ManajemenUserController(), 'update']);
 $app->router->post('/spm/manajemen-user/update/{id}', [new ManajemenUserController(), 'update']);
 $app->router->post('/spm/manajemen-user/delete/{id}', [new ManajemenUserController(), 'delete']);
+
+$app->router->get('/spm/ami', [new AmiController(), 'index']);
 
 $app->run();
