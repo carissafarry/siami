@@ -35,14 +35,17 @@ class Router
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
             $main_path = substr(strtok($path, '{'), 0, strrpos(strtok($path, '{'), '/'));
-            $this->routes['get'][$main_path] = $callback;
+//            $this->routes['get'][$main_path] = $callback;
+            $this->routes['get'][$path] = $callback;
 
             //  Define arguments as array elements
             preg_match_all('/{(.*?)}/', $path, $matches);
+
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-            $this->routes['get'][$main_path][] = $arguments;
+//            $this->routes['get'][$main_path][] = $arguments;
+            $this->routes['get'][$path][] = $arguments;
         } else {
             $this->routes['get'][$path] = $callback;
         }
@@ -61,14 +64,17 @@ class Router
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
             $main_path = substr(strtok($path, '{'), 0, strrpos(strtok($path, '{'), '/'));
-            $this->routes['post'][$main_path] = $callback;
+//            $this->routes['post'][$main_path] = $callback;
+            $this->routes['post'][$path] = $callback;
 
             //  Define arguments as array elements
             preg_match_all('/{(.*?)}/', $path, $matches);
+
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-            $this->routes['post'][$main_path][] = $arguments;
+//            $this->routes['post'][$main_path][] = $arguments;
+            $this->routes['post'][$path][] = $arguments;
         } else {
             $this->routes['post'][$path] = $callback;
         }
@@ -95,6 +101,7 @@ class Router
 
         //  Take callback for the given method and path that has been searched, if it exists
         $callback = $this->routes[$method][$main_path] ?? false;
+
         $arguments = null;
         if (isset($callback[2]) && !empty($path_arguments)) {
             $arguments = array_combine(array_keys($callback[2]), $path_arguments[$main_path]);
@@ -109,7 +116,7 @@ class Router
             //  If route has argument, but there is no argument received
             $callback = false;
         }
-
+        
         if ($callback === false) {
             $this->response->setStatusCode(404);
             throw new NotFoundException();
@@ -154,6 +161,62 @@ class Router
     {
         $route_names = array_keys($this->routes[$method]);
         $path_elements = explode("/", $path);
+        $match_scores = [];
+        $main_path = '';
+        $path_arguments = array();
+
+        foreach ($route_names as $route_name) {
+            if ($route_name === $path) {
+                if (!isset($match_scores[$route_name])) {
+                    $match_scores[$route_name] = 0;
+                }
+                $match_scores[$route_name] = count($path_elements);     // unsure
+                $main_path = $path;
+                break;
+            }
+            $route_name_elements = explode("/", $route_name);
+            foreach ($path_elements as $path_element) {
+                if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
+                    if (!isset($match_scores[$route_name])) {
+                        $match_scores[$route_name] = 0;
+                    }
+                    $match_scores[$route_name]++;
+                }
+            }
+        }
+
+        array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
+        $sorted_match_scores = array_count_values($match_scores);
+        $highest_score = array_key_first($sorted_match_scores);
+        
+        if ($sorted_match_scores[$highest_score] == 1) {
+            $main_path = array_key_first($match_scores);
+        } else {
+            foreach ($match_scores as $match => $value) {
+                if (($value == $highest_score) && (count(explode('/', $match))) == count($path_elements)) {
+                    $main_path = $match;
+                }
+            }
+        }
+        $main_path_elements = explode("/", $main_path);
+        $main_route = $this->routes[$method][$main_path] ?? false;
+
+        if (isset($main_route[2])) {
+            $path_arguments[$main_path] = [];
+            foreach ($path_elements as $index => $value) {
+                if ($value != $main_path_elements[$index]) {
+                    $path_arguments[$main_path][] = $value;
+                }
+            }
+        }
+
+        return [$main_path, $path_arguments];
+    }
+
+    protected function searchRoutes1($method, $path): array
+    {
+        $route_names = array_keys($this->routes[$method]);
+        $path_elements = explode("/", $path);
         $fitted_routes = [];
         $match_scores = [];
         foreach ($route_names as $route_name) {
@@ -169,6 +232,7 @@ class Router
                 }
             }
         }
+
         array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
         $sorted_values = array_count_values($match_scores);
 
@@ -178,10 +242,12 @@ class Router
         } else {
             $fitted_routes = array_keys($match_scores);
         }
+        sort($fitted_routes);
 
         //  Looking for fitted routes which has the same route name with the same number of arguments
         $main_path = '';
         $path_arguments = array();
+
         foreach ($fitted_routes as $route_name) {
             if ($route_name === $path) {
                 $main_path = $path;
@@ -204,6 +270,7 @@ class Router
                 $main_path = $route_name;
             }
         }
+        
         return [$main_path, $path_arguments];
     }
 }
