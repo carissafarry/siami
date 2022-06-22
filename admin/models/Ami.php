@@ -42,6 +42,11 @@ class Ami extends DbModel
         ];
     }
 
+    public function sequence(): string
+    {
+        return 'AMI_SEQ';
+    }
+
     public function spm()
     {
         return self::findOne(['user_id' => $this->spm_id], 'spm', Spm::class);

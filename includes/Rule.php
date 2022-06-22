@@ -34,6 +34,9 @@ abstract class Rule
     {
         foreach ($this->rules() as $attribute => $rules) {
             // Take the value from the Child Model properties that has been loaded in loadData()
+            if (!isset($this->model->{$attribute})) {
+                continue;
+            }
             $value = $this->model->{$attribute};
 
             foreach ($rules as $rule) {

@@ -5,14 +5,14 @@ namespace app\admin\models;
 use app\admin\models\auth\DbModel;
 use app\admin\models\auth\User;
 
-class Spm extends DbModel
+class Auditee extends DbModel
 {
     public int $user_id = 0;
-    public int $user_type = 1;
+    public int $user_type = 3;
 
     public static function tableName(): string
     {
-        return 'SPM';
+        return 'AUDITEE';
     }
 
     public static function primaryKey(): string
@@ -41,5 +41,10 @@ class Spm extends DbModel
     public function user()
     {
         return self::findOne(['id' => $this->user_id], 'user_details', User::class);
+    }
+
+    public static function users()
+    {
+        return self::findAll('user_details', ['user_type' => 3], User::class);
     }
 }

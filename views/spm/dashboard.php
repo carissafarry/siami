@@ -3,6 +3,7 @@
 $this->title = 'Dashboard';
 $this->breadcrumbs = 'Dashboard';
 $this->header_title = $this->breadcrumbs;
+$this->is_dashboard = true;
 ?>
 
 <div class="row">

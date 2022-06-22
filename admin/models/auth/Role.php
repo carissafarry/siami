@@ -7,7 +7,6 @@ class Role extends DbModel
     public int $id;
     public string $role;
     public string $deskripsi;
-    public User $user;
     private array $permissions = [];
 
     public static function tableName(): string
@@ -20,15 +19,15 @@ class Role extends DbModel
         // TODO: Implement attributes() method.
     }
 
+    public function sequence(): string
+    {
+        return 'ROLE_SEQ';
+    }
+
     public static function primaryKey(): string
     {
         // TODO: Implement primaryKey() method.
     }
-
-//    public function getDisplay(string $attribute): string
-//    {
-//        // TODO: Implement getDisplay() method.
-//    }
 
     public function fetchPermissions()
     {
@@ -56,6 +55,6 @@ class Role extends DbModel
 
     public function autoIncrements(): array
     {
-        // TODO: Implement autoIncrements() method.
+        return ['id'];
     }
 }

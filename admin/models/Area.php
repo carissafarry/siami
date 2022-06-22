@@ -24,20 +24,18 @@ class Area extends DbModel
         ];
     }
 
+    public function sequence(): string
+    {
+        return 'AREA_SEQ';
+    }
+
     public static function primaryKey(): string
     {
         return 'id';
     }
 
-    public function getDisplay(string $attribute): string
-    {
-        // TODO: Implement getDisplay() method.
-        return '';
-    }
-
     public function autoIncrements(): array
     {
-        // TODO: Implement autoIncrements() method.
-        return [];
+        return ['id'];
     }
 }

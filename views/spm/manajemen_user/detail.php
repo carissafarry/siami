@@ -54,7 +54,7 @@ $this->header_title = 'Detail User';
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Area</small></h6>
-                                <p><small><?= $user->area->nama ?></small></p>
+                                <p><small><?= $user->area()->nama ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Jabatan</small></h6>
@@ -73,9 +73,6 @@ $this->header_title = 'Detail User';
                                 <p><small><?= $user->periode ?></small></p>
                             </div>
                         </div>
-                        <div class="row">
-                        </div>
-                        <div class="row"></div>
                     </div>
                 </div>
                 <div class="row text-left">

@@ -8,6 +8,7 @@ class View
     public string $breadcrumbs = '';
     public string $header_title = '';
     public $layout = 'layout_example';       //  Default layout
+    private bool $is_dashboard = false;
 
     // Load View
     public function view($view, $data = [])

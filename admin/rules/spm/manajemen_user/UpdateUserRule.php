@@ -18,7 +18,7 @@ class UpdateUserRule extends Rule
     public function rules(): array
     {
         return [
-            'area' => [self::RULE_REQUIRED],
+            'area_id' => [self::RULE_REQUIRED],
             'jabatan' => [self::RULE_REQUIRED],
             'role_id' => [self::RULE_REQUIRED],
             'telp' => [self::RULE_REQUIRED],

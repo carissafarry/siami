@@ -19,7 +19,7 @@ class AddUserRule extends Rule
     {
         return [
             'net_id' => [self::RULE_REQUIRED, self::RULE_EMAIL, [self::RULE_UNIQUE, 'class' => get_class($this->model),]],
-            'area' => [self::RULE_REQUIRED],
+            'area_id' => [self::RULE_REQUIRED],
             'jabatan' => [self::RULE_REQUIRED],
             'role_id' => [self::RULE_REQUIRED],
             'telp' => [self::RULE_REQUIRED],
