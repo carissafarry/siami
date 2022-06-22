@@ -36,6 +36,12 @@ abstract class DbModel extends Model
     abstract public function autoIncrements(): array;
 
     /**
+     * Define sequence name of table
+     *
+     */
+    abstract public function sequence(): string;
+
+    /**
      * Define attribute of table
      *
      */
@@ -71,7 +77,7 @@ abstract class DbModel extends Model
         $where = [$primary_key => $this->{$primary_key}];
         $clause = 'UPDATE';
         $target_clause = 'SET';
-        return $this->query($clause, $target_clause, $where, null);
+        return $this->query($clause, $target_clause, $where, null, null);
     }
 
     /**
@@ -82,7 +88,7 @@ abstract class DbModel extends Model
     public function delete($where): bool
     {
         $sql = "DELETE FROM";
-        return $this->query($sql, null, $where, null);
+        return $this->query($sql, null, $where, null, null);
     }
 
     /**
@@ -93,7 +99,7 @@ abstract class DbModel extends Model
      * @param null $fetched_data If data has been fetched, returns as specific class object.
      * @return object|Model|false
      */
-    public static function findOne($where=null, $table=null, $return_class_type=null, $fetched_data=null)
+    public static function findOne($where=null, $table=null, $return_class_type=null, $fetched_data=null, $attr=null)
     {
         $oci_obj = $fetched_data;
 
@@ -124,6 +130,11 @@ abstract class DbModel extends Model
                 $newObj->status = $user_server_data->Status;
                 $newObj->group = $user_server_data->Group;
             }
+
+            if ($attr) {
+                return $newObj->$attr;
+            }
+
             return $newObj;
         }
         return $oci_obj;
@@ -137,7 +148,7 @@ abstract class DbModel extends Model
      * @param $sql string Give SQL query defined in string.
      *
      */
-    public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null): array
+    public static function findAll($table=null, $where=null, $return_class_type=null, $sql=null, $attr=null): array
     {
         $tableName = $table ?: self::getTableName();
 
@@ -149,15 +160,20 @@ abstract class DbModel extends Model
         $stmt = "SELECT * FROM $tableName" . ($where ? " WHERE $conditions" : '');
         $query = App::$app->db->query($sql ?: $stmt, $where);
 
+        $res = [];
         $oci_obj = oci_fetch_all($query, $res, null, null, OCI_FETCHSTATEMENT_BY_ROW);
-        $data = [];
+        $datas = [];
 
         if ($oci_obj) {
             foreach ($res as $row) {
-                $data[] = self::findOne(null, $table, $return_class_type, $row);
+                $data = self::findOne(null, $table, $return_class_type, $row);
+                if ($attr) {
+                    $data = $data->$attr;
+                }
+                $datas[] = $data;
             }
         }
-        return $data;
+        return $datas;
     }
 
     /**
@@ -169,7 +185,7 @@ abstract class DbModel extends Model
      * @param $where array Define conditions that will be used in Where clause.
      * @return array The result of executed query from findAll() function.
      */
-    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class_type, $where=null): array
+    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class_type, $where=null, ?array $select_columns=null, bool $distinct=false): array
     {
         $tableName = $table;
         $table_on_params = implode(" ON ", array_map(function($val, $key) {
@@ -182,6 +198,7 @@ abstract class DbModel extends Model
         }, $on_params_with_target, array_keys($on_params_with_target)));
 
         $targetName = strtok(array_values($on_params_with_target)[0], '.');
+        $columns_target = $targetName . ".*";
         $conditions = '';
         $where_value = null;
         if ($where) {
@@ -191,15 +208,20 @@ abstract class DbModel extends Model
             }
         }
 
+        if ($select_columns) {
+            $columns_target = implode(', ', $select_columns);
+        }
+
         $sql = "
-          SELECT $targetName.*
+          SELECT " . (($distinct) ? "DISTINCT " : "") . "$columns_target
           FROM $tableName
             INNER JOIN $pivotName
                 ON $table_on_params
             INNER JOIN $targetName
                 ON $pivot_on_params 
-        " . $where ? " WHERE $conditions" : '';
-
+          WHERE $conditions
+        ";
+        
         return self::findAll($table, $where_value, $return_class_type, $sql);
     }
 
@@ -225,12 +247,13 @@ abstract class DbModel extends Model
      * @param null $param
      * @return bool
      */
-    public function query($clause, string $target_clause=null, $where=null, $param=null): bool
+    public function query($clause, string $target_clause=null, $where=null, $param=null)
     {
         $called_function = debug_backtrace()[1]['function'];
         $tableName = self::getTableName();
         $attributes = (method_exists(static::class, "dbAttributes")) ? static::dbAttributes() : $this->attributes();
         $fillable_attrs = array_diff($attributes, $this->autoIncrements());
+        $query = '';
 
         switch ($called_function) {
             case "create":
@@ -244,24 +267,42 @@ abstract class DbModel extends Model
 //                    array_map(fn($attr) => $this->{$attr}, $attributes)
                     array_map(fn($attr) => $this->{$attr}, $fillable_attrs)
                 );
-                App::$app->db->query($statement, $data);
+                $query = App::$app->db->query($statement, $data);
                 break;
             case "update":
                 $fillable_attrs = $where ? array_diff($fillable_attrs, array_keys($where)) : $fillable_attrs;
 //                $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $attributes));
                 $params = implode(', ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", $fillable_attrs));
                 $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
-                $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions" : '');
-                App::$app->db->query($statement);
+                $statement = "$clause $tableName $target_clause $params" . ($where ? " WHERE $conditions " : ' ');
+                $query = App::$app->db->query($statement);
                 App::$app->db->commit();
                 break;
             case "delete":
                 $conditions = $where ? implode(' AND ', array_map(fn($attr) => "$attr = '" . (string)$this->{$attr} . "'", array_keys($where))) : '';
                 $statement = "$clause $tableName WHERE $conditions";
-                App::$app->db->query($statement);
+                $query = App::$app->db->query($statement);
                 App::$app->db->commit();
                 break;
         }
+
         return True;
+    }
+
+    public function getCurrentValue()
+    {
+        $sequence_name = $this->sequence();
+        $stmt = 'SELECT "' . $sequence_name . '"' . '.currval from dual';
+        $query = App::$app->db->query($stmt);
+        $oci_obj = oci_fetch_object($query);
+        return $oci_obj->CURRVAL;
+    }
+
+    public static function getLastInsertedRow($table=null)
+    {
+        $tableName = $table ?: self::getTableName();
+        $stmt = "SELECT * FROM $tableName WHERE ROWID=(SELECT MAX(ROWID) FROM $tableName)";
+        $result = self::findAll(null, null, null, $stmt);
+        return $result[0];
     }
 }
