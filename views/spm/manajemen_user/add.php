@@ -1,6 +1,8 @@
 <?php
 /**
  * @var $this \app\includes\View
+ * @var $areas array \app\admin\models\Area
+ * @var $rule \app\admin\rules\spm\manajemen_user\AddUserRule
  */
 
 use app\includes\App;
@@ -27,11 +29,12 @@ $this->header_title = 'Tambah User';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="area" class="h6 text-sm form-control-label">Area</label>
-                                <input name="area" class="form-control <?= $rule->hasError('area') ? 'is-invalid' : '' ?>" type="text" id="area">
-                                <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('area') ?>
-                                </div>
+                                <label for="area_id" class="h6 text-sm form-control-label">Area</label>
+                                <select class="form-select" name="area_id" id="area_id">
+                                    <?php foreach ($areas as $area): ?>
+                                        <option value="<?= $area->id ?>"><?= $area->nama ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -47,7 +50,6 @@ $this->header_title = 'Tambah User';
                             <div class="form-group">
                                 <label for="role_id" class="h6 text-sm form-control-label">Role</label>
                                 <select class="form-select" name="role_id" id="role_id">
-                                    <option value="<?= $user->role->id ?>"><?= $user->role()->role ?></option>
                                     <?php foreach ($roles as $role): ?>
                                         <option value="<?= $role->id ?>"><?= $role->role ?></option>
                                     <?php endforeach; ?>

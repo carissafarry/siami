@@ -3,6 +3,8 @@
  * @var $this \app\includes\View
  * @var $user \app\admin\models\auth\User
  * @var $roles array \app\admin\models\auth\Role
+ * @var $areas array \app\admin\models\Area
+ * @var $rule \app\admin\rules\spm\manajemen_user\UpdateUserRule
  */
 
 use app\includes\App;
@@ -18,7 +20,7 @@ $this->header_title = 'Edit User';
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-lg-6 col-7">
-                        <h6>Edit User <?= $user->nama ?></h6>
+                        <h6>Edit User <span class="text-warning"><?= $user->nama ?></span></h6>
                     </div>
                 </div>
             </div>
@@ -34,23 +36,34 @@ $this->header_title = 'Edit User';
                     </div>
                     <div class="col-md-6">
                         <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $user->status ?></small></p>
+                        <?php if ($user->status == 'active'): ?>
+                            <p><small><span class="badge bg-gradient-success"><?= $user->status ?></span></small></p>
+                        <?php else: ?>
+                            <p><small><span class="badge bg-gradient-danger"><?= $user->status ?></span></small></p>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-6">
                         <h6 class="mb-0"><small>NIP</small></h6>
                         <p><small><?= $user->nip ?></small></p>
                     </div>
                 </div>
-                <?php /** @var $rule \app\admin\rules\spm\UserDataRule */ ?>
                 <form action="" method="post">
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="area" class="h6 text-sm form-control-label">Area</label>
-                                <input name="area" class="form-control <?= $rule->hasError('area') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->area->nama ?>" id="area">
-                                <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('area') ?>
-                                </div>
+                                <label for="area_id" class="h6 text-sm form-control-label">Area</label>
+                                <select class="form-select" name="area_id" id="area_id">
+                                    <option value="<?= $user->area_id ?>"><?= $user->area()->nama ?></option>
+                                    <?php
+                                    foreach ($areas as $area):
+                                        if ($area->id != $user->area_id):
+                                    ?>
+                                        <option value="<?= $area->id ?>"><?= $area->nama ?></option>
+                                    <?php
+                                        endif;
+                                    endforeach;
+                                    ?>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -66,10 +79,16 @@ $this->header_title = 'Edit User';
                             <div class="form-group">
                                 <label for="role_id" class="h6 text-sm form-control-label">Role</label>
                                 <select class="form-select" name="role_id" id="role_id">
-                                    <option value="<?= $user->role->id ?>"><?= $user->role()->role ?></option>
-                                    <?php foreach ($roles as $role): ?>
+                                    <option value="<?= $user->role_id ?>"><?= $user->role()->role ?></option>
+                                    <?php
+                                    foreach ($roles as $role):
+                                        if ($role->id != $user->role_id):
+                                    ?>
                                         <option value="<?= $role->id ?>"><?= $role->role ?></option>
-                                    <?php endforeach; ?>
+                                    <?php
+                                        endif;
+                                    endforeach;
+                                    ?>
                                 </select>
                             </div>
                         </div>

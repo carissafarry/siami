@@ -21,18 +21,6 @@ $this->header_title = $this->breadcrumbs;
                     </div>
                     <div class="col-sm-6 col-8">
                         <a href="<?= App::getRoute() ?>/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
-                        <div class="dropdown" style="float: right;">
-                            <a href="#" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" id="yearDropdown">
-                                2020
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="yearDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        2022
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -67,7 +55,7 @@ $this->header_title = $this->breadcrumbs;
                                 <td>
                                     <div class="d-flex px-2 py-1">
                                         <div>
-                                            <img src="https://demos.creative-tim.com/soft-ui-design-system-pro/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                                            <img src="/contents/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
                                         </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-xs"><?= $user->nama ?></h6>
@@ -76,7 +64,7 @@ $this->header_title = $this->breadcrumbs;
                                     </div>
                                 </td>
                                 <td class="center-table"> <?= $user->jabatan ?> </td>
-                                <td class="center-table"> <?= $user->area->nama ?> </td>
+                                <td class="center-table"> <?= $user->area()->nama ?> </td>
                                 <td class="center-table"> <?= $user->nip ?> </td>
                                 <td class="center-table"> <?= $user->role()->role ?> </td>
                                 <td class="center-table align-content-center">
