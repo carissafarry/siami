@@ -19,10 +19,6 @@ use app\includes\App;
                     <span class="alert-text"><strong>Success!</strong> <?= App::$app->session->getFlash('success') ?></span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <script>
-                    let data = <?= json_encode(App::$app->session->getFlash('success'), JSON_THROW_ON_ERROR) ?>;
-                    setAlert(data, 'success');
-                </script>
             <?php endif; ?>
             <?php if (App::$app->session->getFlash('failed')) :  ?>
                 <div class="alert alert-danger text-white alert-dismissible fade show" role="alert">
@@ -37,9 +33,8 @@ use app\includes\App;
     </main>
     <?php require_once APP_ROOT . '/views/layouts/configurator.php'; ?>
     <?php require_once APP_ROOT . '/views/layouts/scripts.php'; ?>
-    <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="/contents/assets/js/pages/dashboard.js"></script>
+    <?php if ($this->is_dashboard == true): ?>
+        <script src="/contents/assets/js/pages/dashboard.js"></script>
+    <?php endif; ?>
 </body>
 </html>
