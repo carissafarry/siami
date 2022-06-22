@@ -91,7 +91,7 @@ class Router
         $path = $this->request->getPath();
 
         //  Remove trailing slash from path request
-        if(substr($path, -1) === '/') {
+        if(($path != '/') && (substr($path, -1) === '/')) {
             $path = substr($path, 0, -1);
         }
 
@@ -116,7 +116,7 @@ class Router
             //  If route has argument, but there is no argument received
             $callback = false;
         }
-        
+
         if ($callback === false) {
             $this->response->setStatusCode(404);
             throw new NotFoundException();
@@ -165,24 +165,28 @@ class Router
         $main_path = '';
         $path_arguments = array();
 
-        foreach ($route_names as $route_name) {
-            if ($route_name === $path) {
-                if (!isset($match_scores[$route_name])) {
-                    $match_scores[$route_name] = 0;
-                }
-                $match_scores[$route_name] = count($path_elements);     // unsure
-                $main_path = $path;
-                break;
-            }
-            $route_name_elements = explode("/", $route_name);
-            foreach ($path_elements as $path_element) {
-                if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
+        if ($path !== '') {
+            foreach ($route_names as $route_name) {
+                if ($route_name === $path) {
                     if (!isset($match_scores[$route_name])) {
                         $match_scores[$route_name] = 0;
                     }
-                    $match_scores[$route_name]++;
+                    $match_scores[$route_name] = count($path_elements);     // unsure
+                    $main_path = $path;
+                    break;
+                }
+                $route_name_elements = explode("/", $route_name);
+                foreach ($path_elements as $path_element) {
+                    if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
+                        if (!isset($match_scores[$route_name])) {
+                            $match_scores[$route_name] = 0;
+                        }
+                        $match_scores[$route_name]++;
+                    }
                 }
             }
+        } else {
+            $match_scores['/'] = 1;
         }
 
         array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
@@ -210,67 +214,6 @@ class Router
             }
         }
 
-        return [$main_path, $path_arguments];
-    }
-
-    protected function searchRoutes1($method, $path): array
-    {
-        $route_names = array_keys($this->routes[$method]);
-        $path_elements = explode("/", $path);
-        $fitted_routes = [];
-        $match_scores = [];
-        foreach ($route_names as $route_name) {
-            $route_name_elements = explode("/", $route_name);
-            foreach ($path_elements as $path_element) {
-//                if (($path_element !== '') && in_array($path_element, $route_name_elements, true) && !in_array($route_name, $fitted_routes, true)) {
-                if (($path_element !== '') && in_array($path_element, $route_name_elements, true)) {
-                    $fitted_routes[] = $route_name;
-                    if (!isset($match_scores[$route_name])) {
-                        $match_scores[$route_name] = 0;
-                    }
-                    $match_scores[$route_name]++;
-                }
-            }
-        }
-
-        array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
-        $sorted_values = array_count_values($match_scores);
-
-        if (count($match_scores) > 1) {
-//        $minimum_values = array_keys(array_diff($match_scores, [array_key_last($sorted_values)]));
-            $fitted_routes = array_keys(array_diff($match_scores, [array_key_last($sorted_values)]));
-        } else {
-            $fitted_routes = array_keys($match_scores);
-        }
-        sort($fitted_routes);
-
-        //  Looking for fitted routes which has the same route name with the same number of arguments
-        $main_path = '';
-        $path_arguments = array();
-
-        foreach ($fitted_routes as $route_name) {
-            if ($route_name === $path) {
-                $main_path = $path;
-                break;
-            }
-            $current_route = $this->routes[$method][$route_name];
-            if (isset($current_route[2])) {
-                $num_of_args = count($current_route[2]);
-                $to_merge_path_element = [];
-                $path_arguments[$route_name] = [];
-                foreach ($path_elements as $index => $path_element) {
-                    if ($index < (count($path_elements) - $num_of_args)) {
-                        $to_merge_path_element[] = $path_element;
-                    } else {
-                        $path_arguments[$route_name][] = $path_element;
-                    }
-                }
-                $main_path = implode("/", $to_merge_path_element);
-            } else {
-                $main_path = $route_name;
-            }
-        }
-        
         return [$main_path, $path_arguments];
     }
 }

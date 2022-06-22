@@ -30,10 +30,8 @@ class AuthController extends Controller
     {
         if (App::isGuest()) {
             $response->redirect('/login');
-            return;
         } else {
             $response->redirect('/dashboard');
-            return;
         }
     }
 
