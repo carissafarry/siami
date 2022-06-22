@@ -30,8 +30,8 @@ class NavItem
             </li>
         ',
 //            App::$app->request->is(App::$app->user->role->role . '/manajemen-user' ) ? 'active' : '',
-            App::$app->request->is(App::$app->user->role->role . $this->route ) ? 'active' : '',
-            strtolower(App::$app->user->role->role),
+            App::$app->request->is(strtolower(App::$app->user->role()->role) . $this->route ) ? 'active' : '',
+            strtolower(App::$app->user->role()->role),
             $this->route,
             $this->icon,
             $this->title

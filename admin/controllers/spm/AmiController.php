@@ -3,10 +3,9 @@
 namespace app\admin\controllers\spm;
 
 use app\admin\models\Ami;
-use app\admin\models\auth\Role;
-use app\admin\models\auth\User;
-use app\admin\rules\spm\manajemen_user\AddUserRule;
-use app\admin\rules\spm\manajemen_user\UpdateUserRule;
+use app\admin\models\Spm;
+use app\admin\rules\spm\ami\AddAmiRule;
+use app\admin\rules\spm\ami\UpdateAmiRule;
 use app\includes\App;
 use app\includes\Controller;
 use app\includes\Request;
@@ -26,35 +25,40 @@ class AmiController extends Controller
 
     public function add(Request $request, Response $response)
     {
-        $user = new User();
-        $userDataRule = new AddUserRule($user);
-        $roles = Role::findAll();
+        $ami = new Ami();
+        $amiDataRule = new AddAmiRule($ami);
+        $spms = Spm::findAll();
 
         if ($request->isPost()) {
             $request = $request->getBody();
-            $user->loadData($request);
+            if (isset($request['is_tindak_lanjut'])) {
+                $request['is_tindak_lanjut'] = 1;
+            } else {
+                $request['is_tindak_lanjut'] = 0;
+            }
+            $ami->loadData($request);
 
-            if ($userDataRule->validate() && $user->create()) {
+            if ($amiDataRule->validate() && $ami->create()) {
                 App::$app->session->setFlash('success', 'Data berhasil ditambahkan!');
-                $response->redirect('/spm/manajemen-user');
+                $response->redirect('/spm/ami');
             }
         }
 
         App::setLayout('layout');
-        return App::view('spm/manajemen_user/add', [
-            'user' => $user,
-            'roles' => $roles,
-            'rule' => $userDataRule,
+        return App::view('spm/ami/add', [
+            'ami' => $ami,
+            'rule' => $amiDataRule,
+            'spms' => $spms,
         ]);
     }
 
     public function detail(Request $request, Response $response, $param)
     {
-        $user = User::findOrFail($param);
+        $ami = Ami::findOrFail($param);
 
         App::setLayout('layout');
-        return App::view('spm/manajemen_user/detail', [
-            'user' => $user
+        return App::view('spm/ami/detail', [
+            'ami' => $ami,
         ]);
     }
 
@@ -63,25 +67,30 @@ class AmiController extends Controller
      */
     public function update(Request $request, Response $response, $param)
     {
-        $user = User::findOrFail($param);
-        $userDataRule = new UpdateUserRule($user);
-        $roles = Role::findAll();
+        $ami = Ami::findOrFail($param);
+        $amiDataRule = new UpdateAmiRule($ami);
+        $spms = Spm::findAll();
 
         if ($request->isPost()) {
             $request = $request->getBody();
-            $user->loadData($request);
+            if (isset($request['is_tindak_lanjut']) && ($request['is_tindak_lanjut'] == 'on')) {
+                $request['is_tindak_lanjut'] = 1;
+            } else {
+                $request['is_tindak_lanjut'] = 0;
+            }
+            $ami->loadData($request);
 
-            if ($userDataRule->validate() && $user->update()) {
+            if ($amiDataRule->validate() && $ami->update()) {
                 App::$app->session->setFlash('success', 'Data berhasil diupdate!');
-                $response->redirect('/spm/manajemen-user');
+                $response->redirect('/spm/ami');
             }
         }
 
         App::setLayout('layout');
-        return App::view('spm/manajemen_user/update', [
-            'user' => $user,
-            'roles' => $roles,
-            'rule' => $userDataRule,
+        return App::view('spm/ami/update', [
+            'ami' => $ami,
+            'rule' => $amiDataRule,
+            'spms' => $spms,
         ]);
     }
 
@@ -90,11 +99,11 @@ class AmiController extends Controller
      */
     public function delete(Request $request, Response $response, $param): void
     {
-        $user = $this->repo(User::findOrFail($param));
-        if ($user->delete($param)) {
+        $ami = $this->repo(Ami::findOrFail($param));
+        if ($ami->delete($param)) {
             App::$app->session->setFlash('success', 'Data berhasil dihapus!');
             $response->back();
-            return ;
+            return;
         }
         App::$app->session->setFlash('failed', 'Data gagal dihapus!');
         $response->back();
