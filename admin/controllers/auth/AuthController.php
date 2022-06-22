@@ -135,8 +135,17 @@ class AuthController extends Controller
         $response->redirect('/login');
     }
 
-    public function profile()
+    public function profile(Request $request, Response $response)
     {
+        if ($request->isPost()) {
+            $request = $request->getBody();
+            $user = App::$app->user;
+            $user->loadData($request);
+            if ($user->update()) {
+                App::$app->session->setFlash('success', 'Data Anda berhasil diupdate!');
+                $response->redirect('/profile');
+            }
+        }
         App::setLayout('layout');
         return App::view('auth/profile');
     }

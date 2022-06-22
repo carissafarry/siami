@@ -27,6 +27,7 @@ $app->router->get('/logout', [new AuthController(), 'logout']);
 
 $app->router->get('/dashboard', [new AuthController(), 'dashboard']);
 $app->router->get('/profile', [new AuthController(), 'profile']);
+$app->router->post('/profile', [new AuthController(), 'profile']);
 
 
 

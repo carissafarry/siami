@@ -17,12 +17,12 @@ $this->header_title = $this->breadcrumbs;
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-lg-6 col-7">
-                        <h6><?= App::$app->user->nama ?></h6>
+                        <h6><span class="text-warning"><?= App::$app->user->nama ?></span></h6>
                     </div>
                 </div>
             </div>
             <div class="card-body px-sm-5 px-4">
-                <form>
+                <form action="/profile" method="post">
                     <div class="row">
                         <div class="col-lg-4 col-md-4 text-center">
                             <a href="javascript:;" class="avatar avatar-xxl rounded-circle">
@@ -30,31 +30,36 @@ $this->header_title = $this->breadcrumbs;
                             </a>
                         </div>
                         <div class="col-lg-8 col-md-8">
+                            <div class="col-sm-6 col-4">
+                                <h6 class="mb-0"><small>Role</small></h6>
+                                <p><small><?= App::$app->user->role()->role ?></small></p>
+                            </div>
+                            <div class="col-sm-6 col-4">
+                                <h6 class="mb-0"><small>Area</small></h6>
+                                <p><small><?= App::$app->user->area()->nama ?></small></p>
+                            </div>
+                            <div class="col-sm-6 col-4">
+                                <h6 class="mb-0"><small>Email</small></h6>
+                                <p><small><?= App::$app->user->net_id ?></small></p>
+                            </div>
+                            <input type="hidden" name="id" value="<?= App::$app->user->id ?>">
                             <div class="form-group">
-                                <label for="example-email-input" class="form-control-label h6"><small>Email</small></label>
-                                <input class="form-control" type="email" value="<?= App::$app->user->net_id ?>" id="example-email-input">
+                                <label for="telp" class="form-control-label h6"><small>Telepon</small></label>
+                                <input class="form-control" type="text" name="telp" value="<?= App::$app->user->telp ?>" id="example-tel-input">
                             </div>
                             <div class="form-group">
-                                <label for="example-password-input" class="form-control-label h6"><small>Password</small></label>
-                                <input class="form-control" type="password" value="password" id="example-password-input">
+                                <label for="jabatan" class="form-control-label h6"><small>Jabatan</small></label>
+                                <input class="form-control" type="text" name="jabatan" value="<?= App::$app->user->jabatan ?>" id="example-text-input">
                             </div>
                             <div class="form-group">
-                                <label for="example-tel-input" class="form-control-label h6"><small>Phone</small></label>
-                                <input class="form-control" type="tel" value="<?= App::$app->user->telp ?>" id="example-tel-input">
-                            </div>
-                            <div class="form-group">
-                                <label for="example-text-input" class="form-control-label h6"><small>Jabatan</small></label>
-                                <input class="form-control" type="text" value="<?= App::$app->user->jabatan ?>" id="example-text-input">
-                            </div>
-                            <div class="form-group">
-                                <label for="example-text-input" class="form-control-label h6"><small>Periode</small></label>
-                                <input class="form-control" type="text" value="<?= App::$app->user->periode ?>" id="example-text-input">
+                                <label for="periode" class="form-control-label h6"><small>Periode</small></label>
+                                <input class="form-control" type="text" name="periode" value="<?= App::$app->user->periode ?>" id="example-text-input">
                             </div>
                         </div>
                     </div>
                     <div class="row text-right">
                         <div class="div">
-                            <button type="button" class="btn bg-gradient-primary">Save</button>
+                            <button type="submit" class="btn bg-gradient-primary">Save</button>
                         </div>
                     </div>
                 </form>
