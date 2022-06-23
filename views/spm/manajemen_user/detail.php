@@ -69,8 +69,8 @@ $this->header_title = 'Detail User';
                                 <p><small><?= $user->telp ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Periode</small></h6>
-                                <p><small><?= $user->periode ?></small></p>
+                                <h6 class="mb-0"><small>Tahun</small></h6>
+                                <p><small><?= $user->tahun ?></small></p>
                             </div>
                         </div>
                     </div>

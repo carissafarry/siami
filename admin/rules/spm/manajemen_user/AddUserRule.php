@@ -23,7 +23,7 @@ class AddUserRule extends Rule
             'jabatan' => [self::RULE_REQUIRED],
             'role_id' => [self::RULE_REQUIRED],
             'telp' => [self::RULE_REQUIRED],
-            'periode' => [self::RULE_REQUIRED],
+            'tahun' => [self::RULE_REQUIRED],
         ];
     }
 }

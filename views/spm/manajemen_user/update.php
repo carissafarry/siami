@@ -103,10 +103,10 @@ $this->header_title = 'Edit User';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="periode" class="h6 text-sm form-control-label">Periode</label>
-                                <input name="periode" class="form-control <?= $rule->hasError('periode') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->periode ?>" id="periode">
+                                <label for="tahun" class="h6 text-sm form-control-label">Tahun</label>
+                                <input name="tahun" class="form-control <?= $rule->hasError('tahun') ? 'is-invalid' : '' ?>" type="text" value="<?= $user->tahun ?>" id="tahun">
                                 <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('periode') ?>
+                                    <?= $rule->getFirstError('tahun') ?>
                                 </div>
                             </div>
                         </div>

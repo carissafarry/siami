@@ -21,7 +21,7 @@ class User extends DbModel
     public ?string $foto = '';
     public string $telp = '';
     public string $jabatan = '';
-    public string $periode = '';
+    public string $tahun = '';
     public int $user_type = 0;
     public string $nip = '';
     public string $nama = '';
@@ -72,7 +72,7 @@ class User extends DbModel
             'foto',
             'telp',
             'jabatan',
-            'periode',
+            'tahun',
             'user_type',
             'nip',
             'nama',
@@ -97,7 +97,7 @@ class User extends DbModel
             'foto',
             'telp',
             'jabatan',
-            'periode',
+            'tahun',
             'user_type',
         ];
     }
@@ -176,6 +176,16 @@ class User extends DbModel
             $child_table,
             $child_class
         );
+    }
+
+    public static function auditors($where=[])
+    {
+        return self::findAll('user_details', array_merge(['user_type' => 2], $where), User::class);
+    }
+
+    public static function auditees($where=[])
+    {
+        return self::findAll('user_details', array_merge(['user_type' => 3], $where), User::class);
     }
 
     public static function getUserServerData(string $email, string $password='')
