@@ -68,6 +68,7 @@ $app->router->get('/spm/manajemen-checklist', [new ManajemenChecklistController(
 $app->router->post('/spm/manajemen-checklist', [new ManajemenChecklistController(), 'index']);
 $app->router->get('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
 $app->router->post('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
+$app->router->post('/spm/manajemen-checklist/update-area-data', [new ManajemenChecklistController(), 'update_area_data']);
 
 
 

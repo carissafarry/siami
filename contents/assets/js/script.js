@@ -31,10 +31,10 @@ function add_kriteria_field() {
     input.setAttribute('id', 'kriteria_' + count_input);
     input.setAttribute('name', 'kriteria_' + count_input);
     input.setAttribute('class', "form-control <?= $rule->hasError('kriteria_" + count_input + "') ? 'is-invalid' : '' ?>");
-    input.setAttribute('placeholder', 'Masukkan kode Kriteria ' + count_input);
+    input.setAttribute('placeholder', 'Masukkan kode Kriteria ke-' + count_input);
 
     var invalid_feedback = document.createElement('div');
-    invalid_feedback.setAttribute('class', 'invalid-feedback');
+    invalid_feedback.setAttribute('class', 'invalid-feedback d-block');
     invalid_feedback.innerHTML = "<?= $rule->getFirstError('kriteria_" + count_input + "') ?>"; // ERROR: php var become commented
 
     formGroup.appendChild(input);

@@ -44,9 +44,9 @@ class Auditor extends DbModel
         return self::findOne(['id' => $this->user_id], 'user_details', User::class);
     }
 
-    public static function users()
+    public static function users($where=[])
     {
-        return self::findAll('user_details', ['user_type' => 2], User::class);
+        return self::findAll('user_details', array_merge(['user_type' => 2], $where), User::class);return self::findAll('user_details', ['user_type' => 2], User::class);
     }
 
     public function checklists()

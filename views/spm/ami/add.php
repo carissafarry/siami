@@ -27,7 +27,7 @@ $this->header_title = 'Tambah AMI';
                                         <option value="<?= $spm->user_id ?>"><?= $spm->user()->nama ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <div class="invalid-feedback">
+                                <div class="invalid-feedback d-block">
                                     <?= $rule->getFirstError('spm_id') ?>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@ $this->header_title = 'Tambah AMI';
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="jadwal_mulai" class="h6 text-sm form-control-label">Jadwal Mulai</label>
-                                <input name="jadwal_mulai" class="form-control <?= $rule->hasError('jadwal_mulai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_mulai">
+                                <input name="jadwal_mulai" class="form-control <?= $rule->hasError('jadwal_mulai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_mulai" value="<?= date('Y-m-d'); ?>">
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('jadwal_mulai') ?>
                                 </div>
@@ -53,7 +53,7 @@ $this->header_title = 'Tambah AMI';
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="jadwal_selesai" class="h6 text-sm form-control-label">Jadwal Selesai</label>
-                                <input name="jadwal_selesai" class="form-control <?= $rule->hasError('jadwal_selesai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_selesai">
+                                <input name="jadwal_selesai" class="form-control <?= $rule->hasError('jadwal_selesai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_selesai" value="<?= date('Y-m-d'); ?>">
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('jadwal_selesai') ?>
                                 </div>

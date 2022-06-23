@@ -25,8 +25,8 @@ class AddChecklistRule extends Rule
             'no_revisi' => [self::RULE_REQUIRED],
             'area_id' => [self::RULE_REQUIRED],
             'auditee_id' => [self::RULE_REQUIRED],
-            'auditor_id_1' => [self::RULE_REQUIRED],
-            'auditor_id_2' => [self::RULE_REQUIRED],
+            'auditor1_id' => [self::RULE_REQUIRED],
+            'auditor2_id' => [self::RULE_REQUIRED],
         ];
     }
 }

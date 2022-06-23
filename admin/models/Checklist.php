@@ -9,9 +9,12 @@ class Checklist extends DbModel
     public int $id = 0;
     public int $ami_id = 0;
     public int $status_id = 0;
-    public int $area_id = 0;
-    public int $auditee_id = 0;
+//    public int $area_id = 0;
+//    public int $auditee_id = 0;
     public ?int $auditee2_id = 0;
+    public $area_id = 0;
+    public $auditee_id = 0;
+//    public $auditee2_id = 0;
     public ?string $tgl_terbit = '';
     public ?string $no_identifikasi = '';
     public ?string $no_revisi = '';
@@ -39,8 +42,8 @@ class Checklist extends DbModel
             'ami_id',
             'status_id',
             'area_id',
-            'auditee2_id',
             'auditee_id',
+            'auditee2_id',
             'tgl_terbit',
             'no_identifikasi',
             'no_revisi',

@@ -203,25 +203,23 @@ $this->header_title = $this->breadcrumbs;
         var url = '/spm/manajemen-kriteria/update-standar-data';
 
         $.post(url, {
-                tahun: tahun,
-            }, function (data) {
-                console.log(tahun + ' Sent!')
-            })
-            .done(function(jqXHR) {
-                $('#TABLE_2').DataTable({
-                    destroy: true,
-                    data: jqXHR.standars,
-                    columns: [
-                        { data: 'standar'},
-                        { data: 'kode'},
-                        { data: 'tahun'},
+            tahun: tahun,
+        })
+        .done(function(jqXHR) {
+            $('#TABLE_2').DataTable({
+                destroy: true,
+                data: jqXHR.standars,
+                columns: [
+                    { data: 'standar'},
+                    { data: 'kode'},
+                    { data: 'tahun'},
 
-                    ]
-                });
-                console.log(jqXHR.standars);
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(arguments);
+                ]
             });
+            console.log(jqXHR.standars);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(arguments);
+        });
     }
 </script>

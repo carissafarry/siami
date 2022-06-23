@@ -67,10 +67,10 @@ $this->header_title = 'Tambah User';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="periode" class="h6 text-sm form-control-label">Periode</label>
-                                <input name="periode" class="form-control <?= $rule->hasError('periode') ? 'is-invalid' : '' ?>" type="text" id="periode">
+                                <label for="tahun" class="h6 text-sm form-control-label">tahun</label>
+                                <input name="tahun" class="form-control <?= $rule->hasError('tahun') ? 'is-invalid' : '' ?>" type="text" id="tahun">
                                 <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('periode') ?>
+                                    <?= $rule->getFirstError('tahun') ?>
                                 </div>
                             </div>
                         </div>

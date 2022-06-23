@@ -230,9 +230,9 @@ abstract class DbModel extends Model
      * @return DbModel|object
      * @throws NotFoundException
      */
-    public static function findOrFail($where=null, $table=null, $return_class_type=null, $fetched_data=null)
+    public static function findOrFail($where=null, $table=null, $return_class_type=null, $fetched_data=null, $attr=null)
     {
-        $result = self::findOne($where, $table, $return_class_type, $fetched_data);
+        $result = self::findOne($where, $table, $return_class_type, $fetched_data, $attr);
         if (!$result) {
             throw new NotFoundException();
         }
