@@ -31,11 +31,19 @@ class AmiController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
+
+            //  Check if jadwal_selesai is not greater than jadwal_mulai
+            if ($request['jadwal_selesai'] <= $request['jadwal_mulai']) {
+                $amiDataRule->addError('jadwal_mulai', 'Jadwal Mulai has to be lower than Jadwal Selesai');
+                $amiDataRule->addError('jadwal_selesai', 'Jadwal Selesai has to be greater than Jadwal Mulai');
+            }
+
             if (isset($request['is_tindak_lanjut'])) {
                 $request['is_tindak_lanjut'] = 1;
             } else {
                 $request['is_tindak_lanjut'] = 0;
             }
+
             $ami->loadData($request);
 
             if ($amiDataRule->validate() && $ami->create()) {

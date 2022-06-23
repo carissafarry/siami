@@ -48,7 +48,7 @@ $head_of_ami = $ami->spm()->user();
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="tahun" class="h6 text-sm form-control-label">Tahun</label>
-                                <input name="tahun" class="form-control <?= $rule->hasError('tahun') ? 'is-invalid' : '' ?>" type="text" id="tahun" value="<?= $ami->tahun ?>">
+                                <input name="tahun" class="form-control <?= $rule->hasError('tahun') ? 'is-invalid' : '' ?>" type="text" id="tahun" value="<?= $ami->tahun ?>" disabled>
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('tahun') ?>
                                 </div>
