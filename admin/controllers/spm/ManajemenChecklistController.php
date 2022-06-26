@@ -66,6 +66,9 @@ class ManajemenChecklistController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
+
+            //  Input data validation
+            //  Change the input data type according to the data type in the database
             $key_to_int = ['id', 'ami_id', 'status_id', 'area_id', 'auditee_id', 'auditee2_id', 'auditor1_id', 'auditor2_id', 'auditor3_id'];
             foreach ($request as $key => $val) {
                 if (isset($request[$key]) && in_array($key, $key_to_int)) {
@@ -76,7 +79,7 @@ class ManajemenChecklistController extends Controller
                 }
             }
             
-            // Check and validate each kriteria_id and auditor_id input
+            //  Check and validate each kriteria_id and auditor_id input
             $kriteria_ids = [];
             $auditor_ids = [];
             foreach ($request as $key => $value) {
@@ -103,7 +106,19 @@ class ManajemenChecklistController extends Controller
                     }
                 }
             }
-            
+
+            //  Check whether the Auditee's and Auditor's input data has the same value
+            if (isset($request['auditee2_id']) && ($request['auditee_id'] == $request['auditee2_id'])) {
+                $checklistDataRule->addError('auditee_id', 'The value of Auditee Utama and Auditee Pengganti should not be the same');
+                $checklistDataRule->addError('auditee2_id', 'The value of Auditee Utama and Auditee Pengganti should not be the same');
+            }
+
+            if ($request['auditor1_id'] == $request['auditor2_id']) {
+                $checklistDataRule->addError('auditor1_id', 'The value of Auditor 1 and Auditor 2 should not be the same');
+                $checklistDataRule->addError('auditor2_id', 'The value of Auditor 1 and Auditor 2 should not be the same');
+            }
+
+            //  Validate input data and create each data and the children data
             $checklist->loadData($request);
             if ($checklistDataRule->validate()) {
                 if ($checklist->create()) {
@@ -162,6 +177,18 @@ class ManajemenChecklistController extends Controller
             'area_id' => $request['area_id'],
             'tahun' => $tahun,
             'requests' => $request,
+        ]);
+    }
+
+    public function detail(Request $request, Response $response, $param)
+    {
+        $checklist = Checklist::findOrFail($param);
+        $auditors = $checklist->auditors();
+
+        App::setLayout('layout');
+        return App::view('spm/manajemen_checklist/detail', [
+            'checklist' => $checklist,
+            'auditors' => $auditors
         ]);
     }
 }

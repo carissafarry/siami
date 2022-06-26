@@ -38,7 +38,7 @@ $this->header_title = 'Tambah Checklist';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="status_id" class="h6 text-sm form-control-label required-field">Status AMI</label>
+                                <label for="status_id" class="h6 text-sm form-control-label required-field">Status Checklist</label>
                                 <select class="form-select" name="status_id" id="status_id">
                                     <?php foreach ($statuses as $status): ?>
                                         <option value="<?= $status->id ?>"><?= $status->status ?></option>
@@ -212,8 +212,8 @@ $this->header_title = 'Tambah Checklist';
             ami_id: ami_id,
         })
         .done(function(jqXHR) {
-            // console.log(jqXHR.auditee_users);
-            // console.log(jqXHR.auditor_users);
+            console.log(jqXHR.auditee_users);
+            console.log(jqXHR.auditor_users);
             $("#auditee_id").empty();
             if (jqXHR.auditee_users.length == 0) {
                 $("#auditee_id").append($('<option>', {
