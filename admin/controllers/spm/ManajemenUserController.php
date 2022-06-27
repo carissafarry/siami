@@ -43,6 +43,15 @@ class ManajemenUserController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
+
+            //  TODO validate wether inputted net_id exists in server database
+//            $user_server_data = User::getUserServerData($request['net_id'], '');
+//            $user_data = User::findOne(['net_id' => $user_server_data->netid]);
+//
+//            if (!$user_data) {
+//                $userDataRule->addError('net_id', 'User with this Net ID does not exist!');
+//            }
+
             $request['user_type'] = $request['role_id'];
             $user->loadData($request);
 

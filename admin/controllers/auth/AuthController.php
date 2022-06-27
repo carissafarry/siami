@@ -66,8 +66,8 @@ class AuthController extends Controller
     public function verify(Model $loginModel, Rule $loginRule): bool
     {
 //        $user = User::findOne(['email' => $loginModel->email]);
-        $user_data_server = User::getUserServerData($loginModel->email, $loginModel->password);
-        $user = User::findOne(['net_id' => $user_data_server->netid]);
+        $user_server_data = User::getUserServerData($loginModel->email, $loginModel->password);
+        $user = User::findOne(['net_id' => $user_server_data->netid]);
 
         if (!$user) {
             $loginRule->addError('email', 'User does not exist with this email address');
