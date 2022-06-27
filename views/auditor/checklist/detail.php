@@ -28,31 +28,43 @@ $this->header_title = 'Detail Checklist';
             <div class="card-body px-sm-5 px-4">
                 <div class="row mb-3">
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>ID Checklist</small></h6>
-                        <p><small><?= $checklist->id ?></small></p>
+                        <h6 class="mb-0"><small>AMI</small></h6>
+                        <p><small><?= $checklist->ami()->tahun ?></small></p>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>No Revisi</small></h6>
-                        <p><small><?= $checklist->no_revisi ?></small></p>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Status Checklist</small></h6>
+                        <p><small><?= $checklist->status()->status ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Tanggal Terbit</small></h6>
                         <p><small><?= $checklist->tgl_terbit ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Area</small></h6>
-                        <p><small><?= $checklist->area()->nama ?></small></p>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>No Identifikasi</small></h6>
                         <p><small><?= $checklist->no_identifikasi ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Auditee</small></h6>
-                        <p><small><?= $checklist->auditee()->user()->nama ?></small></p>
+                        <h6 class="mb-0"><small>No Revisi</small></h6>
+                        <p><small><?= $checklist->no_revisi ?></small></p>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Area</small></h6>
+                        <p><small><?= $checklist->area()->nama ?></small></p>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Auditee</small></h6>
+                        <p><small><?= $checklist->auditee()->user()->nama ?> - <?= $checklist->auditee()->user()->net_id ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Auditee Pengganti</small></h6>
+                        <?php if ($checklist->auditee2()) : ?>
+                            <p><small><?= $checklist->auditee2()->user()->nama ?: '' ?></small></p>
+                        <?php else: ?>
+                            <p><small>-</small></p>
+                        <?php endif; ?>
+                    </div>
                     <?php
                     $no = 1;
                     foreach ($auditors as $auditor):
@@ -65,13 +77,15 @@ $this->header_title = 'Detail Checklist';
                     $no++;
                     endforeach;
                     ?>
+                    <?php if (count($auditors) < 3): ?>
                     <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Auditee Pengganti</small></h6>
-                        <p><small><?= $checklist->no_revisi ?></small></p>
+                        <h6 class="mb-0"><small>Auditor 3</small></h6>
+                        <p><small>-</small></p>
                     </div>
+                    <?php endif; ?>
                     <div class="col-sm-6 col-12">
                         <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $checklist->tgl_terbit ?></small></p>
+                        <p><small><?= $checklist->status ?></small></p>
                     </div>
                 </div>
             </div>
@@ -91,32 +105,20 @@ $this->header_title = 'Detail Checklist';
             </div>
             <div class="card-body px-0 pb-2 p-0 m-3">
                 <div class="table-responsive">
-                    <table id="TABLE_1" class="table align-items-center mb-0">
+                    <table id="TABLE_2" class="table align-items-center mb-0">
                         <thead>
                         <tr>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 No
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Kode Standar
+                                Kriteria
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Kode Kriteria
+                                Kriteria
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Ket Nilai
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Auditee
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Data Pendukung
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Auditor
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Nilai
+                                Kriteria
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Aksi
@@ -133,20 +135,14 @@ $this->header_title = 'Detail Checklist';
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $checklist_kriteria->id ?>">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table"> <?= $kriteria->kriteria ?> </td>
-                                <td class="center-table"> <?= $kriteria->catatan ?> </td>
-                                <td class="center-table"> <?= $kriteria->ket_nilai ?> </td>
-                                <td class="center-table"> <?= $checklist_kriteria->ket_auditee ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap; width: 5rem;"><span style="width: 10rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
                                 <td class="center-table">
                                     <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                         <i class="fas fa-file"></i>
                                     </a>
                                 </td>
                                 <td class="center-table">
-                                    <textarea class="form-control ket_auditor" name="ket_auditor_<?= $checklist_auditor->id ?>" id="ket_auditor_<?= $checklist_auditor->id ?>" rows="4"><?= $checklist_auditor->ket_auditor ?></textarea>
-                                </td>
-                                <td class="center-table">
-                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" rows="4" cols="5"><?= $checklist_auditor->nilai ?></textarea>
+                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;"><?= $checklist_auditor->nilai ?></textarea>
                                 </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
@@ -159,13 +155,14 @@ $this->header_title = 'Detail Checklist';
                                 </td>
                             </tr>
                         <?php
-                        $no++;
+                            $no++;
                         endforeach;
                         ?>
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -220,14 +217,14 @@ $this->header_title = 'Detail Checklist';
                         foreach ($checklist_has_kriterias as $checklist_kriteria):
                             $kriteria = $checklist_kriteria->kriteria();
                             $checklist_auditor = $checklist_kriteria->checklist_auditor(['auditor_id' => $current_auditor_id]);
-                            ?>
+                        ?>
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $checklist_kriteria->id ?>">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table"> <?= $kriteria->kriteria ?> </td>
-                                <td class="center-table"> <?= $kriteria->catatan ?> </td>
-                                <td class="center-table"> <?= $kriteria->ket_nilai ?> </td>
-                                <td class="center-table"> <?= $checklist_kriteria->ket_auditee ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap; width: 5rem;"><span style="width: 10rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem; width: 5rem;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem; width: 5rem;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                 <td class="center-table">
                                     <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                         <i class="fas fa-file"></i>
@@ -237,7 +234,7 @@ $this->header_title = 'Detail Checklist';
                                     <textarea class="form-control ket_auditor" name="ket_auditor_<?= $checklist_auditor->id ?>" id="ket_auditor_<?= $checklist_auditor->id ?>" rows="4"><?= $checklist_auditor->ket_auditor ?></textarea>
                                 </td>
                                 <td class="center-table">
-                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" rows="4" cols="5"><?= $checklist_auditor->nilai ?></textarea>
+                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;"><?= $checklist_auditor->nilai ?></textarea>
                                 </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
@@ -249,8 +246,8 @@ $this->header_title = 'Detail Checklist';
                                     </ul>
                                 </td>
                             </tr>
-                            <?php
-                            $no++;
+                        <?php
+                        $no++;
                         endforeach;
                         ?>
                         </tbody>
@@ -263,7 +260,7 @@ $this->header_title = 'Detail Checklist';
 
 <div class="row text-left">
     <div class="div">
-        <a href="/auditor/checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
     </div>
 </div>
 

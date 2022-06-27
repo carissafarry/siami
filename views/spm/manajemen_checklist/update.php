@@ -96,7 +96,7 @@ $this->header_title = 'Tambah Checklist';
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="/<?= strtolower(App::$app->user->role->role) ?>/manajemen-kriteria" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+                        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/manajemen-kriteria" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
                         <button type="submit" class="btn btn-sm bg-gradient-warning">Save</button>
                     </div>
                 </form>

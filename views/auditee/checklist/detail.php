@@ -166,7 +166,7 @@ $this->header_title = 'Detail Checklist';
 </div>
 <div class="row text-left">
     <div class="div">
-        <a href="/auditee/checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
     </div>
 </div>
 

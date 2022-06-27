@@ -57,12 +57,8 @@ class AuditorChecklistController extends Controller
         $colors = [
             'primary', 'secondary', 'danger', 'info', 'warning', 'success',
         ];
-        $prev_year = (int)date('Y')-1;
-        $prev_ami_periode = Ami::findOne(['tahun' => $prev_year]);
-//        echo '<pre>';
-//        var_dump($auditors);
-//        echo '</pre>';
-//        exit();
+//        $prev_year = (int)date('Y')-1;
+//        $prev_ami_periode = Ami::findOne(['tahun' => $prev_year]);
 
         App::setLayout('layout');
         return App::view('auditor/checklist/detail', [

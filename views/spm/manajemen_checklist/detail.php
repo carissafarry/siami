@@ -79,10 +79,14 @@ $this->header_title = 'Detail Checklist';
                             <p><small>-</small></p>
                         </div>
                     <?php endif; ?>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Status</small></h6>
+                        <p><small><?= $checklist->status ?></small></p>
+                    </div>
                 </div>
                 <div class="row text-left">
                     <div class="div">
-                        <a href="/<?= strtolower(App::$app->user->role->role) ?>/manajemen-checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+                        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/manajemen-checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
                     </div>
                 </div>
             </div>
