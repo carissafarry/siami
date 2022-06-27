@@ -5,7 +5,6 @@ namespace app\admin\controllers\auditor;
 use app\admin\models\Ami;
 use app\admin\models\Checklist;
 use app\admin\models\ChecklistAuditor;
-use app\admin\models\ChecklistHasKriteria;
 use app\includes\App;
 use app\includes\Controller;
 use app\includes\Request;
@@ -15,16 +14,36 @@ class AuditorChecklistController extends Controller
 {
     public function index(Request $request, Response $response)
     {
+        $amis = Ami::findAll();
+        $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $current_auditor_user = App::$app->user->auditor();
-        $checklists = $current_auditor_user->checklists();
+        $checklists = $current_auditor_user->checklists(['ami_id' => $last_ami->id]);
 
         $colors = [
             'primary', 'secondary', 'danger', 'info', 'warning', 'success',
         ];
 
         App::setLayout('layout');
+
+        if ($request->isPost()) {
+            $request = $request->getBody();
+
+            //  Find checklist with given year
+            $checklists = $current_auditor_user->checklists(['ami_id' => $request['ami_id']]);
+            $requested_ami = Ami::findOne(['id' => $request['ami_id']]);
+
+            return App::view('auditor/checklist/index', [
+                'checklists' => $checklists,
+                'amis' => $amis,
+                'tahun' => $requested_ami->tahun,
+                'colors' => $colors,
+            ]);
+        }
+
         return App::view('auditor/checklist/index', [
             'checklists' => $checklists,
+            'amis' => $amis,
+            'tahun' => $last_ami->tahun,
             'colors' => $colors,
         ]);
     }
@@ -40,6 +59,10 @@ class AuditorChecklistController extends Controller
         ];
         $prev_year = (int)date('Y')-1;
         $prev_ami_periode = Ami::findOne(['tahun' => $prev_year]);
+//        echo '<pre>';
+//        var_dump($auditors);
+//        echo '</pre>';
+//        exit();
 
         App::setLayout('layout');
         return App::view('auditor/checklist/detail', [
@@ -55,7 +78,7 @@ class AuditorChecklistController extends Controller
     public function saveChecklistKriteria(Request $request, Response $response, $param)
     {
         $request = $request->getBody();
-        $checklist_auditor = ChecklistAuditor::findOne([id => $request['id']], 'checklist_auditor', ChecklistAuditor::class);
+        $checklist_auditor = ChecklistAuditor::findOne(['id' => $request['id']], 'checklist_auditor', ChecklistAuditor::class);
 
         $checklist_auditor->loadData($request);
 

@@ -185,7 +185,7 @@ abstract class DbModel extends Model
      * @param $where array Define conditions that will be used in Where clause.
      * @return array The result of executed query from findAll() function.
      */
-    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class_type, $where=null, ?array $select_columns=null, bool $distinct=false): array
+    public function findManyToMany($table, $on_params_with_pivot, $on_params_with_target, $return_class_type, $where=null, ?array $select_columns=null, bool $distinct=false, $obj_attr=null, $order_by=null): array
     {
         $tableName = $table;
         $table_on_params = implode(" ON ", array_map(function($val, $key) {
@@ -221,8 +221,8 @@ abstract class DbModel extends Model
                 ON $pivot_on_params 
           WHERE $conditions
         ";
-        
-        return self::findAll($table, $where_value, $return_class_type, $sql);
+
+        return self::findAll($table, $where_value, $return_class_type, $sql, $obj_attr);
     }
 
     /**

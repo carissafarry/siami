@@ -2,7 +2,9 @@
 /**
  * @var $this \app\includes\View
  * @var $checklists array \app\admin\models\Checklist
+ * @var $amis array \app\admin\models\Ami
  * @var $colors array
+ * @var $tahun string
  */
 
 use app\includes\App;
@@ -12,7 +14,35 @@ $this->breadcrumbs = 'Checklist';
 $this->header_title = $this->breadcrumbs;
 ?>
 
-<div class="row my-4">
+<div class="row">
+    <div class="col-lg-2 col-sm-2 col-md-2">
+        <form action="<?= App::getRoute() ?>" method="post" id="form_ami_id">
+            <div class="form-group">
+                <select class="form-select" name="ami_id" id="ami_id" onchange="submitAmiId()" style="outline: none;">
+                <?php
+                    foreach ($amis as $ami):
+                        if ($ami->tahun == $tahun):
+                ?>
+                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
+                <?php
+                        endif;
+                    endforeach;
+                ?>
+                <?php
+                    foreach ($amis as $ami):
+                        if ($ami->tahun != $tahun):
+                ?>
+                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
+                <?php
+                        endif;
+                    endforeach;
+                ?>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row mb-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-header pb-0">
@@ -100,3 +130,10 @@ $this->header_title = $this->breadcrumbs;
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function submitAmiId() {
+        var form = $('#form_ami_id');
+        form.submit();
+    }
+</script>

@@ -76,6 +76,11 @@ class Checklist extends DbModel
         return self::findOne(['user_id' => $this->auditee_id], 'auditee', Auditee::class);
     }
 
+    public function auditee2()
+    {
+        return self::findOne(['user_id' => $this->auditee2_id], 'auditee', Auditee::class);
+    }
+
     public function kriterias()
     {
         return self::findManyToMany(
@@ -89,18 +94,43 @@ class Checklist extends DbModel
 
     public function auditors()
     {
-        $checklistsauditor_auditor_ids =  self::findManyToMany(
-            self::tableName(),
-            ['CHECKLIST.ID' => 'CHECKLIST_HAS_KRITERIA.CHECKLIST_ID'],
-            ['CHECKLIST_HAS_KRITERIA.ID' => 'CHECKLIST_AUDITOR.CHECKLIST_KRITERIA_ID'],
-            ChecklistAuditor::class,
-            ['CHECKLIST.ID' => $this->id],
-            ['CHECKLIST_AUDITOR.AUDITOR_ID',],
-            true
-        );
         $auditors = [];
+//        $checklistsauditor_auditor_ids =  self::findManyToMany(
+//            self::tableName(),
+//            ['CHECKLIST.ID' => 'CHECKLIST_HAS_KRITERIA.CHECKLIST_ID'],
+//            ['CHECKLIST_HAS_KRITERIA.ID' => 'CHECKLIST_AUDITOR.CHECKLIST_KRITERIA_ID'],
+//            ChecklistAuditor::class,
+//            ['CHECKLIST.ID' => $this->id],
+//            ['CHECKLIST_AUDITOR.AUDITOR_ID',],
+//            false,
+//            'auditor_id',
+//        );
+
+        $sql = "
+            SELECT CHECKLIST_AUDITOR.*
+              FROM CHECKLIST
+                INNER JOIN CHECKLIST_HAS_KRITERIA
+                    ON CHECKLIST.ID = CHECKLIST_HAS_KRITERIA.CHECKLIST_ID
+                INNER JOIN CHECKLIST_AUDITOR
+                    ON CHECKLIST_HAS_KRITERIA.ID = CHECKLIST_AUDITOR.CHECKLIST_KRITERIA_ID 
+              WHERE CHECKLIST.ID = :ID
+              ORDER BY CHECKLIST_AUDITOR.ID
+            ";
+
+        $checklistsauditor_auditor_ids = self::findAll(
+            self::tableName(),
+            ['ID' => $this->id],
+            ChecklistAuditor::class,
+            $sql,
+            'auditor_id'
+        );
+
         foreach ($checklistsauditor_auditor_ids as $checklist_auditor) {
-            $auditors[] = Auditor::findOne(['user_id' => $checklist_auditor->auditor_id], "auditor", Auditor::class);
+//                $auditors[] = Auditor::findOne(['user_id' => $checklist_auditor->auditor_id], "auditor", Auditor::class);
+            $auditor = Auditor::findOne(['user_id' => $checklist_auditor], "auditor", Auditor::class);
+            if ($auditor && !in_array($auditor, $auditors)) {
+                 $auditors[] = $auditor;
+            }
         }
         return $auditors;
     }
