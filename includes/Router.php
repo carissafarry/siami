@@ -7,6 +7,10 @@ namespace app\includes;
      *  Manage routing and execute requests
 */
 
+/**
+ * @var Controller $controller
+ */
+
 use app\includes\exception\NotFoundException;
 
 class Router
@@ -34,8 +38,6 @@ class Router
 
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
-            $main_path = substr(strtok($path, '{'), 0, strrpos(strtok($path, '{'), '/'));
-//            $this->routes['get'][$main_path] = $callback;
             $this->routes['get'][$path] = $callback;
 
             //  Define arguments as array elements
@@ -44,7 +46,6 @@ class Router
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-//            $this->routes['get'][$main_path][] = $arguments;
             $this->routes['get'][$path][] = $arguments;
         } else {
             $this->routes['get'][$path] = $callback;
@@ -63,8 +64,6 @@ class Router
 
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
-            $main_path = substr(strtok($path, '{'), 0, strrpos(strtok($path, '{'), '/'));
-//            $this->routes['post'][$main_path] = $callback;
             $this->routes['post'][$path] = $callback;
 
             //  Define arguments as array elements
@@ -73,7 +72,6 @@ class Router
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-//            $this->routes['post'][$main_path][] = $arguments;
             $this->routes['post'][$path][] = $arguments;
         } else {
             $this->routes['post'][$path] = $callback;
@@ -129,9 +127,6 @@ class Router
 
         //  If it is an array, first array is a controller class, and second is the method inside the controller
         if (is_array($callback)) {
-            //  Define type of controller
-            /** @var Controller $controller */
-
             //  Create new instance of Controller class from App
             $controller = new $callback[0]();
             App::$app->controller = $controller;
