@@ -21,10 +21,12 @@ class NavItem
 
     public function __toString()
     {
+        $is_being_open = App::$app->request->is(($this->with_role ? strtolower(App::$app->user->role()->role) : '') . $this->route );
+
         return sprintf('
             <li class="nav-item">
                 <a class="nav-link %s" href= "%s%s">
-                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center %s">
                         %s
                     </div>
                     <span class="nav-link-text ms-1">%s</span>
@@ -32,9 +34,10 @@ class NavItem
             </li>
         ',
 //            App::$app->request->is(App::$app->user->role->role . '/manajemen-user' ) ? 'active' : '',
-            App::$app->request->is(($this->with_role ? strtolower(App::$app->user->role()->role) : '') . $this->route ) ? 'active' : '',
+            $is_being_open ? 'active' : '',
             $this->with_role ? "/" . strtolower(App::$app->user->role()->role) : '',
             $this->route,
+            $is_being_open ? 'text-white' : '',
             $this->icon,
             $this->title
         );

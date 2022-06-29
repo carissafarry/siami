@@ -52,8 +52,8 @@ $this->header_title = $this->breadcrumbs;
                                 <input class="form-control" type="text" name="jabatan" value="<?= App::$app->user->jabatan ?>" id="example-text-input">
                             </div>
                             <div class="form-group">
-                                <label for="periode" class="form-control-label h6"><small>Periode</small></label>
-                                <input class="form-control" type="text" name="periode" value="<?= App::$app->user->periode ?>" id="example-text-input">
+                                <label for="tahun" class="form-control-label h6"><small>Tahun</small></label>
+                                <input class="form-control" type="text" name="tahun" value="<?= App::$app->user->tahun ?>" id="example-text-input">
                             </div>
                         </div>
                     </div>
