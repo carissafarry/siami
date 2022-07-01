@@ -6,13 +6,14 @@
  * @var $auditors array \app\admin\models\Auditor
  * @var $checklist_id int
  * @var $current_auditor_id int
+ * @var $colors array
  */
 
 use app\includes\App;
 
-$this->title = 'Checklist | Detail';
-$this->breadcrumbs = 'Checklist / Detail';
-$this->header_title = 'Detail Checklist';
+$this->title = 'Checklist | Update';
+$this->breadcrumbs = 'Checklist / Update';
+$this->header_title = 'Update Checklist';
 ?>
 
 <div class="row my-4">
@@ -31,9 +32,9 @@ $this->header_title = 'Detail Checklist';
                         <h6 class="mb-0"><small>AMI</small></h6>
                         <p><small><?= $checklist->ami()->tahun ?></small></p>
                     </div>
-                    <div class="col-sm-6 col-12">
+                    <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Status Checklist</small></h6>
-                        <p><small><?= $checklist->status()->status ?></small></p>
+                        <span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Tanggal Terbit</small></h6>
@@ -78,10 +79,10 @@ $this->header_title = 'Detail Checklist';
                     endforeach;
                     ?>
                     <?php if (count($auditors) < 3): ?>
-                    <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Auditor 3</small></h6>
-                        <p><small>-</small></p>
-                    </div>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Auditor 3</small></h6>
+                            <p><small>-</small></p>
+                        </div>
                     <?php endif; ?>
                     <div class="col-sm-6 col-12">
                         <h6 class="mb-0"><small>Status</small></h6>
@@ -92,6 +93,8 @@ $this->header_title = 'Detail Checklist';
         </div>
     </div>
 </div>
+
+<?php if ($checklist->status_id >= 2): ?>
 
 <div class="row my-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
@@ -105,20 +108,26 @@ $this->header_title = 'Detail Checklist';
             </div>
             <div class="card-body px-0 pb-2 p-0 m-3">
                 <div class="table-responsive">
-                    <table id="TABLE_2" class="table align-items-center mb-0">
+                    <table id="TABLE_1" class="table align-items-center mb-0">
                         <thead>
                         <tr>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 No
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Kriteria
+                                Kode Standar
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Kriteria
+                                Kode Kriteria
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Kriteria
+                                Ketidaksesuaian
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Tindak Lanjut
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Tinjauan Efektivitas
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Aksi
@@ -137,12 +146,15 @@ $this->header_title = 'Detail Checklist';
                                 <td class="center-table"> <?= $no ?> </td>
                                 <td class="center-table" style="white-space: pre-wrap; width: 5rem;"><span style="width: 10rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
                                 <td class="center-table">
+                                    <?php if (isset($checklist->data_pendukung)): ?>
                                     <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                         <i class="fas fa-file"></i>
                                     </a>
+                                    <?php else: ?>
+                                    -
+                                    <?php endif; ?>
                                 </td>
                                 <td class="center-table">
-                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;"><?= $checklist_auditor->nilai ?></textarea>
                                 </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
@@ -167,13 +179,23 @@ $this->header_title = 'Detail Checklist';
     </div>
 </div>
 
+<?php endif; ?>
+
 <div class="row my-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-header pb-0">
-                <div class="row">
+                <div class="row d-flex justify-content-between">
                     <div class="col-sm-6 col-4">
                         <h6>Data Kriteria</h6>
+                    </div>
+                    <div class="col-sm-6 col-8 text-end">
+                        <?php if (($checklist->status_id == 2) && ($auditors[0]->user_id == $current_auditor_id)): ?>
+                        <form action="/auditor/checklist/submit" method="post">
+                            <input type="hidden" name="checklist_id" value="<?= $checklist_id ?>">
+                            <button type="submit" class="btn bg-gradient-warning">Submit Audit</button>
+                        </form>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -200,15 +222,19 @@ $this->header_title = 'Detail Checklist';
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Data Pendukung
                             </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Auditor
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Nilai
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Aksi
-                            </th>
+                            <?php if ($checklist->status_id >= 2): ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Keterangan Auditor
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Nilai
+                                </th>
+                                <?php if ($checklist->status_id == 2) : ?>
+                                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        Aksi
+                                    </th>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </tr>
                         </thead>
                         <tbody>
@@ -221,30 +247,38 @@ $this->header_title = 'Detail Checklist';
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $checklist_kriteria->id ?>">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap; width: 5rem;"><span style="width: 10rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem; width: 5rem;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem; width: 5rem;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><span style="width: 10rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                 <td class="center-table">
-                                    <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
-                                        <i class="fas fa-file"></i>
-                                    </a>
+                                    <?php if (isset($checklist_kriteria->data_pendukung)) :?>
+                                        <a href="/auditor/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                            <i class="fas fa-file"></i>
+                                        </a>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
                                 </td>
-                                <td class="center-table">
-                                    <textarea class="form-control ket_auditor" name="ket_auditor_<?= $checklist_auditor->id ?>" id="ket_auditor_<?= $checklist_auditor->id ?>" rows="4"><?= $checklist_auditor->ket_auditor ?></textarea>
-                                </td>
-                                <td class="center-table">
-                                    <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;"><?= $checklist_auditor->nilai ?></textarea>
-                                </td>
-                                <td class="center-table align-content-center">
-                                    <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon">
-                                            <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
-                                                <i class="fas fa-save"></i>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </td>
+                                <?php if ($checklist->status_id >= 2): ?>
+                                    <td class="center-table">
+                                        <textarea class="form-control ket_auditor" name="ket_auditor_<?= $checklist_auditor->id ?>" id="ket_auditor_<?= $checklist_auditor->id ?>" rows="4" <?= ($checklist->status_id > 2) ? 'disabled' : ''?>><?= $checklist_auditor->ket_auditor ?></textarea>
+                                    </td>
+                                    <td class="center-table">
+                                        <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;" <?= ($checklist->status_id > 2) ? 'disabled' : ''?>><?= $checklist_auditor->nilai ?></textarea>
+                                    </td>
+                                    <?php if ($checklist->status_id == 2) : ?>
+                                    <td class="center-table align-content-center">
+                                        <ul style="list-style: none; padding-left: 0;">
+                                            <li class="inline-icon">
+                                                <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </tr>
                         <?php
                         $no++;
@@ -272,6 +306,9 @@ $this->header_title = 'Detail Checklist';
             var ket_auditor = $("#ket_auditor_" + checklist_auditor_id).val();
             var nilai = $("#nilai_" + checklist_auditor_id).val();
 
+            console.log(ket_auditor);
+            console.log(nilai);
+
             var form_data = new FormData();
             form_data.append("id", checklist_auditor_id);
             form_data.append("ket_auditor", ket_auditor);
@@ -279,13 +316,14 @@ $this->header_title = 'Detail Checklist';
 
             $.ajax({
                 type: 'POST',
-                url: "/auditor/checklist/detail/".concat(checklist_id, "/s/"),
+                url: "/auditor/checklist/update/".concat(checklist_id, "/s/"),
                 data: form_data,
                 dataType: 'json',
                 cache: false,
                 contentType: false,
                 processData: false,
                 success: function(response) {
+                    console.log(response);
                     if (response.success === true) {
                         console.log(response);
                         Swal.fire('Sukses', response.message, "success");

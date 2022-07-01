@@ -1,6 +1,8 @@
 $(document).ready( function () {
     $('#table_id').DataTable();
-    $("table[id^='TABLE']").DataTable();
+    $("table[id^='TABLE']").DataTable({
+        autoWidth: false,
+    });
 } );
 
 function setAlert(message, type) {

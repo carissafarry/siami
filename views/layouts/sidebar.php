@@ -10,7 +10,6 @@ use app\includes\App;
         <a class="px-3 py-4 m-0 d-flex justify-content-evenly" href="/dashboard">
             <img src="/contents/assets/img/logo-PENS.png" style="max-width: 100%; max-height: 3rem;" alt="...">
             <img src="/contents/assets/img/logo-SPM.png" style="max-width: 100%; max-height: 3rem;" alt="...">
-<!--            <img src="/contents/assets/img/logo-PENS.png" class="navbar-brand-img h-300" alt="...">-->
 <!--            <span class="ms-1 font-weight-bold">Soft UI Dashboard</span>-->
         </a>
     </div>
@@ -37,12 +36,12 @@ use app\includes\App;
             <?php endif; ?>
             <?php if (App::$app->user->role()->role == 'Auditee'): ?>
                 <?= $component->navItem('Checklist', '/checklist', '
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-th-list"></i>
             ') ?>
             <?php endif; ?>
             <?php if (App::$app->user->role()->role == 'Auditor'): ?>
                 <?= $component->navItem('Checklist', '/checklist', '
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-th-list"></i>
             ') ?>
             <?php endif; ?>
             <li class="nav-item mt-3">

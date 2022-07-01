@@ -2,7 +2,9 @@
 /**
  * @var $this \app\includes\View
  * @var $checklists array \app\admin\models\Checklist
+ * @var $amis array \app\admin\models\Ami
  * @var $colors array
+ * @var $tahun string
  */
 
 use app\includes\App;
@@ -12,27 +14,41 @@ $this->breadcrumbs = 'Checklist';
 $this->header_title = $this->breadcrumbs;
 ?>
 
-<div class="row my-4">
+<div class="row">
+    <div class="col-lg-2 col-sm-2 col-md-2">
+        <form action="<?= App::getRoute() ?>" method="post" id="form_ami_id">
+            <div class="form-group">
+                <select class="form-select" name="ami_id" id="ami_id" onchange="submitAmiId()" style="outline: none;">
+                    <?php
+                    foreach ($amis as $ami):
+                        if ($ami->tahun == $tahun):
+                            ?>
+                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
+                        <?php
+                        endif;
+                    endforeach;
+                    ?>
+                    <?php
+                    foreach ($amis as $ami):
+                        if ($ami->tahun != $tahun):
+                            ?>
+                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
+                        <?php
+                        endif;
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row mb-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-sm-6 col-4">
                         <h6>Data Checklist</h6>
-                    </div>
-                    <div class="col-sm-6 col-8">
-                        <div class="dropdown" style="float: right;">
-                            <a href="#" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" id="yearDropdown">
-                                2020
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="yearDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        2022
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -78,10 +94,9 @@ $this->header_title = $this->breadcrumbs;
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/detail/<?= $checklist->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
                                         <li class="inline-icon">
-                                            <form method="post" action="<?= App::getRoute() ?>/delete/<?= $checklist->id ?>" class="inline">
+                                            <form method="post" action="<?= App::getRoute() ?>/delete/<?= $checklist->id ?>" class="inline" id="delete_checklist">
                                                 <input type="hidden" name="delete_<?= $checklist->id ?>" value="<?= $checklist->id ?>">
                                                 <button type="submit" class="btn-sm bg-transparent border-0 p-0">
                                                     <i class="fas fa-trash"></i>
@@ -102,3 +117,11 @@ $this->header_title = $this->breadcrumbs;
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function submitAmiId() {
+        var form = $('#form_ami_id');
+        // console.log(form);
+        form.submit();
+    }
+</script>

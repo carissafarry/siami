@@ -67,7 +67,7 @@ $this->header_title = 'Tambah User';
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="tahun" class="h6 text-sm form-control-label">tahun</label>
+                                <label for="tahun" class="h6 text-sm form-control-label">Tahun</label>
                                 <input name="tahun" class="form-control <?= $rule->hasError('tahun') ? 'is-invalid' : '' ?>" type="text" id="tahun">
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('tahun') ?>

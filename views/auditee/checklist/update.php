@@ -9,9 +9,9 @@
 
 use app\includes\App;
 
-$this->title = 'Checklist | Detail';
-$this->breadcrumbs = 'Checklist / Detail';
-$this->header_title = 'Detail Checklist';
+$this->title = 'Checklist | Update';
+$this->breadcrumbs = 'Checklist / Update';
+$this->header_title = 'Update Checklist';
 ?>
 
 <div class="row my-4">
@@ -25,52 +25,67 @@ $this->header_title = 'Detail Checklist';
                 </div>
             </div>
             <div class="card-body px-sm-5 px-4">
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>ID Checklist</small></h6>
-                        <p><small><?= $checklist->id ?></small></p>
+                        <h6 class="mb-0"><small>AMI</small></h6>
+                        <p><small><?= $checklist->ami()->tahun ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>No Revisi</small></h6>
-                        <p><small><?= $checklist->no_revisi ?></small></p>
+                        <h6 class="mb-0"><small>Status Checklist</small></h6>
+                        <span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Tanggal Terbit</small></h6>
                         <p><small><?= $checklist->tgl_terbit ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Area</small></h6>
-                        <p><small><?= $checklist->area()->nama ?></small></p>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>No Identifikasi</small></h6>
+                        <h6 class="mb-0"><small>Nomor Identifikasi</small></h6>
                         <p><small><?= $checklist->no_identifikasi ?></small></p>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Auditee</small></h6>
-                        <p><small><?= $checklist->auditee()->user()->nama ?></small></p>
+                        <h6 class="mb-0"><small>Nomor Revisi</small></h6>
+                        <p><small><?= $checklist->no_revisi ?></small></p>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Area</small></h6>
+                        <p><small><?= $checklist->area()->nama ?></small></p>
                     </div>
                 </div>
                 <div class="row">
-                    <?php
-                    $no = 1;
-                    foreach ($auditors as $auditor):
-                    ?>
-                        <div class="col-sm-6 col-12">
-                            <h6 class="mb-0"><small>Auditor <?= $no ?></small></h6>
-                            <p><small><?= $auditor->user()->nama ?> - <?= $auditor->user()->net_id ?></small></p>
-                        </div>
-                    <?php
-                    $no++;
-                    endforeach;
-                    ?>
                     <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Auditee Pengganti</small></h6>
-                        <p><small><?= $checklist->no_revisi ?></small></p>
+                        <h6 class="mb-0"><small>Auditee</small></h6>
+                        <p><small><?= $checklist->auditee()->user()->nama ?> - <?= $checklist->auditee()->user()->net_id ?></small></p>
                     </div>
                     <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Auditee Pengganti</small></h6>
+                        <?php if ($checklist->auditee2()) : ?>
+                            <p><small><?= $checklist->auditee2()->user()->nama ?: '' ?></small></p>
+                        <?php else: ?>
+                            <p><small>-</small></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php
+                    $no_auditor=1;
+                    foreach ($auditors as $auditor):
+                        $user_auditor = $auditor->user();
+                        ?>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Auditor <?= $no_auditor ?></small></h6>
+                            <p><small><?= $user_auditor->nama ?> - <?= $user_auditor->net_id ?></small></p>
+                        </div>
+                        <?php
+                        $no_auditor++;
+                    endforeach;
+                    ?>
+                    <?php if (count($auditors) < 3): ?>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Auditor 3</small></h6>
+                            <p><small>-</small></p>
+                        </div>
+                    <?php endif; ?>
+                    <div class="col-sm-6 col-12">
                         <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $checklist->tgl_terbit ?></small></p>
+                        <p><small><?= $checklist->status ?></small></p>
                     </div>
                 </div>
             </div>
@@ -107,6 +122,7 @@ $this->header_title = 'Detail Checklist';
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Keterangan Auditee
                             </th>
+
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Data Pendukung
                             </th>
@@ -123,33 +139,41 @@ $this->header_title = 'Detail Checklist';
                         ?>
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $checklist_kriteria->id ?>">
-                                <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table"> <?= $kriteria->kriteria ?> </td>
-                                <td class="center-table"> <?= $kriteria->catatan ?> </td>
-                                <td class="center-table"> <?= $kriteria->ket_nilai ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap;"> <?= $no ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
                                 <td class="center-table">
-                                    <textarea class="form-control ket_auditee" name="ket_auditee_<?= $checklist_kriteria->id ?>" id="ket_auditee_<?= $checklist_kriteria->id ?>" rows="4"><?= $checklist_kriteria->ket_auditee ?></textarea>
+                                    <textarea class="form-control ket_auditee" name="ket_auditee_<?= $checklist_kriteria->id ?>" id="ket_auditee_<?= $checklist_kriteria->id ?>" rows="4" <?= ($checklist->status_id >= 3) ? 'disabled' : '' ?>><?= $checklist_kriteria->ket_auditee ?></textarea>
                                 </td>
                                 <td class="center-table">
-                                    <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
-                                        <i class="fas fa-file"></i>
-                                    </a>
-                                    <input type="file" name="data_pendukung_<?= $checklist_kriteria->id ?>" id="data_pendukung_<?= $checklist_kriteria->id ?>">
+                                    <?php if ($checklist_kriteria->data_pendukung):?>
+                                        <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                            <i class="fas fa-file"></i>
+                                        </a>
+                                        <?php if ($checklist->status_id < 3): ?>
+                                            <input type="file" name="data_pendukung_<?= $checklist_kriteria->id ?>" id="data_pendukung_<?= $checklist_kriteria->id ?>">
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php if ($checklist->status_id >= 3): ?>
+                                            -
+                                        <?php else: ?>
+                                            <input type="file" name="data_pendukung_<?= $checklist_kriteria->id ?>" id="data_pendukung_<?= $checklist_kriteria->id ?>">
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/edit/<?= $checklist_kriteria->id ?>"><i class="fas fa-pen"></i></a></li>
-                                        <li class="inline-icon">
-                                            <button type="submit" value="<?= $checklist_kriteria->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
-                                                <i class="fas fa-save"></i>
-                                            </button>
-                                        </li>
-                                        <li class="inline-icon">
-                                            <button type="submit" class="btn-sm bg-transparent border-0 p-0" onclick="submit(<?= json_encode($checklist_kriteria->id) ?>)">
-                                                <i class="fas fa-save"></i>
-                                            </button>
-                                        </li>
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <?php if ($checklist->status_id == 3): ?>
+                                            <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <?php endif; ?>
+                                        <?php if ($checklist->status_id < 3): ?>
+                                            <li class="inline-icon">
+                                                <button type="submit" value="<?= $checklist_kriteria->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </td>
                             </tr>
@@ -187,7 +211,7 @@ $this->header_title = 'Detail Checklist';
 
             $.ajax({
                 type: 'POST',
-                url: "/auditee/checklist/detail/".concat(checklist_id, "/s/"),
+                url: "/auditee/checklist/update/".concat(checklist_id, "/s/"),
                 data: form_data,
                 dataType: 'json',
                 cache: false,

@@ -101,7 +101,6 @@ $this->header_title = $this->breadcrumbs;
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/detail/<?= $checklist->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
                                         <li class="inline-icon">
                                             <form method="post" action="<?= App::getRoute() ?>/delete/<?= $checklist->id ?>" class="inline">

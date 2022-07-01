@@ -69,24 +69,27 @@ $app->router->post('/spm/manajemen-checklist', [new ManajemenChecklistController
 $app->router->get('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
 $app->router->post('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
 $app->router->post('/spm/manajemen-checklist/update-area-data', [new ManajemenChecklistController(), 'update_area_data']);
-$app->router->get('/spm/manajemen-checklist/detail/{id}', [new ManajemenChecklistController(), 'detail']);
+$app->router->get('/spm/manajemen-checklist/update/{id}', [new ManajemenChecklistController(), 'update']);
+$app->router->get('/spm/manajemen-checklist/update/{checklist_id}/i/{id}', [new ManajemenChecklistController(), 'detail_checklist_has_kriteria']);
 
 
 
 // Auditee
 $app->router->get('/auditee/checklist', [new AuditeeChecklistController(), 'index']);
-$app->router->get('/auditee/checklist/detail/{id}', [new AuditeeChecklistController(), 'detail']);
-$app->router->post('/auditee/checklist/detail/{checklist_id}/s', [new AuditeeChecklistController(), 'saveChecklistKriteria']);
+$app->router->post('/auditee/checklist', [new AuditeeChecklistController(), 'index']);
+$app->router->get('/auditee/checklist/update/{id}', [new AuditeeChecklistController(), 'update']);
+$app->router->post('/auditee/checklist/update/{checklist_id}/s', [new AuditeeChecklistController(), 'saveChecklistKriteria']);
 $app->router->get('/auditee/checklist/view/{id}', [new AuditeeChecklistController(), 'viewFile']);
-$app->router->post('/auditee/checklist/detail/{checklist_id}/i/{checklist_has_kriteria_id}', [new AuditeeChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->get('/auditee/checklist/update/{checklist_id}/i/{id}', [new AuditeeChecklistController(), 'detail_checklist_has_kriteria']);
 
 
 
 // Auditor
 $app->router->get('/auditor/checklist', [new AuditorChecklistController(), 'index']);
 $app->router->post('/auditor/checklist', [new AuditorChecklistController(), 'index']);
-$app->router->get('/auditor/checklist/detail/{id}', [new AuditorChecklistController(), 'detail']);
-$app->router->post('/auditor/checklist/detail/{checklist_id}/s', [new AuditorChecklistController(), 'saveChecklistKriteria']);
+$app->router->get('/auditor/checklist/update/{id}', [new AuditorChecklistController(), 'update']);
+$app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChecklistController(), 'saveChecklistKriteria']);
+$app->router->post('/auditor/checklist/submit', [new AuditorChecklistController(), 'submitAudit']);
 
 
 $app->run();

@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\auditee;
 
+use app\admin\models\Ami;
 use app\admin\models\Checklist;
 use app\admin\models\ChecklistHasKriteria;
 use app\includes\App;
@@ -13,20 +14,46 @@ class AuditeeChecklistController extends Controller
 {
     public function index(Request $request, Response $response)
     {
-        $current_auditee_user_id = App::$app->user->auditee()->user_id;
-        $checklists = Checklist::findAll('checklist', ['auditee_id' => $current_auditee_user_id]);
+        $amis = Ami::findAll();
+        $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
+        $current_auditee_user = App::$app->user->auditee();
+        $checklists = Checklist::findAll('checklist', [
+            'ami_id' => $last_ami->id,
+            'auditee_id' => $current_auditee_user->user_id,
+        ]);
         $colors = [
             'primary', 'secondary', 'danger', 'info', 'warning', 'success',
         ];
 
         App::setLayout('layout');
+
+        if ($request->isPost()) {
+            $request = $request->getBody();
+
+            //  Find checklist with given year
+            $checklists = Checklist::findAll('checklist', [
+                'ami_id' => $request['ami_id'],
+                'auditee_id' => $current_auditee_user->user_id,
+            ]);
+            $requested_ami = Ami::findOne(['id' => $request['ami_id']]);
+
+            return App::view('auditee/checklist/index', [
+                'checklists' => $checklists,
+                'amis' => $amis,
+                'tahun' => $requested_ami->tahun,
+                'colors' => $colors,
+            ]);
+        }
+
         return App::view('auditee/checklist/index', [
             'checklists' => $checklists,
+            'amis' => $amis,
+            'tahun' => $last_ami->tahun,
             'colors' => $colors,
         ]);
     }
 
-    public function detail(Request $request, Response $response, $param)
+    public function update(Request $request, Response $response, $param)
     {
         $checklist = Checklist::findOrFail($param);
         $kriterias = $checklist->kriterias();
@@ -37,7 +64,7 @@ class AuditeeChecklistController extends Controller
         ];
 
         App::setLayout('layout');
-        return App::view('auditee/checklist/detail', [
+        return App::view('auditee/checklist/update', [
             'checklist_id' => $param["id"],
             'checklist' => $checklist,
             'checklist_has_kriterias' => $checklist_has_kriterias,
@@ -84,6 +111,10 @@ class AuditeeChecklistController extends Controller
 
     public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
     {
+        echo '<pre>';
+        var_dump($param);
+        echo '</pre>';
+        exit();
 
     }
 }

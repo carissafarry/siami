@@ -18,9 +18,8 @@ class AuditorChecklistController extends Controller
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $current_auditor_user = App::$app->user->auditor();
         $checklists = $current_auditor_user->checklists(['ami_id' => $last_ami->id]);
-
         $colors = [
-            'primary', 'secondary', 'danger', 'info', 'warning', 'success',
+            'primary', 'warning', 'info', 'danger', 'success',
         ];
 
         App::setLayout('layout');
@@ -48,26 +47,27 @@ class AuditorChecklistController extends Controller
         ]);
     }
 
-    public function detail(Request $request, Response $response, $param)
+    public function update(Request $request, Response $response, $param)
     {
         $checklist = Checklist::findOrFail($param);
         $current_auditor_user = App::$app->user->auditor();
         $checklist_has_kriterias = $current_auditor_user->checklist_has_kriterias(['checklist_id' => $checklist->id]);
         $auditors = $checklist->auditors();
         $colors = [
-            'primary', 'secondary', 'danger', 'info', 'warning', 'success',
+            'primary', 'warning', 'success', 'danger', 'success',
         ];
-//        $prev_year = (int)date('Y')-1;
-//        $prev_ami_periode = Ami::findOne(['tahun' => $prev_year]);
+
+        $last_year_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id], null, Ami::class, null, 'tahun');
+        $ami_prev_period = Ami::findOne(['tahun' => $last_year_ami-1]);
 
         App::setLayout('layout');
-        return App::view('auditor/checklist/detail', [
+        return App::view('auditor/checklist/update', [
             'checklist_id' => $param["id"],
             'checklist' => $checklist,
             'checklist_has_kriterias' => $checklist_has_kriterias,
             'auditors' => $auditors,
             'colors' => $colors,
-            'current_auditor_id' => App::$app->user->auditor()->user_id,
+            'current_auditor_id' => $current_auditor_user->user_id,
         ]);
     }
 
@@ -94,6 +94,20 @@ class AuditorChecklistController extends Controller
                 'requests' => $request,
                 'checklist_auditor' => $checklist_auditor,
             ]);
+        }
+    }
+
+    public function submitAudit(Request $request, Response $response)
+    {
+        $request = $request->getBody();
+        $checklist = Checklist::findOne(['id' => $request['checklist_id']]);
+        $checklist->loadData([
+            'status_id' => 3
+        ]);
+
+        if ($checklist->update()) {
+            App::$app->session->setFlash('success', 'Data Audit berhasiil disubmit!');
+            $response->back();
         }
     }
 }

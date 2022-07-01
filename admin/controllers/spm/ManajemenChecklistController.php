@@ -25,7 +25,7 @@ class ManajemenChecklistController extends Controller
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $checklists = Checklist::findAll('checklist', ['ami_id' => $last_ami->id]);
         $colors = [
-            'primary', 'secondary', 'danger', 'info', 'warning', 'success',
+            'primary', 'warning', 'info', 'danger', 'success',
         ];
 
         App::setLayout('layout');
@@ -180,15 +180,29 @@ class ManajemenChecklistController extends Controller
         ]);
     }
 
-    public function detail(Request $request, Response $response, $param)
+    public function update(Request $request, Response $response, $param)
     {
         $checklist = Checklist::findOrFail($param);
         $auditors = $checklist->auditors();
+        $checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $checklist->id], ChecklistHasKriteria::class);
+        $colors = [
+            'primary', 'warning', 'info', 'danger', 'success',
+        ];
 
         App::setLayout('layout');
-        return App::view('spm/manajemen_checklist/detail', [
+        return App::view('spm/manajemen_checklist/update', [
             'checklist' => $checklist,
-            'auditors' => $auditors
+            'checklist_has_kriterias' => $checklist_has_kriterias,
+            'auditors' => $auditors,
+            'colors' => $colors,
         ]);
+    }
+
+    public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
+    {
+        echo '<pre>';
+        var_dump($param);
+        echo '</pre>';
+        exit();
     }
 }

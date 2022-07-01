@@ -24,7 +24,7 @@ $this->header_title = 'Tambah AMI';
                                 <label for="spm_id" class="h6 text-sm form-control-label">Kepala SPM</label>
                                 <select class="form-select" name="spm_id" id="spm_id">
                                     <?php foreach ($spms as $spm): ?>
-                                        <option value="<?= $spm->user_id ?>"><?= $spm->user()->nama ?></option>
+                                        <option value="<?= $spm->user_id ?>"><?= $spm->user()->nama ?> - <?= $spm->user()->net_id ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <div class="invalid-feedback d-block">
