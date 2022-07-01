@@ -54,7 +54,7 @@ $this->header_title = 'Detail Kriteria';
                 </div>
                 <div class="row text-left">
                     <div class="div">
-                        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/manajemen-kriteria" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+                        <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
                     </div>
                 </div>
             </div>

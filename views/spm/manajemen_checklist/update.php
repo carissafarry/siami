@@ -4,6 +4,7 @@
  * @var $checklist \app\admin\models\Checklist
  * @var $auditors array \app\admin\models\Auditor
  * @var $checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
+ * @var $prev_checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
  * @var $colors array
  */
 
@@ -93,6 +94,93 @@ $this->header_title = 'Update Checklist';
     </div>
 </div>
 
+<?php if ($prev_checklist_has_kriterias): ?>
+<div class="row my-4">
+    <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
+        <div class="card">
+            <div class="card-header pb-0">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-sm-6 col-4">
+                        <h6>Laporan Kriteria Tahun Lalu</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pb-2 p-0 m-3">
+                <div class="table-responsive">
+                    <table id="TABLE_2" class="table align-items-center mb-0">
+                        <thead>
+                        <tr>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                No
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Kriteria
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Efektivitas th lalu
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Catatan
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Ket Nilai
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Ket Auditee
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Data Pendukung
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Aksi
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $no = 1;
+                        foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
+                            $kriteria = $prev_checklist_has_kriteria->kriteria();
+                            $checklist_auditor = $prev_checklist_has_kriteria->checklist_auditor();
+                        ?>
+                            <tr class="text-sm">
+                                <input type="hidden" name="checklist_kriteria_id" value="<?= $prev_checklist_has_kriteria->id ?>">
+                                <td class="center-table"> <?= $no ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></td>
+                                <td class="center-table">
+                                    <span class="badge bg-gradient-<?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'success' : 'danger' ?>"><?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'Efektif' : 'Tidak Efektif' ?></span>
+                                </td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br($prev_checklist_has_kriteria->ket_auditee ?: '-')) ?></td>
+                                <?php if (isset($prev_checklist_has_kriteria->data_pendukung)) :?>
+                                    <td class="center-table">
+                                        <a href="/spm/checklist/view/<?= $prev_checklist_has_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                            <i class="fas fa-file"></i>
+                                        </a>
+                                    </td>
+                                <?php else: ?>
+                                    <td class="center-table" style="white-space: pre-wrap">-</td>
+                                <?php endif; ?>
+                                <td class="center-table align-content-center">
+                                    <ul style="list-style: none; padding-left: 0;">
+                                        <li class="inline-icon"><a href="/spm/manajemen-checklist/update/<?= $prev_checklist_has_kriteria->checklist()->id ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <?php
+                            $no++;
+                        endforeach;
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <div class="row my-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
@@ -150,7 +238,7 @@ $this->header_title = 'Update Checklist';
                                     <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                     <?php if (isset($checklist_kriteria->data_pendukung)) :?>
                                         <td class="center-table">
-                                            <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                            <a href="/spm/manajemen-checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                                 <i class="fas fa-file"></i>
                                             </a>
                                         </td>
@@ -176,9 +264,8 @@ $this->header_title = 'Update Checklist';
     </div>
 </div>
 
-
 <div class="row text-left">
     <div class="div">
-        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/manajemen-checklist" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+        <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
     </div>
 </div>

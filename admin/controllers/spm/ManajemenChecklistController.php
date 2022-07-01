@@ -189,20 +189,50 @@ class ManajemenChecklistController extends Controller
             'primary', 'warning', 'info', 'danger', 'success',
         ];
 
+        //  Look for previous period checklist data
+        $prev_period_ami = Ami::findOne(['tahun' => ($checklist->ami()->tahun - 1)]);
+        $prev_period_checklist = false;
+        $prev_checklist_has_kriterias = [];
+
+        if ($prev_period_ami) {
+            $prev_period_checklist = Checklist::findOne([
+                'ami_id' => $prev_period_ami->id,
+                'area_id' => $checklist->area_id,
+            ]);
+            $prev_checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $prev_period_checklist->id], ChecklistHasKriteria::class);
+        }
+
         App::setLayout('layout');
         return App::view('spm/manajemen_checklist/update', [
             'checklist' => $checklist,
             'checklist_has_kriterias' => $checklist_has_kriterias,
             'auditors' => $auditors,
+            'prev_checklist_has_kriterias' => $prev_checklist_has_kriterias,
+            'prev_period_auditors' => $prev_period_checklist ? $prev_period_checklist->auditors() : null,
             'colors' => $colors,
         ]);
     }
 
     public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
     {
-        echo '<pre>';
-        var_dump($param);
-        echo '</pre>';
-        exit();
+        $checklist_has_kriteria = ChecklistHasKriteria::findOne([
+            'id' => $param['id'],
+            'checklist_id' => $param['checklist_id'],
+        ]);
+        $colors = [
+            'primary', 'warning', 'info', 'danger', 'success',
+        ];
+
+        App::setLayout('layout');
+        return App::view('spm/manajemen_checklist/detail_checklist_has_kriteria', [
+            'checklist_has_kriteria' => $checklist_has_kriteria,
+            'colors' => $colors,
+        ]);
+    }
+
+    public function viewFile(Request $request, Response $response, $param)
+    {
+        $checklist_kriteria = ChecklistHasKriteria::findOrFail($param);
+        $response->file($checklist_kriteria->data_pendukung);
     }
 }

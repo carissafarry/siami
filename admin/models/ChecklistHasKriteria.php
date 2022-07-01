@@ -58,4 +58,9 @@ class ChecklistHasKriteria extends DbModel
     {
         return self::findOne(array_merge(['checklist_kriteria_id' => $this->id], $where), 'checklist_auditor', ChecklistAuditor::class);
     }
+
+    public function checklist()
+    {
+        return self::findOne(['id' => $this->checklist_id], 'checklist', Checklist::class);
+    }
 }

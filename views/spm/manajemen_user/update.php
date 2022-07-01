@@ -112,7 +112,7 @@ $this->header_title = 'Edit User';
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="/<?= strtolower(App::$app->user->role()->role) ?>/manajemen-user" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</a>
+                        <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
                         <button type="submit" class="btn btn-sm bg-gradient-warning">Save</button>
                     </div>
                 </form>

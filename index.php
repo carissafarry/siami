@@ -71,6 +71,7 @@ $app->router->post('/spm/manajemen-checklist/add', [new ManajemenChecklistContro
 $app->router->post('/spm/manajemen-checklist/update-area-data', [new ManajemenChecklistController(), 'update_area_data']);
 $app->router->get('/spm/manajemen-checklist/update/{id}', [new ManajemenChecklistController(), 'update']);
 $app->router->get('/spm/manajemen-checklist/update/{checklist_id}/i/{id}', [new ManajemenChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->get('/spm/manajemen-checklist/view/{id}', [new ManajemenChecklistController(), 'viewFile']);
 
 
 
@@ -90,6 +91,8 @@ $app->router->post('/auditor/checklist', [new AuditorChecklistController(), 'ind
 $app->router->get('/auditor/checklist/update/{id}', [new AuditorChecklistController(), 'update']);
 $app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChecklistController(), 'saveChecklistKriteria']);
 $app->router->post('/auditor/checklist/submit', [new AuditorChecklistController(), 'submitAudit']);
+$app->router->get('/auditor/checklist/update/{checklist_id}/i/{id}', [new AuditorChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->get('/auditor/checklist/view/{id}', [new AuditorChecklistController(), 'viewFile']);
 
 
 $app->run();
