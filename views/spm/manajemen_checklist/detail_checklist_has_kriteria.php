@@ -6,8 +6,6 @@
  * @var $colors array
  */
 
-use app\includes\App;
-
 $this->title = 'Checklist | Detail Laporan';
 $this->breadcrumbs = 'Checklist / Detail Laporan';
 $this->header_title = 'Detail Laporan Checklist';
@@ -62,7 +60,7 @@ $this->header_title = 'Detail Laporan Checklist';
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Efektivitas</small></h6>
-                        <span class="badge bg-gradient-<?= ($checklist_has_kriteria->ketidaksesuaian == 1) ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_has_kriteria->ketidaksesuaian == 1) ? 'Efektif' : 'Tidak Efektif')) ?></span>
+                        <span class="badge bg-gradient-<?= (strtolower($checklist_has_kriteria->ketidaksesuaian) == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= ucwords($checklist_has_kriteria->ketidaksesuaian) ?></span>
                     </div>
                 </div>
             </div>

@@ -17,7 +17,7 @@ $this->header_title = 'Tambah AMI';
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-body px-sm-5 px-4">
-                <form action="/spm/ami/add" method="post">
+                <form action="<?= App::getRoute() ?>" method="post">
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <div class="form-group">

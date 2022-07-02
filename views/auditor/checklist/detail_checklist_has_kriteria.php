@@ -19,7 +19,7 @@ $this->header_title = 'Detail Laporan Checklist';
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-lg-6 col-7">
-                        <h6>Detail</h6>
+                        <h6>Detail Kriteria</h6>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@ $this->header_title = 'Detail Laporan Checklist';
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Efektivitas</small></h6>
-                        <span class="badge bg-gradient-<?= ($checklist_has_kriteria->ketidaksesuaian == 1) ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_has_kriteria->ketidaksesuaian == 1) ? 'Efektif' : 'Tidak Efektif')) ?></span>
+                        <span class="badge bg-gradient-<?= (strtolower($checklist_has_kriteria->ketidaksesuaian) == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= $checklist_has_kriteria->ketidaksesuaian ?></span>
                     </div>
                 </div>
             </div>

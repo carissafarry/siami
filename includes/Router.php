@@ -38,7 +38,7 @@ class Router
 
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
-            $this->routes['get'][$path] = $callback;
+            $this->routes['get'][APP_PATH . $path] = $callback;
 
             //  Define arguments as array elements
             preg_match_all('/{(.*?)}/', $path, $matches);
@@ -46,9 +46,15 @@ class Router
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-            $this->routes['get'][$path][] = $arguments;
+            $this->routes['get'][APP_PATH . $path][] = $arguments;
         } else {
-            $this->routes['get'][$path] = $callback;
+            if ($path == '/') {
+                $this->routes['get'][APP_PATH] = $callback;
+            } elseif ($path == '/root') {
+                $this->routes['get']['/'] = $callback;
+            } else {
+                $this->routes['get'][APP_PATH . $path] = $callback;
+            }
         }
     }
 
@@ -64,7 +70,7 @@ class Router
 
         //  Check if route has defined arguments
         if ((strpos($path, '{') !== false) && (strpos($path, '}') !== false)) {
-            $this->routes['post'][$path] = $callback;
+            $this->routes['post'][APP_PATH . $path] = $callback;
 
             //  Define arguments as array elements
             preg_match_all('/{(.*?)}/', $path, $matches);
@@ -72,9 +78,15 @@ class Router
             foreach ($matches[1] as $argument) {
                 $arguments[$argument] = null;
             }
-            $this->routes['post'][$path][] = $arguments;
+            $this->routes['post'][APP_PATH . $path][] = $arguments;
         } else {
-            $this->routes['post'][$path] = $callback;
+            if ($path == '/') {
+                $this->routes['post'][APP_PATH] = $callback;
+            } elseif ($path == '/root') {
+                $this->routes['post']['/'] = $callback;
+            } else {
+                $this->routes['post'][APP_PATH . $path] = $callback;
+            }
         }
     }
 
@@ -89,7 +101,7 @@ class Router
         $path = $this->request->getPath();
 
         //  Remove trailing slash from path request
-        if(($path != '/') && (substr($path, -1) === '/')) {
+        if((($path != APP_PATH) && ($path != '/')) && (substr($path, -1) === '/')) {
             $path = substr($path, 0, -1);
         }
 
@@ -160,7 +172,7 @@ class Router
         $main_path = '';
         $path_arguments = array();
 
-        if ($path !== '') {
+        if (($path !== '') && ($path !== '/')) {
             foreach ($route_names as $route_name) {
                 if ($route_name === $path) {
                     if (!isset($match_scores[$route_name])) {
@@ -187,7 +199,7 @@ class Router
         array_multisort(array_values($match_scores), SORT_DESC, $match_scores);
         $sorted_match_scores = array_count_values($match_scores);
         $highest_score = array_key_first($sorted_match_scores);
-        
+
         if ($sorted_match_scores[$highest_score] == 1) {
             $main_path = array_key_first($match_scores);
         } else {

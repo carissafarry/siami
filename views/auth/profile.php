@@ -22,7 +22,7 @@ $this->header_title = $this->breadcrumbs;
                 </div>
             </div>
             <div class="card-body px-sm-5 px-4">
-                <form action="/profile" method="post">
+                <form action="<?= APP_PATH ?>/profile" method="post">
                     <div class="row">
                         <div class="col-lg-4 col-md-4 text-center">
                             <a href="javascript:;" class="avatar avatar-xxl rounded-circle">

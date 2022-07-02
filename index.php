@@ -18,6 +18,8 @@ $app = new App();
 //});
 //$app->router->get('/contact', 'contact');       // use string argument to display directly from a view file
 
+$app->router->get('/root', [new AuthController(), 'index']);
+
 $app->router->get('/', [new AuthController(), 'index']);
 $app->router->get('/login', [new AuthController(), 'login']);
 $app->router->post('/login', [new AuthController(), 'login']);
@@ -93,6 +95,7 @@ $app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChe
 $app->router->post('/auditor/checklist/submit', [new AuditorChecklistController(), 'submitAudit']);
 $app->router->get('/auditor/checklist/update/{checklist_id}/i/{id}', [new AuditorChecklistController(), 'detail_checklist_has_kriteria']);
 $app->router->get('/auditor/checklist/view/{id}', [new AuditorChecklistController(), 'viewFile']);
+$app->router->post('/auditor/checklist/save-tinjauan-efektivitas', [new AuditorChecklistController(), 'saveTi~njauanEfektivitas']);
 
 
 $app->run();

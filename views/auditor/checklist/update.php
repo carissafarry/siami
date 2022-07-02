@@ -7,10 +7,9 @@
  * @var $auditors array \app\admin\models\Auditor
  * @var $current_auditor_id int
  * @var $prev_checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
+ * @var $same_prev_checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
  * @var $colors array
  */
-
-use app\includes\App;
 
 $this->title = 'Checklist | Update';
 $this->breadcrumbs = 'Checklist / Update';
@@ -102,7 +101,7 @@ $this->header_title = 'Update Checklist';
                 <div class="card-header pb-0">
                     <div class="row d-flex justify-content-between">
                         <div class="col-sm-6 col-4">
-                            <h6>Laporan Kriteria Tahun Lalu</h6>
+                            <h6>Tinjauan Efektivitas Kriteria Tahun Sebelumnya</h6>
                         </div>
                     </div>
                 </div>
@@ -132,6 +131,11 @@ $this->header_title = 'Update Checklist';
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Data Pendukung
                                 </th>
+                                <?php if ($checklist->status_id >= 2): ?>
+                                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        Tinjauan Efektifitas
+                                    </th>
+                                <?php endif; ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Aksi
                                 </th>
@@ -140,7 +144,8 @@ $this->header_title = 'Update Checklist';
                             <tbody>
                             <?php
                             $no = 1;
-                            foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
+                            foreach ($same_prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
+//                            foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
                                 $kriteria = $prev_checklist_has_kriteria->kriteria();
                                 $checklist_auditor = $prev_checklist_has_kriteria->checklist_auditor();
                             ?>
@@ -149,7 +154,7 @@ $this->header_title = 'Update Checklist';
                                     <td class="center-table"> <?= $no ?> </td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></td>
                                     <td class="center-table">
-                                        <span class="badge bg-gradient-<?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'success' : 'danger' ?>"><?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'Efektif' : 'Tidak Efektif' ?></span>
+                                        <span class="badge bg-gradient-<?= (strtolower($prev_checklist_has_kriteria->ketidaksesuaian) == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= ucwords($prev_checklist_has_kriteria->ketidaksesuaian) ?></span>
                                     </td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
@@ -164,8 +169,20 @@ $this->header_title = 'Update Checklist';
                                         <td class="center-table" style="white-space: pre-wrap">-</td>
                                     <?php endif; ?>
                                     <td class="center-table align-content-center">
+                                        <?php if ($checklist->status_id >= 2): ?>
+                                            <select class="form-select tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" name="tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" id="select_tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" onchange="submitTinjauanEfektivitas(<?= json_encode($prev_checklist_has_kriteria->id) ?>)" <?= ($checklist->status_id >= 3) ? 'disabled' : ''?> style="outline: none;">
+                                                <option value="efektif">Efektif</option>
+                                                <option value="tidak efektif">Tidak Efektif</option>
+                                                <option value="closed">Closed</option>
+                                                <option value="open">Open</option>
+                                            </select>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="center-table align-content-center">
                                         <ul style="list-style: none; padding-left: 0;">
-                                            <li class="inline-icon"><a href="/auditor/checklist/update/<?= $prev_checklist_has_kriteria->checklist()->id ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                            <?php if ($checklist->status_id >= 2): ?>
+                                                <li class="inline-icon"><a href="<?= \app\includes\App::getRoute() ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                            <?php endif; ?>
                                         </ul>
                                     </td>
                                 </tr>
@@ -273,7 +290,7 @@ $this->header_title = 'Update Checklist';
                                     <td class="center-table align-content-center">
                                         <ul style="list-style: none; padding-left: 0;">
                                             <li class="inline-icon">
-                                                <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
+                                                <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 saveKriteriaData">
                                                     <i class="fas fa-save"></i>
                                                 </button>
                                             </li>
@@ -295,21 +312,42 @@ $this->header_title = 'Update Checklist';
 </div>
 
 <div class="row text-left">
-    <div class="div">
+    <div class="div d-flex justify-content-between">
         <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
+        <?php if (($checklist->status_id == 2) && ($auditors[0]->user_id == $current_auditor_id)): ?>
+            <form action="/auditor/checklist/submit" method="post">
+                <input type="hidden" name="checklist_id" value="<?= $checklist_id ?>">
+                <button type="submit" class="btn bg-gradient-warning">Submit Audit</button>
+            </form>
+        <?php endif; ?>
     </div>
 </div>
 
 <script type="text/javascript">
+    function submitTinjauanEfektivitas(checklist_has_kriteria_id) {
+        var tinjauan_efektivitas = $("#select_tinjauan_efektivitas_" + checklist_has_kriteria_id).val();
+
+        $.ajax({
+            type: 'POST',
+            url: "/auditor/checklist/save-tinjauan-efektivitas",
+            data: {
+                'id': checklist_has_kriteria_id,
+                'tinjauan_efektivitas': tinjauan_efektivitas
+            },
+            success: function(response) {
+                if (response.success === true) {
+                    Swal.fire('Sukses', response.message, "success");
+                }
+            },
+        })
+    }
+
     $(document).ready(function() {
-        $('.submitButton').click(function () {
+        $('.saveKriteriaData').click(function () {
             var checklist_id = <?=json_encode($checklist_id)?>;
             var checklist_auditor_id = $(this).attr('value');
             var ket_auditor = $("#ket_auditor_" + checklist_auditor_id).val();
             var nilai = $("#nilai_" + checklist_auditor_id).val();
-
-            console.log(ket_auditor);
-            console.log(nilai);
 
             var form_data = new FormData();
             form_data.append("id", checklist_auditor_id);

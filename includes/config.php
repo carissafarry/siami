@@ -2,6 +2,7 @@
 //App Root
 define('APP_NAME', $_ENV['APP_NAME']);
 define('APP_URL', $_ENV['APP_URL']);
+define('APP_PATH', $_ENV['APP_PATH']);
 define('APP_ROOT', dirname(__FILE__, 2));
 
 //DB Params

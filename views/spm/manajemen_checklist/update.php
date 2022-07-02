@@ -164,7 +164,7 @@ $this->header_title = 'Update Checklist';
                                 <?php endif; ?>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="/spm/manajemen-checklist/update/<?= $prev_checklist_has_kriteria->checklist()->id ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-checklist/update/<?= $prev_checklist_has_kriteria->checklist()->id ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                     </ul>
                                 </td>
                             </tr>
@@ -238,7 +238,7 @@ $this->header_title = 'Update Checklist';
                                     <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                     <?php if (isset($checklist_kriteria->data_pendukung)) :?>
                                         <td class="center-table">
-                                            <a href="/spm/manajemen-checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                            <a href="<?= APP_PATH ?>/spm/manajemen-checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                                 <i class="fas fa-file"></i>
                                             </a>
                                         </td>

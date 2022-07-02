@@ -11,7 +11,7 @@ class Response
 
     public function redirect(string $url)
     {
-        header('Location: ' . $url);
+        header('Location: ' . APP_PATH . $url);
     }
 
     public function back()

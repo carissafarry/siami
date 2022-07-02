@@ -21,7 +21,7 @@ class NavItem
 
     public function __toString()
     {
-        $is_being_open = App::$app->request->is(($this->with_role ? strtolower(App::$app->user->role()->role) : '') . $this->route );
+        $is_being_open = App::$app->request->is(($this->with_role ? strtolower(APP_PATH . '/' . App::$app->user->role()->role) : '') . $this->route );
 
         return sprintf('
             <li class="nav-item">
@@ -35,7 +35,7 @@ class NavItem
         ',
 //            App::$app->request->is(App::$app->user->role->role . '/manajemen-user' ) ? 'active' : '',
             $is_being_open ? 'active' : '',
-            $this->with_role ? "/" . strtolower(App::$app->user->role()->role) : '',
+            $this->with_role ? (APP_PATH . '/' . strtolower(App::$app->user->role()->role)) : APP_PATH,
             $this->route,
             $is_being_open ? 'text-white' : '',
             $this->icon,
