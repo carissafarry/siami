@@ -53,12 +53,12 @@ $this->header_title = 'Edit User';
                             <div class="form-group">
                                 <label for="area_id" class="h6 text-sm form-control-label">Area</label>
                                 <select class="form-select" name="area_id" id="area_id">
-                                    <option value="<?= $user->area_id ?>"><?= $user->area()->nama ?></option>
+                                    <option value="<?= $user->area_id ?>"><?= $user->area()->nama ?> <?= ($user->area()->is_prodi == 1) ? $user->area()->jurusan : '' ?></option>
                                     <?php
                                     foreach ($areas as $area):
                                         if ($area->id != $user->area_id):
                                     ?>
-                                        <option value="<?= $area->id ?>"><?= $area->nama ?></option>
+                                        <option value="<?= $area->id ?>"><?= $area->nama ?> <?= ($area->is_prodi == 1) ? $area->jurusan : '' ?></option>
                                     <?php
                                         endif;
                                     endforeach;

@@ -16,7 +16,7 @@ $this->header_title = $this->breadcrumbs;
         <div class="card">
             <div class="card-header pb-0">
                 <div class="row">
-                    <div class="col-lg-6 col-7">
+                    <div class="col-lg-6">
                         <h6><span class="text-warning"><?= App::$app->user->nama ?></span></h6>
                     </div>
                 </div>
@@ -24,21 +24,16 @@ $this->header_title = $this->breadcrumbs;
             <div class="card-body px-sm-5 px-4">
                 <form action="<?= APP_PATH ?>/profile" method="post">
                     <div class="row">
-                        <div class="col-lg-4 col-md-4 text-center">
-                            <a href="javascript:;" class="avatar avatar-xxl rounded-circle">
-                                <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
-                            </a>
-                        </div>
                         <div class="col-lg-8 col-md-8">
-                            <div class="col-sm-6 col-4">
+                            <div class="col-sm-6">
                                 <h6 class="mb-0"><small>Role</small></h6>
                                 <p><small><?= App::$app->user->role()->role ?></small></p>
                             </div>
-                            <div class="col-sm-6 col-4">
+                            <div class="col-sm-6">
                                 <h6 class="mb-0"><small>Area</small></h6>
                                 <p><small><?= App::$app->user->area()->nama ?></small></p>
                             </div>
-                            <div class="col-sm-6 col-4">
+                            <div class="col-sm-6">
                                 <h6 class="mb-0"><small>Email</small></h6>
                                 <p><small><?= App::$app->user->net_id ?></small></p>
                             </div>

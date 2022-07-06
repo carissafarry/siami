@@ -17,7 +17,7 @@ $this->breadcrumbs = 'Manajemen Checklist / Tambah Checklist';
 $this->header_title = 'Tambah Checklist';
 ?>
 
-<form action="/spm/manajemen-checklist/add" method="post" id="form_update_checklist">
+<form action="<?= APP_PATH ?>/spm/manajemen-checklist/add" method="post" id="form_update_checklist">
     <div class="row my-4">
         <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
             <div class="card">
@@ -82,7 +82,7 @@ $this->header_title = 'Tambah Checklist';
                                 <select class="form-select" name="area_id" id="area_id" onchange="updateData()">
                                     <option value="">Pilih</option>
                                     <?php foreach ($areas as $area): ?>
-                                        <option value="<?= $area->id ?>"><?= $area->nama ?></option>
+                                        <option value="<?= $area->id ?>"><?= $area->nama ?> <?= $area->is_prodi == 1 ? $area->jurusan : '' ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <div class="invalid-feedback d-block">
@@ -203,13 +203,16 @@ $this->header_title = 'Tambah Checklist';
     var count_input = 2;
 
     function updateData() {
-        var url = '/spm/manajemen-checklist/update-area-data';
+        var app_path = <?= json_encode(APP_PATH) ?>;
+        var url = app_path + '/spm/manajemen-checklist/update-area-data';
         var ami_id = $('#ami_id').val();
         var area_id = $('#area_id').val();
 
         $.post(url, {
             area_id: area_id,
             ami_id: ami_id,
+        }, function (e) {
+            console.log(e);
         })
         .done(function(jqXHR) {
             console.log(jqXHR.auditee_users);

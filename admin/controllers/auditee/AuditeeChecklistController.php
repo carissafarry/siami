@@ -111,10 +111,79 @@ class AuditeeChecklistController extends Controller
 
     public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
     {
-        echo '<pre>';
-        var_dump($param);
-        echo '</pre>';
-        exit();
+        $checklist = Checklist::findOne(['id' => $param['checklist_id']]);
+        $checklist_has_kriteria = ChecklistHasKriteria::findOne([
+            'id' => $param['id'],
+            'checklist_id' => $param['checklist_id'],
+        ]);
+        $checklist_auditors = $checklist_has_kriteria->checklist_auditors();
+        $last_year_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id])->tahun;
+        $checklist_auditor_nilais = $checklist_has_kriteria->checklist_auditors([], 'nilai');
+        $colors = [
+            'primary', 'warning', 'info', 'danger', 'success',
+        ];
 
+        if ($request->isPost()) {
+            $request = $request->getBody();
+            $checklist_has_kriteria->loadData($request);
+            if ($checklist_has_kriteria->update()) {
+                App::$app->session->setFlash('success', 'Data Rencana Tindakan Koreksi berhasil disimpan!');
+                $response->back();
+            }
+        }
+
+        App::setLayout('layout');
+        return App::view('auditee/checklist/detail_checklist_has_kriteria', [
+            'checklist' => $checklist,
+            'checklist_has_kriteria' => $checklist_has_kriteria,
+            'checklist_auditors' => $checklist_auditors,
+            'last_year_ami' => $last_year_ami,
+            'checklist_auditor_nilais' => $checklist_auditor_nilais,
+            'colors' => $colors,
+        ]);
+    }
+
+    public function submitTindakLanjut(Request $request, Response $response, $param)
+    {
+        $request = $request->getBody();
+        $checklist = Checklist::findOne(['id' => $request['checklist_id']]);
+
+        $checklist->status_id = 5;
+        if ($checklist->update()) {
+            App::$app->session->setFlash('success', 'Data Rencana Tindakan Koreksi berhasil disubmit!');
+            $response->back();
+        }
+    }
+
+    public function inputAuditKriteria(Request $request, Response $response, $param)
+    {
+        $request = $request->getBody(null, 'contents/storage/data_pendukung');
+        $checklist_has_kriteria = ChecklistHasKriteria::findOne($param);
+
+        if (isset($request['ket_auditee'])) {
+            $request['ket_auditee'] = htmlentities($request['ket_auditee']);
+        }
+
+        if (($checklist_has_kriteria->data_pendukung != '') && isset($request['data_pendukung']) && file_exists(APP_ROOT . "/" . $checklist_has_kriteria->data_pendukung)) {
+            unlink(APP_ROOT . "/" . $checklist_has_kriteria->data_pendukung);
+        }
+
+        $checklist_has_kriteria->loadData($request);
+        if ($checklist_has_kriteria->update()) {
+            App::$app->session->setFlash('success', 'Data Rencana Tindakan Koreksi berhasil disimpan!');
+            $response->back();
+        }
+    }
+
+    public function submitAudit(Request $request, Response $response, $param)
+    {
+        $request = $request->getBody();
+        $checklist = Checklist::findOne(['id' => $request['checklist_id']]);
+
+        $checklist->status_id = 2;
+        if ($checklist->update()) {
+            App::$app->session->setFlash('success', 'Audit berhasil disubmit!');
+            $response->back();
+        }
     }
 }

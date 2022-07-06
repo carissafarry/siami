@@ -37,7 +37,8 @@ function add_kriteria_field() {
 
     var invalid_feedback = document.createElement('div');
     invalid_feedback.setAttribute('class', 'invalid-feedback d-block');
-    invalid_feedback.innerHTML = "<?= $rule->getFirstError('kriteria_" + count_input + "') ?>"; // ERROR: php var become commented
+
+    // invalid_feedback.innerHTML = "<?= $rule->getFirstError('kriteria_" + count_input + "') ?>"; // ERROR: php var become commented
 
     formGroup.appendChild(input);
     formGroup.appendChild(invalid_feedback);

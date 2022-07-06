@@ -14,6 +14,8 @@ class ChecklistHasKriteria extends DbModel
     public ?string $nilai_akhir = '';
     public ?string $tindak_lanjut = '';
     public ?string $tinjauan_efektivitas = '';
+    public ?string $ketidaksesuaian = '';
+    public ?string $tidak_sesuai = '';
 
     public static function tableName(): string
     {
@@ -41,6 +43,8 @@ class ChecklistHasKriteria extends DbModel
             'nilai_akhir',
             'tindak_lanjut',
             'tinjauan_efektivitas',
+            'ketidaksesuaian',
+            'tidak_sesuai',
         ];
     }
 
@@ -57,6 +61,11 @@ class ChecklistHasKriteria extends DbModel
     public function checklist_auditor($where=[])
     {
         return self::findOne(array_merge(['checklist_kriteria_id' => $this->id], $where), 'checklist_auditor', ChecklistAuditor::class);
+    }
+
+    public function checklist_auditors($where=[], $attr=null)
+    {
+        return self::findAll('checklist_auditor', array_merge(['checklist_kriteria_id' => $this->id], $where), ChecklistAuditor::class, null, $attr);
     }
 
     public function checklist()

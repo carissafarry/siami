@@ -11,14 +11,15 @@ class Checklist extends DbModel
     public int $status_id = 0;
 //    public int $area_id = 0;
 //    public int $auditee_id = 0;
-    public ?int $auditee2_id = 0;
-    public $area_id = 0;
     public $auditee_id = 0;
 //    public $auditee2_id = 0;
+    public ?int $auditee2_id = 0;
+    public $area_id = 0;
     public ?string $tgl_terbit = '';
     public ?string $no_identifikasi = '';
     public ?string $no_revisi = '';
-    public string $status = 'default status';
+    public ?string $saran = '';
+    public ?string $waktu_audit = '';
 
     public static function tableName(): string
     {
@@ -47,7 +48,8 @@ class Checklist extends DbModel
             'tgl_terbit',
             'no_identifikasi',
             'no_revisi',
-            'status',
+            'saran',
+            'waktu_audit',
         ];
     }
 

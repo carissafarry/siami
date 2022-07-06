@@ -267,6 +267,10 @@ abstract class DbModel extends Model
 //                    array_map(fn($attr) => $this->{$attr}, $attributes)
                     array_map(fn($attr) => $this->{$attr}, $fillable_attrs)
                 );
+                echo '<pre>';
+                var_dump($statement, $data);
+                echo '</pre>';
+//                exit();
                 $query = App::$app->db->query($statement, $data);
                 break;
             case "update":

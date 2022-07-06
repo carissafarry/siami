@@ -90,7 +90,7 @@ $this->header_title = $this->breadcrumbs;
                                 <td class="center-table"> <?= $checklist->tgl_terbit ?> </td>
                                 <td class="center-table"> <?= $checklist->no_identifikasi ?> </td>
                                 <td class="center-table"> <?= $checklist->no_revisi ?> </td>
-                                <td class="center-table"> <?= $checklist->area()->nama ?> </td>
+                                <td class="center-table"> <?= $checklist->area()->nama ?>  <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''?></td>
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">

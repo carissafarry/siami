@@ -52,7 +52,6 @@ $this->header_title = $this->breadcrumbs;
                     </div>
                     <div class="col-sm-6 col-8">
                         <a href="<?= App::getRoute() ?>/k/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
-                        <a href="#" type="button" class="btn bg-gradient-warning" style="float: right; margin-left: 1rem;">Salin Data Tahun Lalu</a>
                     </div>
                 </div>
             </div>
@@ -66,6 +65,9 @@ $this->header_title = $this->breadcrumbs;
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Kode Standar
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Kode Kriteria
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Kriteria
@@ -89,9 +91,10 @@ $this->header_title = $this->breadcrumbs;
                             <tr class="text-sm">
                                 <td class="center-table"> <?= $no ?> </td>
                                 <td class="center-table"> <?= $kriteria->standar()->kode ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode(nl2br($kriteria->catatan)) ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode(nl2br($kriteria->ket_nilai)) ?> </td>
+                                <td class="center-table"> <?= $kriteria->kode ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->kriteria) ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->catatan) ?> </td>
+                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->ket_nilai) ?> </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/k/detail/<?= $kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>

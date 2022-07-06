@@ -55,20 +55,30 @@ class AuditorChecklistController extends Controller
         $checklist_has_kriterias = $current_auditor_user->checklist_has_kriterias(['checklist_id' => $checklist->id]);
         $auditors = $checklist->auditors();
         $colors = [
-            'primary', 'warning', 'success', 'danger', 'success',
+            'primary', 'warning', 'success', 'danger', 'warning', 'success',
         ];
 
         //  Look for previous period checklist data
         $prev_period_ami = Ami::findOne(['tahun' => ($checklist->ami()->tahun - 1)]);
         $prev_period_checklist = false;
         $prev_checklist_has_kriterias = [];
-
+        $same_prev_checklist_has_kriterias = [];
+        
+        //  look for data with the same criteria as the previous year
         if ($prev_period_ami) {
             $prev_period_checklist = Checklist::findOne([
                 'ami_id' => $prev_period_ami->id,
                 'area_id' => $checklist->area_id,
             ]);
             $prev_checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $prev_period_checklist->id], ChecklistHasKriteria::class);
+
+            foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
+                foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria) {
+                    if ($checklist_has_kriteria->kriteria()->kriteria == $prev_checklist_has_kriteria->kriteria()->kriteria){
+                        $same_prev_checklist_has_kriterias[] = $prev_checklist_has_kriteria->kriteria()->kriteria;
+                    }
+                }
+            }
         }
 
         App::setLayout('layout');
@@ -80,6 +90,7 @@ class AuditorChecklistController extends Controller
             'current_auditor_id' => $current_auditor_user->user_id,
             'prev_checklist_has_kriterias' => $prev_checklist_has_kriterias,
             'prev_period_auditors' => $prev_period_checklist ? $prev_period_checklist->auditors() : null,
+            'same_prev_checklist_has_kriterias' => $same_prev_checklist_has_kriterias,
             'colors' => $colors,
         ]);
     }
@@ -114,14 +125,30 @@ class AuditorChecklistController extends Controller
     {
         $request = $request->getBody();
         $checklist = Checklist::findOne(['id' => $request['checklist_id']]);
+        $current_auditor_user = App::$app->user->auditor();
+        $checklist_has_kriterias = $current_auditor_user->checklist_has_kriterias(['checklist_id' => $checklist->id]);
+
         $checklist->loadData([
-            'status_id' => 3
+            'status_id' => 3,
+            'waktu_audit' => date_create(date(),timezone_open("Asia/Jakarta"))->format('d-m-Y H.i.s'),
         ]);
+
+        foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
+            $checklist_score_auditors = ChecklistAuditor::findAll(null, ['checklist_kriteria_id' => $checklist_has_kriteria->id], ChecklistAuditor::class, null, 'nilai');
+            if (max($checklist_score_auditors) < 4) {
+                $checklist_has_kriteria->tidak_sesuai = 1;
+            } else {
+                $checklist_has_kriteria->tidak_sesuai = 0;
+            }
+            $checklist_has_kriteria->update();
+        }
 
         if ($checklist->update()) {
             App::$app->session->setFlash('success', 'Data Audit berhasiil disubmit!');
-            $response->back();
+        } else {
+            App::$app->session->setFlash('failed', 'Data Audit gagal disubmit!');
         }
+        $response->back();
     }
 
     public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
@@ -130,6 +157,8 @@ class AuditorChecklistController extends Controller
             'id' => $param['id'],
             'checklist_id' => $param['checklist_id'],
         ]);
+        $checklist_auditors = $checklist_has_kriteria->checklist_auditors();
+        $last_year_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id])->tahun;
         $colors = [
             'primary', 'warning', 'info', 'danger', 'success',
         ];
@@ -137,6 +166,8 @@ class AuditorChecklistController extends Controller
         App::setLayout('layout');
         return App::view('auditor/checklist/detail_checklist_has_kriteria', [
             'checklist_has_kriteria' => $checklist_has_kriteria,
+            'checklist_auditors' => $checklist_auditors,
+            'last_year_ami' => $last_year_ami,
             'colors' => $colors,
         ]);
     }
@@ -145,5 +176,28 @@ class AuditorChecklistController extends Controller
     {
         $checklist_kriteria = ChecklistHasKriteria::findOrFail($param);
         $response->file($checklist_kriteria->data_pendukung);
+    }
+
+    public function saveTinjauanEfektivitas(Request $request, Response $response, $param)
+    {
+        $request = $request->getBody();
+        $checklist_has_kriteria = ChecklistHasKriteria::findOne(['id' => $request['id']]);
+        $checklist_has_kriteria->loadData($request);
+
+        if ($checklist_has_kriteria->update()) {
+            $response->json([
+                'success' => true,
+                'message' => 'Data Tinjauan Efektivitas Tindakan Koreksi berhasil diperbarui!',
+                'param' => $param,
+                'requests' => $request,
+            ]);
+        } else {
+            $response->json([
+                'success' => false,
+                'message' => 'Data Tinjauan Efektivitas Tindakan Koreksi gagal diperbarui!',
+                'param' => $param,
+                'requests' => $request,
+            ]);
+        }
     }
 }

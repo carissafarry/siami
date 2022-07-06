@@ -18,10 +18,11 @@ class AddAmiRule extends Rule
     public function rules(): array
     {
         return [
-            'spm_id' => [self::RULE_REQUIRED, [self::RULE_UNIQUE, 'class' => get_class($this->model),]],
+//            'spm_id' => [self::RULE_REQUIRED, [self::RULE_UNIQUE, 'class' => get_class($this->model),]],
+            'spm_id' => [self::RULE_REQUIRED],
             'tahun' => [self::RULE_REQUIRED, [self::RULE_UNIQUE, 'class' => get_class($this->model),]],
-            'jadwal_mulai' => [self::RULE_REQUIRED],
-            'jadwal_selesai' => [self::RULE_REQUIRED],
+            'audit_mulai' => [self::RULE_REQUIRED],
+            'audit_selesai' => [self::RULE_REQUIRED],
         ];
     }
 }

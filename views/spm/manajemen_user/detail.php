@@ -22,57 +22,42 @@ $this->header_title = 'Detail User';
                 </div>
             </div>
             <div class="card-body px-sm-5 px-4">
-                <div class="row mb-4">
-                    <div class="col-lg col-md mb-4">
-                        <div class="row d-flex justify-content-center text-center">
-                            <a href="javascript:;" class="avatar avatar-xxl rounded-circle">
-                                <img alt="Image placeholder" src="/contents/assets/img/team-4.jpg">
-                            </a>
-                            <div class="div">
-                                <span class="badge badge-sm bg-gradient-dark"><?= $user->jabatan ?></span>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Email</small></h6>
+                        <p><small><?= $user->net_id ?></small></p>
                     </div>
-                    <div class="d-none d-md-block vr p-0" style="width: 1px"></div>
-                    <div class="col-lg-9 col-md-9 px-md-5">
-                        <div class="row">
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Email</small></h6>
-                                <p><small><?= $user->net_id ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-4">
-                                <h6 class="mb-0"><small>Nama</small></h6>
-                                <p><small><?= $user->nama ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Status</small></h6>
-                                <p><small><?= $user->status ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>NIP</small></h6>
-                                <p><small><?= $user->nip ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Area</small></h6>
-                                <p><small><?= $user->area()->nama ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Jabatan</small></h6>
-                                <p><small><?= $user->jabatan ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Role</small></h6>
-                                <p><small><?= $user->role()->role ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Telepon</small></h6>
-                                <p><small><?= $user->telp ?></small></p>
-                            </div>
-                            <div class="col-sm-6 col-12">
-                                <h6 class="mb-0"><small>Tahun</small></h6>
-                                <p><small><?= $user->tahun ?></small></p>
-                            </div>
-                        </div>
+                    <div class="col-sm-6 col-4">
+                        <h6 class="mb-0"><small>Nama</small></h6>
+                        <p><small><?= $user->nama ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Status</small></h6>
+                        <p><small><?= $user->status ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>NIP</small></h6>
+                        <p><small><?= $user->nip ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Area</small></h6>
+                        <p><small><?= $user->area()->nama ?> <?= $user->area()->is_prodi == 1 ? $user->area()->jurusan : '' ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Jabatan</small></h6>
+                        <p><small><?= $user->jabatan ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Role</small></h6>
+                        <p><small><?= $user->role()->role ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Telepon</small></h6>
+                        <p><small><?= $user->telp ?></small></p>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <h6 class="mb-0"><small>Tahun</small></h6>
+                        <p><small><?= $user->tahun ?></small></p>
                     </div>
                 </div>
                 <div class="row text-left">

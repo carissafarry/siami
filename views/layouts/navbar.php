@@ -14,10 +14,6 @@ use app\includes\App;
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group">
-                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" class="form-control" placeholder="Type here...">
-                </div>
             </div>
             <ul class="navbar-nav  justify-content-end">
                 <?php if (!App::isGuest()) : ?>
@@ -39,12 +35,7 @@ use app\includes\App;
                         </div>
                     </a>
                 </li>
-                <li class="nav-item px-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                    </a>
-                </li>
-                <li class="nav-item d-flex align-items-center">
+                <li class="nav-item d-flex align-items-center" style="padding-left: 1rem">
                     <a href="<?= APP_PATH ?>/logout" class="nav-link text-body p-0">
                         <i class="fa fa-sign-out fixed-plugin-button-nav cursor-pointer"></i>
                     </a>

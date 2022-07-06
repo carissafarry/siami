@@ -16,7 +16,7 @@ $this->header_title = 'Tambah User';
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-body px-sm-5 px-4">
-                <form action="/spm/manajemen-user/add" method="post">
+                <form action="<?= APP_PATH ?>/spm/manajemen-user/add" method="post">
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -32,7 +32,7 @@ $this->header_title = 'Tambah User';
                                 <label for="area_id" class="h6 text-sm form-control-label">Area</label>
                                 <select class="form-select" name="area_id" id="area_id">
                                     <?php foreach ($areas as $area): ?>
-                                        <option value="<?= $area->id ?>"><?= $area->nama ?></option>
+                                        <option value="<?= $area->id ?>"><?= $area->nama ?> <?= $area->is_prodi == 1 ? $area->jurusan : '' ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

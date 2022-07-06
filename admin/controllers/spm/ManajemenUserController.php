@@ -137,10 +137,9 @@ class ManajemenUserController extends Controller
      */
     public function delete(Request $request, Response $response, $param): void
     {
-//        $user = $this->repo(User::findOrFail($param));
         $user = User::findOrFail($param);
         $user_child_class = $user->child_class();
-        
+
         if ($user_child_class->delete(['user_id' => $user->id]) && $user->delete($param)) {
             App::$app->session->setFlash('success', 'Data berhasil dihapus!');
             $response->back();

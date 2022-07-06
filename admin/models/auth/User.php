@@ -18,7 +18,7 @@ class User extends DbModel
     public string $net_id = '';
     public int $role_id = self::ROLE_SPM;
     public int $area_id = 0;
-    public ?string $foto = '';
+//    public ?string $foto = '';
     public string $telp = '';
     public string $jabatan = '';
     public string $tahun = '';
@@ -69,7 +69,7 @@ class User extends DbModel
             'net_id',
             'role_id',
             'area_id',
-            'foto',
+//            'foto',
             'telp',
             'jabatan',
             'tahun',
@@ -94,7 +94,7 @@ class User extends DbModel
             'net_id',
             'role_id',
             'area_id',
-            'foto',
+//            'foto',
             'telp',
             'jabatan',
             'tahun',

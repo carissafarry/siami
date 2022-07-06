@@ -39,10 +39,7 @@ $this->header_title = 'Audit Mutu Internal';
                                 Kepala SPM
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Jadwal
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Satus Tindak Lanjut
+                                Jadwal Audit
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Aksi
@@ -60,12 +57,9 @@ $this->header_title = 'Audit Mutu Internal';
                                 <td class="center-table"> <?= $ami->tahun ?> </td>
                                 <td>
                                     <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="/contents/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                                        </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-xs">
-                                                <a href="/spm/manajemen-user/detail/<?= $user_spm->id ?>">
+                                                <a href="<?= APP_PATH ?>/spm/manajemen-user/detail/<?= $user_spm->id ?>">
                                                     <?= $user_spm->nama ?>
                                                 </a>
                                             </h6>
@@ -73,12 +67,7 @@ $this->header_title = 'Audit Mutu Internal';
                                         </div>
                                     </div>
                                 </td>
-                                <td class="center-table"> <?= date('d M Y', strtotime($ami->jadwal_mulai)) ?> - <?= date('d M Y', strtotime($ami->jadwal_selesai)) ?> </td>
-                                <td class="center-table">
-                                    <div class="form-check form-switch">
-                                        <input name="is_tindak_lanjut" class="form-check-input" type="checkbox" id="is_tindak_lanjut" <?= ($ami->is_tindak_lanjut == 1) ? 'checked' : '' ?> disabled>
-                                    </div>
-                                </td>
+                                <td class="center-table"> <?= date('d M Y', strtotime($ami->audit_mulai)) ?> - <?= date('d M Y', strtotime($ami->audit_selesai)) ?> </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
                                         <li class="inline-icon"><a href="<?= App::getRoute() ?>/detail/<?= $ami->id ?>"><i class="fas fa-info-circle"></i></a></li>

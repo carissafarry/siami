@@ -46,6 +46,7 @@ $app->router->get('/spm/ami', [new AmiController(), 'index']);
 $app->router->get('/spm/ami/add', [new AmiController(), 'add']);
 $app->router->post('/spm/ami/add', [new AmiController(), 'add']);
 $app->router->get('/spm/ami/detail/{id}', [new AmiController(), 'detail']);
+$app->router->post('/spm/ami/detail/{id}', [new AmiController(), 'detail']);
 $app->router->get('/spm/ami/update/{id}', [new AmiController(), 'update']);
 $app->router->post('/spm/ami/update/{id}', [new AmiController(), 'update']);
 $app->router->post('/spm/ami/delete/{id}', [new AmiController(), 'delete']);
@@ -74,6 +75,7 @@ $app->router->post('/spm/manajemen-checklist/update-area-data', [new ManajemenCh
 $app->router->get('/spm/manajemen-checklist/update/{id}', [new ManajemenChecklistController(), 'update']);
 $app->router->get('/spm/manajemen-checklist/update/{checklist_id}/i/{id}', [new ManajemenChecklistController(), 'detail_checklist_has_kriteria']);
 $app->router->get('/spm/manajemen-checklist/view/{id}', [new ManajemenChecklistController(), 'viewFile']);
+$app->router->post('/spm/manajemen-checklist/delete/{id}', [new ManajemenChecklistController(), 'delete']);
 
 
 
@@ -84,6 +86,10 @@ $app->router->get('/auditee/checklist/update/{id}', [new AuditeeChecklistControl
 $app->router->post('/auditee/checklist/update/{checklist_id}/s', [new AuditeeChecklistController(), 'saveChecklistKriteria']);
 $app->router->get('/auditee/checklist/view/{id}', [new AuditeeChecklistController(), 'viewFile']);
 $app->router->get('/auditee/checklist/update/{checklist_id}/i/{id}', [new AuditeeChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->post('/auditee/checklist/update/{checklist_id}/i/{id}', [new AuditeeChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->post('/auditee/checklist/update/{checklist_id}/submit-rtm', [new AuditeeChecklistController(), 'submitTindakLanjut']);
+$app->router->post('/auditee/checklist/update/{checklist_id}/submit-audit', [new AuditeeChecklistController(), 'submitAudit']);
+$app->router->post('/auditee/checklist/update/{checklist_id}/i/{id}/input-audit-kriteria', [new AuditeeChecklistController(), 'inputAuditKriteria']);
 
 
 
@@ -95,7 +101,7 @@ $app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChe
 $app->router->post('/auditor/checklist/submit', [new AuditorChecklistController(), 'submitAudit']);
 $app->router->get('/auditor/checklist/update/{checklist_id}/i/{id}', [new AuditorChecklistController(), 'detail_checklist_has_kriteria']);
 $app->router->get('/auditor/checklist/view/{id}', [new AuditorChecklistController(), 'viewFile']);
-$app->router->post('/auditor/checklist/save-tinjauan-efektivitas', [new AuditorChecklistController(), 'saveTi~njauanEfektivitas']);
+$app->router->post('/auditor/checklist/save-tinjauan-efektivitas', [new AuditorChecklistController(), 'saveTinjauanEfektivitas']);
 
 
 $app->run();

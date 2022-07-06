@@ -5,6 +5,7 @@
  * @var $auditors array \app\admin\models\Auditor
  * @var $checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
  * @var $prev_checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
+ * @var $same_prev_checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
  * @var $colors array
  */
 
@@ -14,6 +15,7 @@ $this->title = 'Checklist | Update';
 $this->breadcrumbs = 'Checklist / Update';
 $this->header_title = 'Update Checklist';
 ?>
+
 
 <div class="row my-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
@@ -84,10 +86,13 @@ $this->header_title = 'Update Checklist';
                             <p><small>-</small></p>
                         </div>
                     <?php endif; ?>
-                    <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $checklist->status ?></small></p>
-                    </div>
+                    <?php if ($checklist->status_id >= 3): ?>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Waktu Audit</small></h6>
+                            <?php $current_date = date_create($checklist->waktu_audit); ?>
+                            <p><small><?= date_format($current_date, "l, j F Y, H.i") . ' WIB' ?></small></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -101,13 +106,13 @@ $this->header_title = 'Update Checklist';
             <div class="card-header pb-0">
                 <div class="row d-flex justify-content-between">
                     <div class="col-sm-6 col-4">
-                        <h6>Laporan Kriteria Tahun Lalu</h6>
+                        <h6>Tinjauan Efektivitas Kriteria Tahun Sebelumnya</h6>
                     </div>
                 </div>
             </div>
             <div class="card-body px-0 pb-2 p-0 m-3">
                 <div class="table-responsive">
-                    <table id="TABLE_2" class="table align-items-center mb-0">
+                    <table id="TABLE_1" class="table align-items-center mb-0">
                         <thead>
                         <tr>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -115,9 +120,6 @@ $this->header_title = 'Update Checklist';
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Kriteria
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Efektivitas th lalu
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Catatan
@@ -132,6 +134,14 @@ $this->header_title = 'Update Checklist';
                                 Data Pendukung
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Kesesuaian
+                            </th>
+                            <?php if ($checklist->status_id > 2): ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Tinjauan Efektifitas
+                                </th>
+                            <?php endif; ?>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Aksi
                             </th>
                         </tr>
@@ -142,17 +152,15 @@ $this->header_title = 'Update Checklist';
                         foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
                             $kriteria = $prev_checklist_has_kriteria->kriteria();
                             $checklist_auditor = $prev_checklist_has_kriteria->checklist_auditor();
+                            $is_last_year_kriteria = in_array($kriteria->kriteria, $same_prev_checklist_has_kriterias);
                         ?>
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $prev_checklist_has_kriteria->id ?>">
                                 <td class="center-table"> <?= $no ?> </td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></td>
-                                <td class="center-table">
-                                    <span class="badge bg-gradient-<?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'success' : 'danger' ?>"><?= ($prev_checklist_has_kriteria->ketidaksesuaian == 1) ? 'Efektif' : 'Tidak Efektif' ?></span>
-                                </td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br($prev_checklist_has_kriteria->ket_auditee ?: '-')) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($prev_checklist_has_kriteria->ket_auditee ?: '-')) ?></td>
                                 <?php if (isset($prev_checklist_has_kriteria->data_pendukung)) :?>
                                     <td class="center-table">
                                         <a href="/spm/checklist/view/<?= $prev_checklist_has_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
@@ -161,6 +169,21 @@ $this->header_title = 'Update Checklist';
                                     </td>
                                 <?php else: ?>
                                     <td class="center-table" style="white-space: pre-wrap">-</td>
+                                <?php endif; ?>
+                                <td class="center-table">
+                                    <div class="col my-1">
+                                        <span class="badge bg-gradient-<?= $prev_checklist_has_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $prev_checklist_has_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
+                                    </div>
+                                    <?php if ($is_last_year_kriteria): ?>
+                                        <div class="col my-1">
+                                            <span class="badge bg-gradient-warning" style="white-space: pre-wrap;">Kriteria Tahun Lalu</span>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                                <?php if ($checklist->status_id > 2): ?>
+                                    <td class="center-table align-content-center">
+                                        <span class="badge bg-gradient-<?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= $prev_checklist_has_kriteria->tinjauan_efektivitas ?: 'tidak efektif' ?></span>
+                                    </td>
                                 <?php endif; ?>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
@@ -210,14 +233,19 @@ $this->header_title = 'Update Checklist';
                             </th>
                             <?php if ($checklist->status_id >= 3): ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    Keterangan Auditee
+                                    Ket Auditee
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Data Pendukung
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Kesesuaian
+                                </th>
+                            <?php endif; ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Aksi
                                 </th>
+                            <?php if ($checklist->status_id >= 4): ?>
                             <?php endif; ?>
                         </tr>
                         </thead>
@@ -235,7 +263,7 @@ $this->header_title = 'Update Checklist';
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
                                 <?php if ($checklist->status_id >= 3): ?>
-                                    <td class="center-table" style="white-space: pre-wrap; column-span: 2rem;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
+                                    <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                     <?php if (isset($checklist_kriteria->data_pendukung)) :?>
                                         <td class="center-table">
                                             <a href="<?= APP_PATH ?>/spm/manajemen-checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
@@ -245,12 +273,20 @@ $this->header_title = 'Update Checklist';
                                     <?php else: ?>
                                         <td class="center-table" style="white-space: pre-wrap">-</td>
                                     <?php endif; ?>
-                                    <td class="center-table align-content-center">
-                                        <ul style="list-style: none; padding-left: 0;">
-                                            <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
-                                        </ul>
+                                    <td class="center-table">
+                                        <?php $is_sesuai = !((($checklist_kriteria->tidak_sesuai == 1) || ($checklist_kriteria->tidak_sesuai == null))); ?>
+                                        <span class="badge bg-gradient-<?= $is_sesuai ? 'success' : 'danger'?>" style="white-space: pre-wrap;"><?= $is_sesuai ? 'Sesuai' : 'Tidak Sesuai' ?></span>
                                     </td>
-                        <?php endif; ?>
+                                <?php endif; ?>
+                                <td class="center-table align-content-center">
+                                    <ul style="list-style: none; padding-left: 0;">
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/detail/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <?php if ($checklist->status_id >= 3): ?>
+                                            <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-pen"></i></a></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </td>
+
                             </tr>
                         <?php
                             $no++;

@@ -5,6 +5,7 @@
  * @var $checklist_has_kriterias array \app\admin\models\ChecklistHasKriteria
  * @var $auditors array \app\admin\models\Auditor
  * @var $checklist_id int
+ * @var $colors array
  */
 
 use app\includes\App;
@@ -48,7 +49,7 @@ $this->header_title = 'Update Checklist';
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Area</small></h6>
-                        <p><small><?= $checklist->area()->nama ?></small></p>
+                        <p><small><?= $checklist->area()->nama ?> <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''?></small></p>
                     </div>
                 </div>
                 <div class="row">
@@ -83,10 +84,13 @@ $this->header_title = 'Update Checklist';
                             <p><small>-</small></p>
                         </div>
                     <?php endif; ?>
-                    <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $checklist->status ?></small></p>
-                    </div>
+                    <?php if ($checklist->status_id >= 3): ?>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Waktu Audit</small></h6>
+                            <?php $current_date = date_create($checklist->waktu_audit); ?>
+                            <p><small><?= date_format($current_date, "l, j F Y, H.i") . ' WIB' ?></small></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -104,7 +108,7 @@ $this->header_title = 'Update Checklist';
             </div>
             <div class="card-body px-0 pb-2 p-0 m-3">
                 <div class="table-responsive">
-                    <table id="table_id" class="table align-items-center mb-0">
+                    <table id="TABLE_2" class="table align-items-center mb-0">
                         <thead>
                         <tr>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -120,15 +124,29 @@ $this->header_title = 'Update Checklist';
                                 Ket Nilai
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Auditee
+                                Ket Auditee
                             </th>
-
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Data Pendukung
                             </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Aksi
-                            </th>
+                            <?php if ($checklist->status_id >= 3) : ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Kesesuaian
+                                </th>
+                            <?php endif; ?>
+                            <?php if ($checklist->status_id >= 4) : ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Ket Auditor / Ketidaksesuaian
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Nilai Akhir
+                                </th>
+                            <?php endif; ?>
+                            <?php if ($checklist->status_id != 3): ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Aksi
+                                </th>
+                            <?php endif; ?>
                         </tr>
                         </thead>
                         <tbody>
@@ -148,7 +166,7 @@ $this->header_title = 'Update Checklist';
                                 </td>
                                 <td class="center-table">
                                     <?php if ($checklist_kriteria->data_pendukung):?>
-                                        <a href="/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                        <a href="<?= APP_PATH ?>/auditee/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                             <i class="fas fa-file"></i>
                                         </a>
                                         <?php if ($checklist->status_id < 3): ?>
@@ -162,20 +180,37 @@ $this->header_title = 'Update Checklist';
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </td>
-                                <td class="center-table align-content-center">
-                                    <ul style="list-style: none; padding-left: 0;">
-                                        <?php if ($checklist->status_id == 3): ?>
+                                <?php if ($checklist->status_id >= 3) : ?>
+                                    <td class="center-table">
+                                        <span class="badge bg-gradient-<?= $checklist_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $checklist_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
+                                    </td>
+                                <?php endif; ?>
+                                <?php
+                                if ($checklist->status_id >= 4) :
+                                    $checklist_auditors = $checklist_kriteria->checklist_auditors();
+                                    $nilais = $checklist_kriteria->checklist_auditors([], 'nilai');
+                                ?>
+                                    <td class="center-table" style="white-space: pre-wrap;">
+                                        <?php foreach ($checklist_auditors as $checklist_auditor): ?>
+                                            <?= html_entity_decode(nl2br($checklist_auditor->ket_auditor)) ?>
+                                        <?php endforeach; ?>
+                                    </td>
+                                    <td class="center-table" style="white-space: pre-wrap;"><?= max($nilais) ?></td>
+                                <?php endif; ?>
+                                <?php if ($checklist->status_id != 3): ?>
+                                    <td class="center-table align-content-center">
+                                        <ul style="list-style: none; padding-left: 0;">
                                             <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
-                                        <?php endif; ?>
-                                        <?php if ($checklist->status_id < 3): ?>
-                                            <li class="inline-icon">
-                                                <button type="submit" value="<?= $checklist_kriteria->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
-                                                    <i class="fas fa-save"></i>
-                                                </button>
-                                            </li>
-                                        <?php endif; ?>
-                                    </ul>
-                                </td>
+                                            <?php if ($checklist->status_id < 3): ?>
+                                                <li class="inline-icon">
+                                                    <button type="submit" value="<?= $checklist_kriteria->id ?>" class="btn-sm bg-transparent border-0 p-0 submitButton">
+                                                        <i class="fas fa-save"></i>
+                                                    </button>
+                                                </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </td>
+                                <?php endif; ?>
                             </tr>
                         <?php
                         $no++;
@@ -189,14 +224,31 @@ $this->header_title = 'Update Checklist';
     </div>
 </div>
 <div class="row text-left">
-    <div class="div">
+    <div class="div d-flex justify-content-between">
         <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
+        <?php if ($checklist->status_id == 4): ?>
+            <div class="">
+                <form action="<?= APP_PATH ?>/auditee/checklist/update/<?= $checklist->id ?>/submit-rtm" method="post" id="formSubmitTindakLanjut">
+                    <input type="hidden" name="checklist_id" value="<?= $checklist->id ?>">
+                    <button type="submit" class="btn btn-sm bg-gradient-success">Submit</button>
+                </form>
+            </div>
+        <?php endif; ?>
+        <?php if ($checklist->status_id == 1): ?>
+            <div class="">
+                <form action="<?= APP_PATH ?>/auditee/checklist/update/<?= $checklist->id ?>/submit-audit" method="post" id="formSubmitAudit">
+                    <input type="hidden" name="checklist_id" value="<?= $checklist->id ?>">
+                    <button type="submit" class="btn btn-sm bg-gradient-success">Submit</button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
         $('.submitButton').click(function () {
+            var app_path = <?= json_encode(APP_PATH) ?>;
             var checklist_id = <?=json_encode($checklist_id)?>;
             var checklist_kriteria_id = $(this).attr('value');
             var ket_auditee = $("#ket_auditee_" + checklist_kriteria_id).val();
@@ -211,7 +263,7 @@ $this->header_title = 'Update Checklist';
 
             $.ajax({
                 type: 'POST',
-                url: "/auditee/checklist/update/".concat(checklist_id, "/s/"),
+                url: app_path + "/auditee/checklist/update/".concat(checklist_id, "/s/"),
                 data: form_data,
                 dataType: 'json',
                 cache: false,

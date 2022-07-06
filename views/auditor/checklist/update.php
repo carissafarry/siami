@@ -50,7 +50,7 @@ $this->header_title = 'Update Checklist';
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Area</small></h6>
-                        <p><small><?= $checklist->area()->nama ?></small></p>
+                        <p><small><?= $checklist->area()->nama ?> <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''?></small></p>
                     </div>
                 </div>
                 <div class="row">
@@ -84,10 +84,15 @@ $this->header_title = 'Update Checklist';
                             <p><small>-</small></p>
                         </div>
                     <?php endif; ?>
-                    <div class="col-sm-6 col-12">
-                        <h6 class="mb-0"><small>Status</small></h6>
-                        <p><small><?= $checklist->status ?></small></p>
-                    </div>
+                    <?php if ($checklist->status_id >= 3): ?>
+                        <div class="col-sm-6 col-12">
+                            <h6 class="mb-0"><small>Waktu Audit</small></h6>
+                            <?php
+                                $current_date = date_create($checklist->waktu_audit);
+                            ?>
+                            <p><small><?= date_format($current_date, "l, j F Y, H.i") . ' WIB' ?></small></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -117,9 +122,6 @@ $this->header_title = 'Update Checklist';
                                     Kriteria
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    Efektivitas th lalu
-                                </th>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Catatan
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -131,11 +133,12 @@ $this->header_title = 'Update Checklist';
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Data Pendukung
                                 </th>
-                                <?php if ($checklist->status_id >= 2): ?>
-                                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                        Tinjauan Efektifitas
-                                    </th>
-                                <?php endif; ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Kesesuaian
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Tinjauan Efektifitas
+                                </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Aksi
                                 </th>
@@ -144,18 +147,15 @@ $this->header_title = 'Update Checklist';
                             <tbody>
                             <?php
                             $no = 1;
-                            foreach ($same_prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
-//                            foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
+                            foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria):
                                 $kriteria = $prev_checklist_has_kriteria->kriteria();
                                 $checklist_auditor = $prev_checklist_has_kriteria->checklist_auditor();
+                                $is_last_year_kriteria = in_array($kriteria->kriteria, $same_prev_checklist_has_kriterias);
                             ?>
                                 <tr class="text-sm">
                                     <input type="hidden" name="checklist_kriteria_id" value="<?= $prev_checklist_has_kriteria->id ?>">
                                     <td class="center-table"> <?= $no ?> </td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></td>
-                                    <td class="center-table">
-                                        <span class="badge bg-gradient-<?= (strtolower($prev_checklist_has_kriteria->ketidaksesuaian) == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= ucwords($prev_checklist_has_kriteria->ketidaksesuaian) ?></span>
-                                    </td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
                                     <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($prev_checklist_has_kriteria->ket_auditee ?: '-')) ?></td>
@@ -168,21 +168,32 @@ $this->header_title = 'Update Checklist';
                                     <?php else: ?>
                                         <td class="center-table" style="white-space: pre-wrap">-</td>
                                     <?php endif; ?>
+                                    <td class="center-table">
+                                        <div class="col my-1">
+                                            <span class="badge bg-gradient-<?= $prev_checklist_has_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $prev_checklist_has_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
+                                        </div>
+                                        <?php if ($is_last_year_kriteria): ?>
+                                            <div class="col my-1">
+                                                <span class="badge bg-gradient-warning" style="white-space: pre-wrap;">Kriteria Tahun Lalu</span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="center-table align-content-center">
-                                        <?php if ($checklist->status_id >= 2): ?>
+                                        <?php if ($checklist->status_id == 2): ?>
                                             <select class="form-select tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" name="tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" id="select_tinjauan_efektivitas_<?= $prev_checklist_has_kriteria->id ?>" onchange="submitTinjauanEfektivitas(<?= json_encode($prev_checklist_has_kriteria->id) ?>)" <?= ($checklist->status_id >= 3) ? 'disabled' : ''?> style="outline: none;">
-                                                <option value="efektif">Efektif</option>
-                                                <option value="tidak efektif">Tidak Efektif</option>
-                                                <option value="closed">Closed</option>
-                                                <option value="open">Open</option>
+                                                <option value="">Pilih</option>
+                                                <option value="efektif" <?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == "efektif") ? "selected" : '' ?>>Efektif</option>
+                                                <option value="tidak efektif" <?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == "tidak efektif") ? "selected" : '' ?>>Tidak Efektif</option>
+                                                <option value="closed" <?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == "closed") ? "selected" : '' ?>>Closed</option>
+                                                <option value="open" <?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == "open") ? "selected" : '' ?>>Open</option>
                                             </select>
+                                        <?php elseif ($checklist->status_id > 2): ?>
+                                            <span class="badge bg-gradient-<?= ($prev_checklist_has_kriteria->tinjauan_efektivitas == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= $prev_checklist_has_kriteria->tinjauan_efektivitas ?: 'tidak efektif' ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="center-table align-content-center">
                                         <ul style="list-style: none; padding-left: 0;">
-                                            <?php if ($checklist->status_id >= 2): ?>
-                                                <li class="inline-icon"><a href="<?= \app\includes\App::getRoute() ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
-                                            <?php endif; ?>
+                                            <li class="inline-icon"><a href="<?= APP_PATH ?>/auditor/checklist/update/<?= $prev_checklist_has_kriteria->checklist()->id ?>/i/<?= $prev_checklist_has_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                         </ul>
                                     </td>
                                 </tr>
@@ -199,7 +210,6 @@ $this->header_title = 'Update Checklist';
     </div>
 <?php endif; ?>
 
-
 <div class="row my-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
@@ -207,14 +217,6 @@ $this->header_title = 'Update Checklist';
                 <div class="row d-flex justify-content-between">
                     <div class="col-sm-6 col-4">
                         <h6>Data Kriteria</h6>
-                    </div>
-                    <div class="col-sm-6 col-8 text-end">
-                        <?php if (($checklist->status_id == 2) && ($auditors[0]->user_id == $current_auditor_id)): ?>
-                        <form action="/auditor/checklist/submit" method="post">
-                            <input type="hidden" name="checklist_id" value="<?= $checklist_id ?>">
-                            <button type="submit" class="btn bg-gradient-warning">Submit Audit</button>
-                        </form>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -236,24 +238,21 @@ $this->header_title = 'Update Checklist';
                                 Ket Nilai
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Auditee
+                                Ket Auditee
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Data Pendukung
                             </th>
-                            <?php if ($checklist->status_id >= 2): ?>
+                            <?php if ($checklist->status_id >= 3): ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    Keterangan Auditor
+                                    Kesesuaian
                                 </th>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    Nilai
-                                </th>
-                                <?php if ($checklist->status_id == 2) : ?>
-                                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                        Aksi
-                                    </th>
-                                <?php endif; ?>
                             <?php endif; ?>
+<!--                            --><?php //if ($checklist->status_id >= 2): ?>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Aksi
+                                </th>
+<!--                            --><?php //endif; ?>
                         </tr>
                         </thead>
                         <tbody>
@@ -272,32 +271,32 @@ $this->header_title = 'Update Checklist';
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
                                 <td class="center-table">
                                     <?php if (isset($checklist_kriteria->data_pendukung)) :?>
-                                        <a href="/auditor/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
+                                        <a href="<?= APP_PATH ?>/auditor/checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
                                             <i class="fas fa-file"></i>
                                         </a>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>
                                 </td>
-                                <?php if ($checklist->status_id >= 2): ?>
+                                <?php if ($checklist->status_id >= 3): ?>
                                     <td class="center-table">
-                                        <textarea class="form-control ket_auditor" name="ket_auditor_<?= $checklist_auditor->id ?>" id="ket_auditor_<?= $checklist_auditor->id ?>" rows="4" <?= ($checklist->status_id > 2) ? 'disabled' : ''?>><?= $checklist_auditor->ket_auditor ?></textarea>
+                                        <span class="badge bg-gradient-<?= $checklist_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $checklist_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
                                     </td>
-                                    <td class="center-table">
-                                        <textarea class="form-control nilai" name="nilai_<?= $checklist_auditor->id ?>" id="nilai_<?= $checklist_auditor->id ?>" cols="5" style="width: 3rem;" <?= ($checklist->status_id > 2) ? 'disabled' : ''?>><?= $checklist_auditor->nilai ?></textarea>
-                                    </td>
-                                    <?php if ($checklist->status_id == 2) : ?>
+                                <?php endif; ?>
+<!--                                --><?php //if ($checklist->status_id >= 2): ?>
                                     <td class="center-table align-content-center">
                                         <ul style="list-style: none; padding-left: 0;">
-                                            <li class="inline-icon">
-                                                <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 saveKriteriaData">
-                                                    <i class="fas fa-save"></i>
-                                                </button>
-                                            </li>
+                                            <li class="inline-icon"><a href="<?= APP_PATH ?>/auditor/checklist/update/<?= $checklist_kriteria->checklist()->id ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                            <?php if ($checklist->status_id == 2): ?>
+                                                <li class="inline-icon">
+                                                    <button type="submit" value="<?= $checklist_auditor->id ?>" class="btn-sm bg-transparent border-0 p-0 saveKriteriaData">
+                                                        <i class="fas fa-save"></i>
+                                                    </button>
+                                                </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </td>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+<!--                                --><?php //endif; ?>
                             </tr>
                         <?php
                         $no++;
@@ -315,7 +314,7 @@ $this->header_title = 'Update Checklist';
     <div class="div d-flex justify-content-between">
         <button onclick="history.back();" type="button" class="btn btn-sm bg-gradient-secondary">Kembali</button>
         <?php if (($checklist->status_id == 2) && ($auditors[0]->user_id == $current_auditor_id)): ?>
-            <form action="/auditor/checklist/submit" method="post">
+            <form action="<?= APP_PATH ?>/auditor/checklist/submit" method="post">
                 <input type="hidden" name="checklist_id" value="<?= $checklist_id ?>">
                 <button type="submit" class="btn bg-gradient-warning">Submit Audit</button>
             </form>
@@ -326,10 +325,11 @@ $this->header_title = 'Update Checklist';
 <script type="text/javascript">
     function submitTinjauanEfektivitas(checklist_has_kriteria_id) {
         var tinjauan_efektivitas = $("#select_tinjauan_efektivitas_" + checklist_has_kriteria_id).val();
+        var app_path = <?= json_encode(APP_PATH) ?>;
 
         $.ajax({
             type: 'POST',
-            url: "/auditor/checklist/save-tinjauan-efektivitas",
+            url: app_path + "/auditor/checklist/save-tinjauan-efektivitas",
             data: {
                 'id': checklist_has_kriteria_id,
                 'tinjauan_efektivitas': tinjauan_efektivitas

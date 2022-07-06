@@ -25,7 +25,7 @@ class ManajemenChecklistController extends Controller
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $checklists = Checklist::findAll('checklist', ['ami_id' => $last_ami->id]);
         $colors = [
-            'primary', 'warning', 'info', 'danger', 'success',
+            'primary', 'warning', 'info', 'danger', 'warning', 'success',
         ];
 
         App::setLayout('layout');
@@ -66,7 +66,7 @@ class ManajemenChecklistController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
-
+            
             //  Input data validation
             //  Change the input data type according to the data type in the database
             $key_to_int = ['id', 'ami_id', 'status_id', 'area_id', 'auditee_id', 'auditee2_id', 'auditor1_id', 'auditor2_id', 'auditor3_id'];
@@ -78,7 +78,7 @@ class ManajemenChecklistController extends Controller
                     }
                 }
             }
-            
+
             //  Check and validate each kriteria_id and auditor_id input
             $kriteria_ids = [];
             $auditor_ids = [];
@@ -186,13 +186,14 @@ class ManajemenChecklistController extends Controller
         $auditors = $checklist->auditors();
         $checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $checklist->id], ChecklistHasKriteria::class);
         $colors = [
-            'primary', 'warning', 'info', 'danger', 'success',
+            'primary', 'warning', 'info', 'danger', 'warning', 'success',
         ];
 
         //  Look for previous period checklist data
         $prev_period_ami = Ami::findOne(['tahun' => ($checklist->ami()->tahun - 1)]);
         $prev_period_checklist = false;
         $prev_checklist_has_kriterias = [];
+        $same_prev_checklist_has_kriterias = [];
 
         if ($prev_period_ami) {
             $prev_period_checklist = Checklist::findOne([
@@ -200,8 +201,16 @@ class ManajemenChecklistController extends Controller
                 'area_id' => $checklist->area_id,
             ]);
             $prev_checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $prev_period_checklist->id], ChecklistHasKriteria::class);
-        }
 
+            foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
+                foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria) {
+                    if ($checklist_has_kriteria->kriteria()->kriteria == $prev_checklist_has_kriteria->kriteria()->kriteria){
+                        $same_prev_checklist_has_kriterias[] = $prev_checklist_has_kriteria->kriteria()->kriteria;
+                    }
+                }
+            }
+        }
+        
         App::setLayout('layout');
         return App::view('spm/manajemen_checklist/update', [
             'checklist' => $checklist,
@@ -209,6 +218,7 @@ class ManajemenChecklistController extends Controller
             'auditors' => $auditors,
             'prev_checklist_has_kriterias' => $prev_checklist_has_kriterias,
             'prev_period_auditors' => $prev_period_checklist ? $prev_period_checklist->auditors() : null,
+            'same_prev_checklist_has_kriterias' => $same_prev_checklist_has_kriterias,
             'colors' => $colors,
         ]);
     }
@@ -219,13 +229,19 @@ class ManajemenChecklistController extends Controller
             'id' => $param['id'],
             'checklist_id' => $param['checklist_id'],
         ]);
+        $checklist_auditors = $checklist_has_kriteria->checklist_auditors();
+        $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
+        $last_year_ami = $last_ami->tahun;
         $colors = [
             'primary', 'warning', 'info', 'danger', 'success',
         ];
 
         App::setLayout('layout');
         return App::view('spm/manajemen_checklist/detail_checklist_has_kriteria', [
+            'last_ami' => $last_ami,
+            'last_year_ami' => $last_year_ami,
             'checklist_has_kriteria' => $checklist_has_kriteria,
+            'checklist_auditors' => $checklist_auditors,
             'colors' => $colors,
         ]);
     }
@@ -234,5 +250,26 @@ class ManajemenChecklistController extends Controller
     {
         $checklist_kriteria = ChecklistHasKriteria::findOrFail($param);
         $response->file($checklist_kriteria->data_pendukung);
+    }
+
+    public function delete(Request $request, Response $response, $param)
+    {
+        $checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $param['id']]);
+        foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
+            $checklist_auditors = $checklist_has_kriteria->checklist_auditors();
+            foreach ($checklist_auditors as $checklist_auditor) {
+                $checklist_auditor->delete(['id' => $checklist_auditor->id]);
+            }
+            if ($checklist_has_kriteria->checklist_auditors() == []) {
+                $checklist_has_kriteria->delete(['id' => $checklist_has_kriteria->id]);
+            }
+        }
+        if (ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $param['id']]) == []) {
+            $checklist = Checklist::findOne($param);
+            if ($checklist->delete($param)) {
+                App::$app->session->setFlash('success', 'Data berhasil dihapus!');
+                $response->back();
+            }
+        }
     }
 }

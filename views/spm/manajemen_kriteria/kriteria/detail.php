@@ -23,7 +23,7 @@ $this->header_title = 'Detail Kriteria';
             </div>
             <div class="card-body px-sm-5 px-4">
                 <div class="row mb-4">
-                    <div class="col-lg-9 col-md-9 px-md-5">
+                    <div class="px-md-5">
                         <div class="row">
                             <div class="col-sm-6 col-4">
                                 <h6 class="mb-0"><small>Tahun</small></h6>
@@ -35,19 +35,19 @@ $this->header_title = 'Detail Kriteria';
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Kode Kriteria</small></h6>
-                                <p><small><?= $kriteria->kode ?></small></p>
+                                <p style="white-space: pre-wrap;"><small><?= html_entity_decode($kriteria->kode) ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Kriteria</small></h6>
-                                <p><small><?= $kriteria->kriteria ?></small></p>
+                                <p style="white-space: pre-wrap;"><small><?= html_entity_decode($kriteria->kriteria) ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Keterangan Nilai</small></h6>
-                                <p><small><?= $kriteria->ket_nilai ?></small></p>
+                                <p style="white-space: pre-wrap;"><small><?= html_entity_decode($kriteria->ket_nilai) ?></small></p>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <h6 class="mb-0"><small>Catatan</small></h6>
-                                <p><small><?= $kriteria->catatan ?></small></p>
+                                <p style="white-space: pre-wrap;"><small><?= html_entity_decode($kriteria->catatan) ?></small></p>
                             </div>
                         </div>
                     </div>

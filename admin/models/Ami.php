@@ -9,9 +9,11 @@ class Ami extends DbModel
     public int $id = 0;
     public int $spm_id = 0;
     public string $tahun = '';
-    public string $jadwal_mulai = '';
-    public string $jadwal_selesai = '';
-    public int $is_tindak_lanjut = 0;
+//    public int $is_tindak_lanjut = 0;
+    public string $audit_mulai = '';
+    public string $audit_selesai = '';
+    public ?string $rtm_mulai = '';
+    public ?string $rtm_selesai = '';
 
     public static function tableName(): string
     {
@@ -36,9 +38,11 @@ class Ami extends DbModel
             'id',
             'spm_id',
             'tahun',
-            'jadwal_mulai',
-            'jadwal_selesai',
-            'is_tindak_lanjut',
+//            'is_tindak_lanjut',
+            'audit_mulai',
+            'audit_selesai',
+            'rtm_mulai',
+            'rtm_selesai',
         ];
     }
 
@@ -50,5 +54,10 @@ class Ami extends DbModel
     public function spm()
     {
         return self::findOne(['user_id' => $this->spm_id], 'spm', Spm::class);
+    }
+
+    public function checklists($attr=null)
+    {
+        return self::findAll('checklist', ['ami_id' => $this->id], Checklist::class, null, $attr);
     }
 }

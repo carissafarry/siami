@@ -53,6 +53,7 @@ class ManajemenKriteriaController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
+            $request['ket_nilai'] = htmlentities($request['ket_nilai']);
             $kriteria->loadData($request);
 
             if ($kriteriaDataRule->validate() && $kriteria->create()) {
@@ -89,6 +90,7 @@ class ManajemenKriteriaController extends Controller
 
         if ($request->isPost()) {
             $request = $request->getBody();
+            $request['ket_nilai'] = htmlentities($request['ket_nilai']);
             $kriteria->loadData($request);
 
             if ($kriteriaDataRule->validate() && $kriteria->update()) {

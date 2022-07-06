@@ -5,7 +5,7 @@ namespace app\admin\rules\spm\ami;
 use app\includes\Model;
 use app\includes\Rule;
 
-class UpdateAmiRule extends Rule
+class AddJadwalRtm extends Rule
 {
     public Model $model;
 
@@ -18,10 +18,8 @@ class UpdateAmiRule extends Rule
     public function rules(): array
     {
         return [
-            'spm_id' => [self::RULE_REQUIRED],
-            'tahun' => [self::RULE_REQUIRED],
-            'audit_mulai' => [self::RULE_REQUIRED],
-            'audit_selesai' => [self::RULE_REQUIRED],
+            'rtm_mulai' => [self::RULE_REQUIRED],
+            'rtm_selesai' => [self::RULE_REQUIRED],
         ];
     }
 }

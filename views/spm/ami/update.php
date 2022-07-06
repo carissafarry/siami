@@ -32,7 +32,7 @@ $head_of_ami = $ami->spm()->user();
                             <div class="form-group">
                                 <label for="spm_id" class="h6 text-sm form-control-label">Kepala SPM</label>
                                 <select class="form-select" name="spm_id" id="spm_id">
-                                    <option value="<?= $ami->spm_id ?>"><?= $head_of_ami->nama ?></option>
+                                    <option value="<?= $ami->spm_id ?>"><?= $head_of_ami->nama ?> - <?= $head_of_ami->net_id ?></option>
                                     <?php
                                     foreach ($spms as $spm):
                                         if ($spm->user_id != $ami->spm_id):
@@ -56,26 +56,20 @@ $head_of_ami = $ami->spm()->user();
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="jadwal_mulai" class="h6 text-sm form-control-label">Jadwal Mulai</label>
-                                <input name="jadwal_mulai" class="form-control <?= $rule->hasError('jadwal_mulai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_mulai" value="<?= $ami->jadwal_mulai ?>">
+                                <label for="audit_mulai" class="h6 text-sm form-control-label">Jadwal Mulai</label>
+                                <input name="audit_mulai" class="form-control <?= $rule->hasError('audit_mulai') ? 'is-invalid' : '' ?>" type="date" id="audit_mulai" value="<?= $ami->audit_mulai ?>">
                                 <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('jadwal_mulai') ?>
+                                    <?= $rule->getFirstError('audit_mulai') ?>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="jadwal_selesai" class="h6 text-sm form-control-label">Jadwal Selesai</label>
-                                <input name="jadwal_selesai" class="form-control <?= $rule->hasError('jadwal_selesai') ? 'is-invalid' : '' ?>" type="date" id="jadwal_selesai" value="<?= $ami->jadwal_selesai ?>">
+                                <label for="audit_selesai" class="h6 text-sm form-control-label">Jadwal Selesai</label>
+                                <input name="audit_selesai" class="form-control <?= $rule->hasError('audit_selesai') ? 'is-invalid' : '' ?>" type="date" id="audit_selesai" value="<?= $ami->audit_selesai ?>">
                                 <div class="invalid-feedback">
-                                    <?= $rule->getFirstError('jadwal_selesai') ?>
+                                    <?= $rule->getFirstError('audit_selesai') ?>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="is_tindak_lanjut" class="h6 text-sm form-check-label" >Aktifkan Tindak Lanjut</label>
-                            <div class="form-check form-switch">
-                                <input name="is_tindak_lanjut" class="form-check-input" type="checkbox" id="is_tindak_lanjut" <?= ($ami->is_tindak_lanjut == 1) ? 'checked' :  '' ?>>
                             </div>
                         </div>
                     </div>

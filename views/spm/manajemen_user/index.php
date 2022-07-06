@@ -30,6 +30,9 @@ $this->header_title = $this->breadcrumbs;
                         <thead>
                         <tr>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                No
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Profil
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -50,13 +53,14 @@ $this->header_title = $this->breadcrumbs;
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($users as $user): ?>
+                        <?php
+                        $no = 1;
+                        foreach ($users as $user):
+                        ?>
                             <tr class="text-sm">
+                                <td class="center-table"> <?= $no ?> </td>
                                 <td>
                                     <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="/contents/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                                        </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-xs"><?= $user->nama ?></h6>
                                             <p class="text-xs text-secondary mb-0"><?= $user->net_id ?></p>
@@ -64,7 +68,7 @@ $this->header_title = $this->breadcrumbs;
                                     </div>
                                 </td>
                                 <td class="center-table"> <?= $user->jabatan ?> </td>
-                                <td class="center-table"> <?= $user->area()->nama ?> </td>
+                                <td class="center-table"> <?= $user->area()->nama ?> <?= ($user->area()->is_prodi == 1) ? $user->area()->jurusan : '' ?> </td>
                                 <td class="center-table"> <?= $user->nip ?> </td>
                                 <td class="center-table"> <?= $user->role()->role ?> </td>
                                 <td class="center-table align-content-center">
@@ -82,7 +86,10 @@ $this->header_title = $this->breadcrumbs;
                                     </ul>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php
+                            $no++;
+                            endforeach;
+                        ?>
                         </tbody>
                     </table>
                 </div>

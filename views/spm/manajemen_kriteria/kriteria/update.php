@@ -95,7 +95,7 @@ $this->header_title = 'Edit Kriteria';
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="kriteria" class="h6 text-sm form-control-label required-field">Kriteria</label>
-                                <textarea name="kriteria" class="form-control <?= $rule->hasError('kriteria') ? 'is-invalid' : '' ?>" id="kriteria" rows="5"><?= $kriteria->kriteria ?></textarea>
+                                <textarea name="kriteria" class="form-control <?= $rule->hasError('kriteria') ? 'is-invalid' : '' ?>" id="kriteria" rows="5"><?= html_entity_decode($kriteria->kriteria) ?></textarea>
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('kriteria') ?>
                                 </div>
@@ -104,7 +104,7 @@ $this->header_title = 'Edit Kriteria';
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="ket_nilai" class="h6 text-sm form-control-label required-field">Keterangan Nilai</label>
-                                <textarea name="ket_nilai" class="form-control <?= $rule->hasError('ket_nilai') ? 'is-invalid' : '' ?>" id="ket_nilai" rows="5"><?= $kriteria->ket_nilai ?></textarea>
+                                <textarea name="ket_nilai" class="form-control <?= $rule->hasError('ket_nilai') ? 'is-invalid' : '' ?>" id="ket_nilai" rows="5"><?= html_entity_decode($kriteria->ket_nilai) ?></textarea>
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('ket_nilai') ?>
                                 </div>
@@ -113,7 +113,7 @@ $this->header_title = 'Edit Kriteria';
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="catatan" class="h6 text-sm form-control-label">Catatan</label>
-                                <textarea name="catatan" class="form-control <?= $rule->hasError('catatan') ? 'is-invalid' : '' ?>" id="catatan" rows="5"><?= $kriteria->catatan ?></textarea>
+                                <textarea name="catatan" class="form-control <?= $rule->hasError('catatan') ? 'is-invalid' : '' ?>" id="catatan" rows="5"><?= html_entity_decode($kriteria->catatan) ?></textarea>
                                 <div class="invalid-feedback">
                                     <?= $rule->getFirstError('catatan') ?>
                                 </div>
@@ -132,24 +132,25 @@ $this->header_title = 'Edit Kriteria';
 
 <script type="text/javascript">
     function updateStandarData(tahun) {
-        var url = '/spm/manajemen-kriteria/k/update-standar-data';
+        var app_path = <?= json_encode(APP_PATH) ?>
+        var url = app_path + '/spm/manajemen-kriteria/k/update-standar-data';
 
         $.post(url, {
             tahun: tahun,
         }, function (data) {
             console.log(tahun + ' Sent!')
         })
-            .done(function(jqXHR) {
-                $("#standar_id").empty();
-                $.each(jqXHR.standars, function (i, val) {
-                    $('#standar_id').append($('<option>', {
-                        value: val.id,
-                        text : val.kode.concat(' - ', val.standar),
-                    }));
-                });
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(arguments);
+        .done(function(jqXHR) {
+            $("#standar_id").empty();
+            $.each(jqXHR.standars, function (i, val) {
+                $('#standar_id').append($('<option>', {
+                    value: val.id,
+                    text : val.kode.concat(' - ', val.standar),
+                }));
             });
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(arguments);
+        });
     }
 </script>
