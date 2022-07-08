@@ -2,9 +2,9 @@
 /**
  * @var $this \app\includes\View
  * @var $checklists array \app\admin\models\Checklist
- * @var $amis array \app\admin\models\Ami
- * @var $colors array
  * @var $tahun string
+ * @var $ami_years array \app\admin\models\Ami tahun
+ * @var $colors array
  */
 
 use app\includes\App;
@@ -14,34 +14,16 @@ $this->breadcrumbs = 'Checklist';
 $this->header_title = $this->breadcrumbs;
 ?>
 
-<div class="row">
+<div class="row mb-4">
     <div class="col-lg-2 col-sm-2 col-md-2">
-        <form action="<?= App::getRoute() ?>" method="post" id="form_ami_id">
-            <div class="form-group">
-                <select class="form-select" name="ami_id" id="ami_id" onchange="submitAmiId()" style="outline: none;">
-                    <?php
-                    foreach ($amis as $ami):
-                        if ($ami->tahun == $tahun):
-                            ?>
-                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
-                        <?php
-                        endif;
-                    endforeach;
-                    ?>
-                    <?php
-                    foreach ($amis as $ami):
-                        if ($ami->tahun != $tahun):
-                            ?>
-                            <option value="<?= $ami->id ?>"><?= $ami->tahun ?></option>
-                        <?php
-                        endif;
-                    endforeach;
-                    ?>
-                </select>
-            </div>
-        </form>
+        <select class="form-select" name="tahun" id="tahun" style="outline: none;" onchange="window.location = this.value;">
+            <?php foreach ($ami_years as $year): ?>
+                <option value="<?= APP_PATH ?>/auditee/checklist/<?= $year ?>" <?= ($year == $tahun) ? 'selected' : ''?>><?= $year ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
 </div>
+
 <div class="row mb-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
@@ -94,15 +76,7 @@ $this->header_title = $this->breadcrumbs;
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
-                                        <li class="inline-icon">
-                                            <form method="post" action="<?= App::getRoute() ?>/delete/<?= $checklist->id ?>" class="inline" id="delete_checklist">
-                                                <input type="hidden" name="delete_<?= $checklist->id ?>" value="<?= $checklist->id ?>">
-                                                <button type="submit" class="btn-sm bg-transparent border-0 p-0">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/auditor/checklist/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
                                     </ul>
                                 </td>
                             </tr>

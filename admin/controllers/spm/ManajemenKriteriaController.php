@@ -14,33 +14,22 @@ use app\includes\Response;
 
 class ManajemenKriteriaController extends Controller
 {
-    public function index(Request $request, Response $response)
+    public function index(Request $request, Response $response, $param)
     {
-        $amis = Ami::findAll();
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
-        $standars = Standar::findAll('standar', ['tahun' => $last_ami->tahun]);
-        $kriterias = Kriteria::findAll('kriteria', ['tahun' => $last_ami->tahun]);
+        $tahun = (isset($param["tahun"])) ? $param["tahun"] : $last_ami->tahun;
+        $ami = Ami::findOrFail(['tahun' => $tahun]);
+        $ami_years = Ami::findAll(null, null, null, null, 'tahun');
+        
+        $standars = Standar::findAll('standar', ['tahun' => $tahun]);
+        $kriterias = Kriteria::findAll('kriteria', ['tahun' => $tahun]);
 
         App::setLayout('layout');
-
-        if ($request->isPost()) {
-            $request = $request->getBody();
-            $standars = Standar::findAll('standar', ['tahun' => $request['tahun']]);
-            $kriterias = Kriteria::findAll('kriteria', ['tahun' => $request['tahun']]);
-
-            return App::view('spm/manajemen_kriteria/index', [
-                'amis' => $amis,
-                'standars' => $standars,
-                'kriterias' => $kriterias,
-                'tahun' => $request['tahun'],
-            ]);
-        }
-
         return App::view('spm/manajemen_kriteria/index', [
-            'amis' => $amis,
             'standars' => $standars,
             'kriterias' => $kriterias,
-            'tahun' => $last_ami->tahun,
+            'ami_years' => $ami_years,
+            'tahun' => $tahun,
         ]);
     }
 

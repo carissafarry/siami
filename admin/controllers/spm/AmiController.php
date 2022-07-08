@@ -64,10 +64,20 @@ class AmiController extends Controller
     {
         $ami = Ami::findOrFail($param);
         $waktu_audits = $ami->checklists('waktu_audit');
+        $checklists = $ami->checklists();
+        $checklist_statuses = $ami->checklists('status_id');
+        $count_statuses = array_count_values($checklist_statuses);
+
+        $are_all_audited = false;
+        $all_checklist_are_submitted = false;
+
         if ($waktu_audits != []) {
             $are_all_audited = !in_array(null, $waktu_audits);
-        } else {
-            $are_all_audited = false;
+        }
+
+        //  Check if all checklists are done
+        if (!isset($count_statuses[6]) && isset($count_statuses[5]) && (count($checklist_statuses) == array_count_values($checklist_statuses)[5])) {
+            $all_checklist_are_submitted = true;
         }
 
         if ($request->isPost()) {
@@ -92,6 +102,7 @@ class AmiController extends Controller
         return App::view('spm/ami/detail', [
             'ami' => $ami,
             'are_all_audited' => $are_all_audited,
+            'all_checklist_are_submitted' => $all_checklist_are_submitted,
         ]);
     }
 
@@ -146,6 +157,20 @@ class AmiController extends Controller
             return;
         }
         App::$app->session->setFlash('failed', 'Data gagal dihapus!');
+        $response->back();
+    }
+
+    public function finishAmi(Request $request, Response $response, $param)
+    {
+        $ami = Ami::findOne($param);
+        $checklists = $ami->checklists();
+        foreach ($checklists as $checklist) {
+            $checklist->status_id = 6;
+            if ($checklist->update() && ($checklist->status_id == 6)) {
+                continue;
+            }
+        }
+        App::$app->session->setFlash('success', 'AMI berhasil diselesaikan!');
         $response->back();
     }
 

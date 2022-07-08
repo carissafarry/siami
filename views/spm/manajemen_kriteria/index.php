@@ -1,10 +1,10 @@
 <?php
 /**
  * @var $this \app\includes\View
- * @var $amis array \app\admin\models\Ami
  * @var $standars array \app\admin\models\Standar
  * @var $kriterias array \app\admin\models\Kriteria
  * @var $tahun string
+ * @var $ami_years array \app\admin\models\Ami tahun
  */
 
 use app\includes\App;
@@ -14,34 +14,16 @@ $this->breadcrumbs = 'Manajemen Kriteria';
 $this->header_title = $this->breadcrumbs;
 ?>
 
-<div class="row">
+<div class="row mb-4">
     <div class="col-lg-2 col-sm-2 col-md-2">
-        <form action="<?= App::getRoute() ?>" method="post" id="form_tahun">
-            <div class="form-group">
-                <select class="form-select" name="tahun" id="tahun" onchange="submitYear()" style="outline: none;">
-                <?php
-                    foreach ($amis as $ami):
-                        if ($ami->tahun == $tahun):
-                ?>
-                            <option value="<?= $ami->tahun ?>"><?= $ami->tahun ?></option>
-                <?php
-                        endif;
-                    endforeach;
-                ?>
-                <?php
-                    foreach ($amis as $ami):
-                        if ($ami->tahun != $tahun):
-                ?>
-                            <option value="<?= $ami->tahun ?>"><?= $ami->tahun ?></option>
-                <?php
-                        endif;
-                    endforeach;
-                ?>
-                </select>
-            </div>
-        </form>
+        <select class="form-select" name="tahun" id="tahun" style="outline: none;" onchange="window.location = this.value;">
+            <?php foreach ($ami_years as $year): ?>
+                <option value="<?= APP_PATH ?>/spm/manajemen-kriteria/<?= $year ?>" <?= ($year == $tahun) ? 'selected' : ''?>><?= $year ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
 </div>
+
 <div class="row mb-4">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
@@ -51,7 +33,7 @@ $this->header_title = $this->breadcrumbs;
                         <h6>Data Kriteria</h6>
                     </div>
                     <div class="col-sm-6 col-8">
-                        <a href="<?= App::getRoute() ?>/k/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
+                        <a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
                     </div>
                 </div>
             </div>
@@ -97,10 +79,10 @@ $this->header_title = $this->breadcrumbs;
                                 <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->ket_nilai) ?> </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/k/detail/<?= $kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/k/update/<?= $kriteria->id ?>"><i class="fas fa-pen"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/detail/<?= $kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/update/<?= $kriteria->id ?>"><i class="fas fa-pen"></i></a></li>
                                         <li class="inline-icon">
-                                            <form method="post" action="<?= App::getRoute() ?>/k/delete/<?= $kriteria->id ?>" class="inline">
+                                            <form method="post" action="<?= APP_PATH ?>/spm/manajemen-kriteria/k/delete/<?= $kriteria->id ?>" class="inline">
                                                 <input type="hidden" name="delete_<?= $kriteria->id ?>" value="<?= $kriteria->id ?>">
                                                 <button type="submit" class="btn-sm bg-transparent border-0 p-0">
                                                     <i class="fas fa-trash"></i>
@@ -131,7 +113,7 @@ $this->header_title = $this->breadcrumbs;
                         <h6>Data Standar</h6>
                     </div>
                     <div class="col-sm-6 col-8">
-                        <a href="<?= App::getRoute() ?>/s/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
+                        <a href="<?= APP_PATH ?>/spm/manajemen-kriteria/s/add" type="button" class="btn btn-md bg-gradient-default" style="float: right; margin-left: 1rem;"><i class="fas fa-plus"></i></a>
                     </div>
                 </div>
             </div>
@@ -169,10 +151,10 @@ $this->header_title = $this->breadcrumbs;
                                 <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= $standar->tahun ?></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/s/detail/<?= $standar->id ?>"><i class="fas fa-info-circle"></i></a></li>
-                                        <li class="inline-icon"><a href="<?= App::getRoute() ?>/s/update/<?= $standar->id ?>"><i class="fas fa-pen"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/s/detail/<?= $standar->id ?>"><i class="fas fa-info-circle"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/s/update/<?= $standar->id ?>"><i class="fas fa-pen"></i></a></li>
                                         <li class="inline-icon">
-                                            <form method="post" action="<?= App::getRoute() ?>/s/delete/<?= $standar->id ?>" class="inline">
+                                            <form method="post" action="<?= APP_PATH ?>/spm/manajemen-kriteria/s/delete/<?= $standar->id ?>" class="inline">
                                                 <input type="hidden" name="delete_<?= $standar->id ?>" value="<?= $standar->id ?>">
                                                 <button type="submit" class="btn-sm bg-transparent border-0 p-0">
                                                     <i class="fas fa-trash"></i>
@@ -203,7 +185,8 @@ $this->header_title = $this->breadcrumbs;
     // ! Unused function
     function setStandarData(obj) {
         var tahun = $(obj).val();
-        var url = '/spm/manajemen-kriteria/update-standar-data';
+        var app_path = <?= json_encode(APP_PATH) ?>;
+        var url = app_path + '/spm/manajemen-kriteria/update-standar-data';
 
         $.post(url, {
             tahun: tahun,

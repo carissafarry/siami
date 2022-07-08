@@ -2,13 +2,10 @@
 /**
  * @var $this \app\includes\View
  * @var $checklists array \app\admin\models\Checklist
-// * @var $amis array \app\admin\models\Ami
  * @var $tahun string
  * @var $ami_years array \app\admin\models\Ami tahun
  * @var $colors array
  */
-
-use app\includes\App;
 
 $this->title = 'Checklist | Index';
 $this->breadcrumbs = 'Checklist';

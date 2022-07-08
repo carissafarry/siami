@@ -3,6 +3,7 @@
  * @var $this \app\includes\View
  * @var $ami \app\admin\models\Ami
  * @var $are_all_audited bool
+ * @var $all_checklist_are_submitted bool
  * @var $rule \app\admin\rules\spm\ami\AddJadwalRtm
  */
 
@@ -17,6 +18,14 @@ $this->header_title = 'Detail AMI';
 <div class="text-right">
     <button type="button" data-bs-toggle="modal" data-bs-target="#addRTM" class="btn bg-gradient-warning">Tambah Jadwal RTM</button>
 </div>
+<?php endif; ?>
+
+<?php if ($all_checklist_are_submitted) : ?>
+    <div class="text-right">
+        <form action="<?= APP_PATH ?>/spm/ami/detail/<?= $ami->id ?>/done" method="post">
+            <button type="submit" class="btn bg-gradient-success">Selesaikan AMI</button>
+        </form>
+    </div>
 <?php endif; ?>
 
 <div class="row <?= $are_all_audited ? 'mb-4' : 'my-4' ?>">
@@ -107,7 +116,7 @@ $this->header_title = 'Detail AMI';
 
 <script>
     $(document).ready(function() {
-        var url = <?= json_encode(App::getRoute()) ?>
+        var url = <?= json_encode(App::getRoute()) ?>;
 
         $('.addRTMForm').on('submit', function(e) {
            e.preventDefault();

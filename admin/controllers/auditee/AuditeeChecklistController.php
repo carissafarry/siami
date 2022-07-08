@@ -12,13 +12,16 @@ use app\includes\Response;
 
 class AuditeeChecklistController extends Controller
 {
-    public function index(Request $request, Response $response)
+    public function index(Request $request, Response $response, $param)
     {
-        $amis = Ami::findAll();
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
+        $tahun = (isset($param["tahun"])) ? $param["tahun"] : $last_ami->tahun;
+        $ami = Ami::findOrFail(['tahun' => $tahun]);
+        $ami_years = Ami::findAll(null, null, null, null, 'tahun');
+
         $current_auditee_user = App::$app->user->auditee();
         $checklists = Checklist::findAll('checklist', [
-            'ami_id' => $last_ami->id,
+            'ami_id' => $ami->id,
             'auditee_id' => $current_auditee_user->user_id,
         ]);
         $colors = [
@@ -26,29 +29,10 @@ class AuditeeChecklistController extends Controller
         ];
 
         App::setLayout('layout');
-
-        if ($request->isPost()) {
-            $request = $request->getBody();
-
-            //  Find checklist with given year
-            $checklists = Checklist::findAll('checklist', [
-                'ami_id' => $request['ami_id'],
-                'auditee_id' => $current_auditee_user->user_id,
-            ]);
-            $requested_ami = Ami::findOne(['id' => $request['ami_id']]);
-
-            return App::view('auditee/checklist/index', [
-                'checklists' => $checklists,
-                'amis' => $amis,
-                'tahun' => $requested_ami->tahun,
-                'colors' => $colors,
-            ]);
-        }
-
         return App::view('auditee/checklist/index', [
             'checklists' => $checklists,
-            'amis' => $amis,
-            'tahun' => $last_ami->tahun,
+            'ami_years' => $ami_years,
+            'tahun' => $tahun,
             'colors' => $colors,
         ]);
     }
@@ -60,7 +44,7 @@ class AuditeeChecklistController extends Controller
         $auditors = $checklist->auditors();
         $checklist_has_kriterias = $checklist->pivot();
         $colors = [
-            'primary', 'secondary', 'danger', 'info', 'warning', 'success',
+            'primary', 'secondary', 'info', 'primary', 'warning', 'success',
         ];
 
         App::setLayout('layout');
@@ -119,6 +103,7 @@ class AuditeeChecklistController extends Controller
         $checklist_auditors = $checklist_has_kriteria->checklist_auditors();
         $last_year_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id])->tahun;
         $checklist_auditor_nilais = $checklist_has_kriteria->checklist_auditors([], 'nilai');
+        $checklist_auditor = $checklist_has_kriteria->checklist_auditor();
         $colors = [
             'primary', 'warning', 'info', 'danger', 'success',
         ];
@@ -139,6 +124,7 @@ class AuditeeChecklistController extends Controller
             'checklist_auditors' => $checklist_auditors,
             'last_year_ami' => $last_year_ami,
             'checklist_auditor_nilais' => $checklist_auditor_nilais,
+            'checklist_auditor' => $checklist_auditor,
             'colors' => $colors,
         ]);
     }

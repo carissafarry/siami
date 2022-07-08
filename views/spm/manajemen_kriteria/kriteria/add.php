@@ -110,7 +110,7 @@ $this->header_title = 'Tambah Kriteria';
 
 <script type="text/javascript">
     function updateStandarData(tahun) {
-        var app_path = <?= json_encode(APP_PATH) ?>
+        var app_path = <?= json_encode(APP_PATH) ?>;
         var url = app_path + '/spm/manajemen-kriteria/k/update-standar-data';
 
         $.post(url, {

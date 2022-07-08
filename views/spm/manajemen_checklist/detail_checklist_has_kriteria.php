@@ -5,6 +5,7 @@
  * @var $checklist_has_kriteria \app\admin\models\ChecklistHasKriteria
  * @var $last_year_ami int \app\admin\models\Ami
  * @var $checklist_auditors array \app\admin\models\ChecklistAuditor
+ * @var $prev_checklist \app\admin\models\Checklist
  * @var $colors array
  */
 
@@ -19,21 +20,21 @@ $this->header_title = 'Detail Laporan Checklist';
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-lg-6 col-7">
-                        <h6>Detail</h6>
+                        <h6>Detail Kriteria</h6>
                     </div>
                 </div>
             </div>
             <div class="card-body px-sm-5 px-4">
                 <div class="row mb-4">
-                    <div class="col-md-4 col-sm-6 col-12">
+                    <div class="col-12">
                         <h6 class="mb-0"><small>Kriteria</small></h6>
                         <p><small style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($checklist_has_kriteria->kriteria()->kriteria)) ?></small></p>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-12">
+                    <div class="col-12">
                         <h6 class="mb-0"><small>Keterangan Nilai</small></h6>
                         <p><small style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_has_kriteria->kriteria()->ket_nilai))) ?></small></p>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-12">
+                    <div class="col-12">
                         <h6 class="mb-0"><small>Catatan</small></h6>
                         <?php if (isset($checklist_has_kriteria->kriteria()->catatan)) : ?>
                             <p><small style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($checklist_has_kriteria->kriteria()->catatan)) ?></small></p>
@@ -41,15 +42,15 @@ $this->header_title = 'Detail Laporan Checklist';
                             -
                         <?php endif; ?>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-12">
+                    <div class="col-12">
                         <h6 class="mb-0"><small>Keterangan Auditee</small></h6>
-                        <?php if ($checklist_has_kriteria->data_pendukung): ?>
+                        <?php if ($checklist_has_kriteria->ket_auditee): ?>
                             <p><small style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($checklist_has_kriteria->ket_auditee)) ?></small></p>
                         <?php else: ?>
                             -
                         <?php endif; ?>
                     </div>
-                    <div class="col-md-4 col-sm-6 col-12">
+                    <div class="col-12">
                         <h6 class="mb-0"><small>Data Pendukung</small></h6>
                         <?php if ($checklist_has_kriteria->data_pendukung): ?>
                             <a href="<?= APP_PATH ?>/spm/manajemen-checklist/view/<?= $checklist_has_kriteria->id ?>" target="__blank" class="btn btn-block bg-gradient-warning btn-sm btn-icon">
@@ -61,13 +62,13 @@ $this->header_title = 'Detail Laporan Checklist';
                         <?php endif; ?>
                     </div>
                     <?php if (($checklist_has_kriteria->checklist()->status_id >= 3) || ($last_year_ami != $checklist_has_kriteria->checklist()->ami()->tahun)): ?>
-                        <div class="col-md-4 col-sm-6 col-12">
+                        <div class="col-12">
                             <h6 class="mb-0"><small>Kesesuaian</small></h6>
                             <span class="badge bg-gradient-<?= $checklist_has_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $checklist_has_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
                         </div>
                     <?php endif; ?>
-                    <?php if ($last_year_ami != $checklist_has_kriteria->checklist()->ami()->tahun): ?>
-                        <div class="col-md-4 col-sm-6 col-12">
+                    <?php if ($prev_checklist && ($last_year_ami != $checklist_has_kriteria->checklist()->ami()->tahun)): ?>
+                        <div class="col-12">
                             <h6 class="mb-0"><small>Efektivitas Hingga Tahun Ini</small></h6>
                             <span class="badge bg-gradient-<?= (strtolower($checklist_has_kriteria->tinjauan_efektivitas) == 'efektif') ? 'success' : 'danger' ?>" style="white-space: pre-wrap;"><?= $checklist_has_kriteria->tinjauan_efektivitas ?: 'tidak efektif' ?></span>
                         </div>

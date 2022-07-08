@@ -215,8 +215,8 @@ $this->header_title = 'Tambah Checklist';
             console.log(e);
         })
         .done(function(jqXHR) {
-            console.log(jqXHR.auditee_users);
-            console.log(jqXHR.auditor_users);
+            // console.log(jqXHR.auditee_users);
+            // console.log(jqXHR.auditor_users);
             $("#auditee_id").empty();
             if (jqXHR.auditee_users.length == 0) {
                 $("#auditee_id").append($('<option>', {

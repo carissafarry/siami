@@ -9,7 +9,6 @@ class Ami extends DbModel
     public int $id = 0;
     public int $spm_id = 0;
     public string $tahun = '';
-//    public int $is_tindak_lanjut = 0;
     public string $audit_mulai = '';
     public string $audit_selesai = '';
     public ?string $rtm_mulai = '';

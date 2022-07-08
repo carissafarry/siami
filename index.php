@@ -47,12 +47,13 @@ $app->router->get('/spm/ami/add', [new AmiController(), 'add']);
 $app->router->post('/spm/ami/add', [new AmiController(), 'add']);
 $app->router->get('/spm/ami/detail/{id}', [new AmiController(), 'detail']);
 $app->router->post('/spm/ami/detail/{id}', [new AmiController(), 'detail']);
+$app->router->post('/spm/ami/detail/{id}/done', [new AmiController(), 'finishAmi']);
 $app->router->get('/spm/ami/update/{id}', [new AmiController(), 'update']);
 $app->router->post('/spm/ami/update/{id}', [new AmiController(), 'update']);
 $app->router->post('/spm/ami/delete/{id}', [new AmiController(), 'delete']);
 
 $app->router->get('/spm/manajemen-kriteria', [new ManajemenKriteriaController(), 'index']);
-$app->router->post('/spm/manajemen-kriteria', [new ManajemenKriteriaController(), 'index']);
+$app->router->get('/spm/manajemen-kriteria/{tahun}', [new ManajemenKriteriaController(), 'index']);
 $app->router->get('/spm/manajemen-kriteria/k/add', [new ManajemenKriteriaController(), 'add_kriteria']);
 $app->router->post('/spm/manajemen-kriteria/k/add', [new ManajemenKriteriaController(), 'add_kriteria']);
 $app->router->post('/spm/manajemen-kriteria/k/update-standar-data', [new ManajemenKriteriaController(), 'update_standar_data']);
@@ -68,6 +69,7 @@ $app->router->post('/spm/manajemen-kriteria/s/update/{id}', [new ManajemenKriter
 $app->router->post('/spm/manajemen-kriteria/s/delete/{id}', [new ManajemenKriteriaController(), 'delete_standar']);
 
 $app->router->get('/spm/manajemen-checklist', [new ManajemenChecklistController(), 'index']);
+$app->router->get('/spm/manajemen-checklist/{tahun}', [new ManajemenChecklistController(), 'index']);
 $app->router->post('/spm/manajemen-checklist', [new ManajemenChecklistController(), 'index']);
 $app->router->get('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
 $app->router->post('/spm/manajemen-checklist/add', [new ManajemenChecklistController(), 'add']);
@@ -81,7 +83,7 @@ $app->router->post('/spm/manajemen-checklist/delete/{id}', [new ManajemenCheckli
 
 // Auditee
 $app->router->get('/auditee/checklist', [new AuditeeChecklistController(), 'index']);
-$app->router->post('/auditee/checklist', [new AuditeeChecklistController(), 'index']);
+$app->router->get('/auditee/checklist/{tahun}', [new AuditeeChecklistController(), 'index']);
 $app->router->get('/auditee/checklist/update/{id}', [new AuditeeChecklistController(), 'update']);
 $app->router->post('/auditee/checklist/update/{checklist_id}/s', [new AuditeeChecklistController(), 'saveChecklistKriteria']);
 $app->router->get('/auditee/checklist/view/{id}', [new AuditeeChecklistController(), 'viewFile']);
@@ -95,11 +97,13 @@ $app->router->post('/auditee/checklist/update/{checklist_id}/i/{id}/input-audit-
 
 // Auditor
 $app->router->get('/auditor/checklist', [new AuditorChecklistController(), 'index']);
-$app->router->post('/auditor/checklist', [new AuditorChecklistController(), 'index']);
+$app->router->get('/auditor/checklist/{tahun}', [new AuditorChecklistController(), 'index']);
 $app->router->get('/auditor/checklist/update/{id}', [new AuditorChecklistController(), 'update']);
-$app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChecklistController(), 'saveChecklistKriteria']);
+//$app->router->post('/auditor/checklist/update/{checklist_id}/s', [new AuditorChecklistController(), 'saveChecklistKriteria']);
 $app->router->post('/auditor/checklist/submit', [new AuditorChecklistController(), 'submitAudit']);
 $app->router->get('/auditor/checklist/update/{checklist_id}/i/{id}', [new AuditorChecklistController(), 'detail_checklist_has_kriteria']);
+$app->router->post('/auditor/checklist/update/{checklist_id}/i/{id}/save-audit', [new AuditorChecklistController(), 'saveAudit']);
+$app->router->post('/auditor/checklist/update/{checklist_id}/i/{id}/save-audit', [new AuditorChecklistController(), 'saveAudit']);
 $app->router->get('/auditor/checklist/view/{id}', [new AuditorChecklistController(), 'viewFile']);
 $app->router->post('/auditor/checklist/save-tinjauan-efektivitas', [new AuditorChecklistController(), 'saveTinjauanEfektivitas']);
 

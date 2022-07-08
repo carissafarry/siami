@@ -28,6 +28,7 @@ class User extends DbModel
     public string $status = '';
     public string $group = '';
     public string $password = '';
+    public int $count = 0;
 
     public function __construct()
     {
@@ -204,7 +205,7 @@ class User extends DbModel
 
         //  Temporary dummy data
         $hasil = [
-            'Name' => 'Nama ini dari server',
+            'Name' => 'Nama ini dari server ',
             'Status' => 'active',
 //            'NIP' => '198203082008121001',
             'NIP' => '2103191050',

@@ -51,7 +51,7 @@ $this->header_title = 'Update Checklist';
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
                         <h6 class="mb-0"><small>Area</small></h6>
-                        <p><small><?= $checklist->area()->nama ?></small></p>
+                        <p><small><?= $checklist->area()->nama ?> <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : '' ?></small></p>
                     </div>
                 </div>
                 <div class="row">
@@ -242,10 +242,10 @@ $this->header_title = 'Update Checklist';
                                     Kesesuaian
                                 </th>
                             <?php endif; ?>
+                            <?php if ($checklist->status_id >= 3): ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Aksi
                                 </th>
-                            <?php if ($checklist->status_id >= 4): ?>
                             <?php endif; ?>
                         </tr>
                         </thead>
@@ -280,7 +280,6 @@ $this->header_title = 'Update Checklist';
                                 <?php endif; ?>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/detail/<?= $checklist_kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>
                                         <?php if ($checklist->status_id >= 3): ?>
                                             <li class="inline-icon"><a href="<?= App::getRoute() ?>/i/<?= $checklist_kriteria->id ?>"><i class="fas fa-pen"></i></a></li>
                                         <?php endif; ?>

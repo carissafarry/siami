@@ -37,7 +37,7 @@ $head_of_ami = $ami->spm()->user();
                                     foreach ($spms as $spm):
                                         if ($spm->user_id != $ami->spm_id):
                                     ?>
-                                        <option value="<?= $spm->user_id ?>"><?= $spm->user()->nama ?></option>
+                                        <option value="<?= $spm->user_id ?>"><?= $spm->user()->nama ?> - <?= $spm->user()->net_id ?></option>
                                     <?php
                                         endif;
                                     endforeach;

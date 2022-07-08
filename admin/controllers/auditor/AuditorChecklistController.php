@@ -17,7 +17,7 @@ class AuditorChecklistController extends Controller
     {
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $tahun = (isset($param["tahun"])) ? $param["tahun"] : $last_ami->tahun;
-        $ami = Ami::findOne(['tahun' => $tahun]);
+        $ami = Ami::findOrFail(['tahun' => $tahun]);
         $ami_years = Ami::findAll(null, null, null, null, 'tahun');
         
         $current_auditor_user = App::$app->user->auditor();
