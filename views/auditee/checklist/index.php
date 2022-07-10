@@ -76,7 +76,7 @@ $this->header_title = $this->breadcrumbs;
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
-                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/auditor/checklist/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
+                                        <li class="inline-icon"><a href="<?= APP_PATH ?>/auditee/checklist/update/<?= $checklist->id ?>"><i class="fas fa-pen"></i></a></li>
                                     </ul>
                                 </td>
                             </tr>

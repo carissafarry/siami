@@ -241,8 +241,6 @@ $this->header_title = 'Update Checklist';
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Kesesuaian
                                 </th>
-                            <?php endif; ?>
-                            <?php if ($checklist->status_id >= 3): ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Aksi
                                 </th>
@@ -259,11 +257,11 @@ $this->header_title = 'Update Checklist';
                             <tr class="text-sm">
                                 <input type="hidden" name="checklist_kriteria_id" value="<?= $checklist_kriteria->id ?>">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode($kriteria->kriteria) ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(($kriteria->catatan) ?: '-') ?></td>
+                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(($kriteria->ket_nilai) ?: '-') ?></td>
                                 <?php if ($checklist->status_id >= 3): ?>
-                                    <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($checklist_kriteria->ket_auditee ?: '-'))) ?></td>
+                                    <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(($checklist_kriteria->ket_auditee) ?: '-') ?></td>
                                     <?php if (isset($checklist_kriteria->data_pendukung)) :?>
                                         <td class="center-table">
                                             <a href="<?= APP_PATH ?>/spm/manajemen-checklist/view/<?= $checklist_kriteria->id ?>" target="__blank" style="color: #d0261f; padding-inline: 0.5rem;">
