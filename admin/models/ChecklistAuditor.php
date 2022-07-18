@@ -9,7 +9,6 @@ class ChecklistAuditor extends DbModel
 {
     public int $checklist_kriteria_id = 0;
     public int $auditor_id = 0;
-    public ?string $waktu_audit = '';
     public ?string $ket_auditor = '';
     public ?string $nilai = '';
 
@@ -34,7 +33,6 @@ class ChecklistAuditor extends DbModel
             'id',
             'checklist_kriteria_id',
             'auditor_id',
-            'waktu_audit',
             'ket_auditor',
             'nilai',
         ];

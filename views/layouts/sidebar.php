@@ -2,7 +2,7 @@
 use app\includes\App;
 ?>
 
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-left ms-3" id="sidenav-main">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-left ms-3 bg-white">
     <div class="sidenav-header" style="height: 7rem">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none"
            aria-hidden="true" id="iconSidenav"></i>
@@ -10,10 +10,6 @@ use app\includes\App;
             <img src="/contents/assets/img/logo-PENS.png" style="max-width: 100%; max-height: 5rem;" alt="...">
         </a>
         <hr class="horizontal dark mt-0">
-<!--        <a class="py-0 m-0 d-flex justify-content-between align-items-center" href="/dashboard" style="padding: 3.5rem">-->
-<!--            <img src="/contents/assets/img/logo-SPM.png" style="max-width: 100%; max-height: 3rem;" alt="...">-->
-<!--            <h4>SIAMI</h4>-->
-<!--        </a>-->
     </div>
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">

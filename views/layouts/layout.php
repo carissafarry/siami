@@ -31,7 +31,7 @@ use app\includes\App;
             <?php require  APP_ROOT . '/views/layouts/footer.php'; ?>
         </div>
     </main>
-    <?php require_once APP_ROOT . '/views/layouts/configurator.php'; ?>
+<!--    --><?php //require_once APP_ROOT . '/views/layouts/configurator.php'; ?>
     <?php require_once APP_ROOT . '/views/layouts/scripts.php'; ?>
     <?php if ($this->is_dashboard == true): ?>
         <script src="/contents/assets/js/pages/dashboard.js"></script>

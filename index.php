@@ -78,6 +78,7 @@ $app->router->get('/spm/manajemen-checklist/update/{id}', [new ManajemenChecklis
 $app->router->get('/spm/manajemen-checklist/update/{checklist_id}/i/{id}', [new ManajemenChecklistController(), 'detail_checklist_has_kriteria']);
 $app->router->get('/spm/manajemen-checklist/view/{id}', [new ManajemenChecklistController(), 'viewFile']);
 $app->router->post('/spm/manajemen-checklist/delete/{id}', [new ManajemenChecklistController(), 'delete']);
+$app->router->get('/spm/manajemen-checklist/export/{id}', [new ManajemenChecklistController(), 'exportRTM']);
 
 
 

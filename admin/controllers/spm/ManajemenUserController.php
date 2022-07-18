@@ -20,6 +20,9 @@ class ManajemenUserController extends Controller
         $this->registerMiddleware(
             new AuthMiddleware([
                 'index',
+                'add',
+                'detail',
+                'update',
             ])
         );
     }

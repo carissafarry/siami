@@ -37,7 +37,7 @@ use app\includes\App;
                 </li>
                 <li class="nav-item d-flex align-items-center" style="padding-left: 1rem">
                     <a href="<?= APP_PATH ?>/logout" class="nav-link text-body p-0">
-                        <i class="fa fa-sign-out fixed-plugin-button-nav cursor-pointer"></i>
+                        <i class="fa fa-sign-out cursor-pointer"></i>
                     </a>
                 </li>
             </ul>

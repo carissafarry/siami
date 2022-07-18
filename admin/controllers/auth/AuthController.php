@@ -3,7 +3,10 @@
 namespace app\admin\controllers\auth;
 
 use app\admin\form\Login;
+use app\admin\models\Ami;
 use app\admin\models\auth\User;
+use app\admin\models\Checklist;
+use app\admin\models\Status;
 use app\admin\rules\auth\LoginRule;
 use app\admin\rules\auth\UserRule;
 use app\includes\App;
@@ -152,7 +155,33 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+        $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
+        $tahun = $last_ami->tahun;
+
+        //  Find status
+        $statuses = Status::findAll();
+        $checklist_statuses = Checklist::findAll('checklist', ['ami_id' => $last_ami->id], null, null, 'status_id');
+
+        //  Find number of each user type
+        $spms = User::spms(['tahun' => $last_ami->tahun]);
+        $auditors = User::auditors(['tahun' => $last_ami->tahun]);
+        $auditees = User::auditees(['tahun' => $last_ami->tahun]);
+
+        //  Graph data
+        $tahuns = Ami::findAll(null, null, null, null, 'tahun');
+        $amis = Ami::findAll();
+
         App::setLayout('layout');
-        return App::view('spm/dashboard');
+        return App::view('spm/dashboard', [
+            'tahun' => $tahun,
+            'statuses' => $statuses,
+            'checklist_statuses' => $checklist_statuses,
+            'checklist_status_counts' => array_count_values($checklist_statuses),
+            'jumlah_spm' => count($spms),
+            'jumlah_auditor' => count($auditors),
+            'jumlah_auditee' => count($auditees),
+            'tahuns' => $tahuns,
+            'ami' => $last_ami,
+        ]);
     }
 }

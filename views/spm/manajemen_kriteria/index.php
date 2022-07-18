@@ -58,9 +58,6 @@ $this->header_title = $this->breadcrumbs;
                                 Catatan
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Keterangan Nilai
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Aksi
                             </th>
                         </tr>
@@ -76,7 +73,6 @@ $this->header_title = $this->breadcrumbs;
                                 <td class="center-table"> <?= $kriteria->kode ?> </td>
                                 <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->kriteria) ?> </td>
                                 <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->catatan) ?> </td>
-                                <td class="center-table" style="white-space: pre-wrap; column-span: 1rem;"><?= html_entity_decode($kriteria->ket_nilai) ?> </td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">
                                         <li class="inline-icon"><a href="<?= APP_PATH ?>/spm/manajemen-kriteria/k/detail/<?= $kriteria->id ?>"><i class="fas fa-info-circle"></i></a></li>

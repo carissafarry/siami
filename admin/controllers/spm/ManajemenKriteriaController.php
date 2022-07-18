@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\spm;
 
+use app\admin\middleware\AuthMiddleware;
 use app\admin\models\Ami;
 use app\admin\models\Kriteria;
 use app\admin\models\Standar;
@@ -14,6 +15,20 @@ use app\includes\Response;
 
 class ManajemenKriteriaController extends Controller
 {
+    public function __construct()
+    {
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'index',
+                'add_kriteria',
+                'update_kriteria',
+                'add_standar',
+                'detail_standar',
+                'update_standar',
+            ])
+        );
+    }
+
     public function index(Request $request, Response $response, $param)
     {
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);

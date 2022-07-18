@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\spm;
 
+use app\admin\middleware\AuthMiddleware;
 use app\admin\models\Ami;
 use app\admin\models\Area;
 use app\admin\models\Auditee;
@@ -16,26 +17,50 @@ use app\includes\App;
 use app\includes\Controller;
 use app\includes\Request;
 use app\includes\Response;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ManajemenChecklistController extends Controller
 {
+    public function __construct()
+    {
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'index',
+                'add',
+                'update',
+                'detail_checklist_has_kriteria',
+            ])
+        );
+    }
+
     public function index(Request $request, Response $response, $param)
     {
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
         $tahun = (isset($param["tahun"])) ? $param["tahun"] : $last_ami->tahun;
         $ami = Ami::findOrFail(['tahun' => $tahun]);
         $ami_years = Ami::findAll(null, null, null, null, 'tahun');
-        
+        $are_all_done = true;
+
         $checklists = Checklist::findAll('checklist', ['ami_id' => $ami->id]);
         $colors = [
             'primary', 'warning', 'info', 'danger', 'warning', 'success',
         ];
 
+        //  Check if any checklist is not done yet
+        $checklist_statuses = Checklist::findAll('checklist', ['ami_id' => $ami->id], null, null, 'status_id');
+        if (in_array(1, $checklist_statuses) || in_array(2, $checklist_statuses) || in_array(3, $checklist_statuses) || in_array(4, $checklist_statuses)) {
+            $are_all_done = false;
+        }
+        
         App::setLayout('layout');
         return App::view('spm/manajemen_checklist/index', [
             'checklists' => $checklists,
+            'ami' => $ami,
             'ami_years' => $ami_years,
             'tahun' => $tahun,
+            'are_all_done' => $are_all_done,
             'colors' => $colors,
         ]);
     }
@@ -226,6 +251,47 @@ class ManajemenChecklistController extends Controller
             'primary', 'warning', 'info', 'danger', 'success',
         ];
 
+        //  Look for previous period checklist data
+        $checklist = Checklist::findOrFail(['id' => $param['checklist_id']]);
+        $prev_period_ami = Ami::findOne(['tahun' => ($checklist->ami()->tahun - 1)]);
+
+        $prev_period_checklist = false;
+        $is_used_in_prev_checklist_has_kriteria = false;
+        $prev_checklist_has_kriteria = null;
+        $prev_checklist_auditors = null;
+        $tidak_sesuai = false;
+        
+        if ($prev_period_ami) {
+            $prev_period_checklist = Checklist::findOne([
+                'ami_id' => $prev_period_ami->id,
+                'area_id' => $checklist->area_id,
+            ]);
+
+            if ($prev_period_checklist) {
+                $prev_checklist_kriterias = $prev_period_checklist->pivot();
+                foreach ($prev_checklist_kriterias as $prev_checklist_kriteria) {
+                    if (preg_replace( "/\r|\n/", "", strtolower($checklist_has_kriteria->kriteria()->kriteria)) == preg_replace( "/\r|\n/", "", strtolower($prev_checklist_kriteria->kriteria()->kriteria))) {
+                        $is_used_in_prev_checklist_has_kriteria = true;
+                        $prev_checklist_has_kriteria = $prev_checklist_kriteria;
+                    }
+                }
+            }
+
+            if ($prev_checklist_has_kriteria) {
+                $prev_checklist_auditors = $prev_checklist_has_kriteria->checklist_auditors();
+            }
+
+//            if ($prev_period_checklist) {
+//                $prev_checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $prev_period_checklist->id], ChecklistHasKriteria::class);
+//                foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria) {
+//                    $prev_kriterias[] = preg_replace( "/\r|\n/", "", strtolower(Kriteria::findOne(['id' => $prev_checklist_has_kriteria_id], null, null, null, 'kriteria')));
+//                }
+//                if (in_array(preg_replace("/\r|\n/", '', strtolower($checklist_has_kriteria->kriteria()->kriteria)), $prev_kriterias)) {
+//                    $is_used_in_prev_checklist_period = true;
+//                }
+//            }
+        }
+
         App::setLayout('layout');
         return App::view('spm/manajemen_checklist/detail_checklist_has_kriteria', [
             'last_ami' => $last_ami,
@@ -233,6 +299,10 @@ class ManajemenChecklistController extends Controller
             'checklist_has_kriteria' => $checklist_has_kriteria,
             'checklist_auditors' => $checklist_auditors,
             'prev_checklist' => $prev_checklist,
+            'is_used_in_prev_checklist_has_kriteria' => $is_used_in_prev_checklist_has_kriteria,
+            'prev_checklist_has_kriteria' => $prev_checklist_has_kriteria,
+            'prev_checklist_auditors' => $prev_checklist_auditors,
+            'prev_ami_period' => $prev_period_ami,
             'colors' => $colors,
         ]);
     }
@@ -262,5 +332,40 @@ class ManajemenChecklistController extends Controller
                 $response->back();
             }
         }
+    }
+
+    public function exportRTM(Request $request, Response $response, $param)
+    {
+        $ami = Ami::findOne($param);
+        $checklists = $ami->checklists();
+        
+        $spreadsheet = new Spreadsheet();
+        foreach ($checklists as $checklist) {
+            if ($checklist->status_id >= 5) {
+                $checklist_has_kriterias = $checklist->pivot();
+                $worksheet = $spreadsheet->addSheet(new Worksheet($spreadsheet, $checklist->area()->nama . ' ' . ($checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : '')));
+                $worksheet
+                    ->setCellValue('A1', 'No')
+                    ->setCellValue('B1', 'Kode Kriteria')
+                    ->setCellValue('C1', 'Tindak Lanjut')
+                ;
+                $row = 2;
+                foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
+                    if ($checklist_has_kriteria->tidak_sesuai == 1) {
+                        $worksheet
+                            ->setCellValue("A{$row}", $row)
+                            ->setCellValue("B{$row}", $checklist_has_kriteria->kriteria()->kode)
+                            ->setCellValue("C{$row}", $checklist_has_kriteria->tindak_lanjut)
+                        ;
+                    }
+                    $row++;
+                }
+            }
+        }
+        $spreadsheet->removeSheetByIndex(0);
+
+        $writer = new Xlsx($spreadsheet);
+        $response->excel();
+        $writer->save('php://output');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\auditee;
 
+use app\admin\middleware\AuthMiddleware;
 use app\admin\models\Ami;
 use app\admin\models\Checklist;
 use app\admin\models\ChecklistHasKriteria;
@@ -12,6 +13,17 @@ use app\includes\Response;
 
 class AuditeeChecklistController extends Controller
 {
+    public function __construct()
+    {
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'index',
+                'update',
+                'detail_checklist_has_kriteria',
+            ])
+        );
+    }
+
     public function index(Request $request, Response $response, $param)
     {
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);

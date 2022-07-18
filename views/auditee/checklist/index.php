@@ -43,16 +43,13 @@ $this->header_title = $this->breadcrumbs;
                                 No
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Tgl Terbit
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 No Identifikasi
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                No Revisi
+                                Area
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Area
+                                Auditor
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Status
@@ -66,13 +63,25 @@ $this->header_title = $this->breadcrumbs;
                         <?php
                             $no = 1;
                             foreach ($checklists as $checklist):
+                                $auditors = $checklist->auditors();
+//                            echo '<pre>';
+//                            var_dump($auditors);
+//                            echo '</pre>';
                         ?>
                             <tr class="text-sm">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table"> <?= $checklist->tgl_terbit ?> </td>
                                 <td class="center-table"> <?= $checklist->no_identifikasi ?> </td>
-                                <td class="center-table"> <?= $checklist->no_revisi ?> </td>
                                 <td class="center-table"> <?= $checklist->area()->nama ?>  <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''?></td>
+                                <td class="center-table">
+                                    <?php foreach ($auditors as $auditor): ?>
+                                        <div class="d-flex py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-xs"><?= $auditor->user()->nama ?></h6>
+                                                <p class="text-xs text-secondary mb-0"><?= $auditor->user()->net_id ?></p>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </td>
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">

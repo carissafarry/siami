@@ -17,3 +17,6 @@
 <script type="text/javascript" charset="utf8" src="/contents/assets/js/plugins/jquery.dataTables.js"></script>
 
 <script src="/contents/assets/js/plugins/dataTables.bootstrap5.min.js"></script>
+
+<!-- Highcharts JS  -->
+<script src="https://code.highcharts.com/highcharts.js"></script>

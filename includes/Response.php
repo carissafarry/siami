@@ -2,6 +2,10 @@
 
 namespace app\includes;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls\Workbook;
+
 class Response
 {
     public function setStatusCode(int $code)
@@ -46,5 +50,11 @@ class Response
         } else {
             die("Error: file not found!");
         }
+    }
+
+    public function excel($fileName='Rapat Tinjauan Manajemen')
+    {
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename={$fileName}.xlsx");
     }
 }

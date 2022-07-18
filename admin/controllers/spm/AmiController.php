@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\spm;
 
+use app\admin\middleware\AuthMiddleware;
 use app\admin\models\Ami;
 use app\admin\models\Spm;
 use app\admin\rules\spm\ami\AddAmiRule;
@@ -14,6 +15,19 @@ use app\includes\Response;
 
 class AmiController extends Controller
 {
+    public function __construct()
+    {
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'index',
+                'add',
+                'detail',
+                'update',
+                'detail_checklist_has_kriteria',
+            ])
+        );
+    }
+
     public function index(Request $request, Response $response)
     {
         $amis = Ami::findAll();

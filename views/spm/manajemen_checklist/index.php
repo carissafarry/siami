@@ -3,16 +3,21 @@
  * @var $this \app\includes\View
  * @var $checklists array \app\admin\models\Checklist
  * @var $tahun string
+ * @var $ami \app\admin\models\Ami
  * @var $ami_years array \app\admin\models\Ami tahun
+ * @var $are_all_done array
  * @var $colors array
  */
 
 $this->title = 'Manajemen Checklist | Index';
 $this->breadcrumbs = 'Manajemen Checklist';
 $this->header_title = $this->breadcrumbs;
+
+
+
 ?>
 
-<div class="row mb-4">
+<div class="row justify-content-between">
     <div class="col-lg-2 col-sm-2 col-md-2">
         <select class="form-select" name="tahun" id="tahun" style="outline: none;" onchange="window.location = this.value;">
             <?php foreach ($ami_years as $year): ?>
@@ -20,9 +25,17 @@ $this->header_title = $this->breadcrumbs;
             <?php endforeach; ?>
         </select>
     </div>
+    <?php if ($are_all_done): ?>
+        <div class="col-lg-2 col-sm-2 col-md-2">
+            <a href="<?= APP_PATH ?>/spm/manajemen-checklist/export/<?= $ami->id ?>" target="__blank" class="btn bg-gradient-warning btn-sm btn-icon">
+                <i class="fas fa-file-download"></i>
+                <span>Export RTM</span>
+            </a>
+        </div>
+    <?php endif; ?>
 </div>
 
-<div class="row mb-4">
+<div class="row my-3">
     <div class="col-lg-12 col-md-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-header pb-0">
@@ -44,19 +57,16 @@ $this->header_title = $this->breadcrumbs;
                                 No
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Tgl Terbit
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 No Identifikasi
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                No Revisi
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Area
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Auditee
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                Auditor
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Status
@@ -70,14 +80,23 @@ $this->header_title = $this->breadcrumbs;
                         <?php
                             $no = 1;
                             foreach ($checklists as $checklist):
+                                $auditors = $checklist->auditors();
                         ?>
                             <tr class="text-sm">
                                 <td class="center-table"> <?= $no ?> </td>
-                                <td class="center-table"> <?= $checklist->tgl_terbit ?> </td>
                                 <td class="center-table"> <?= $checklist->no_identifikasi ?> </td>
-                                <td class="center-table"> <?= $checklist->no_revisi ?> </td>
                                 <td class="center-table"> <?= $checklist->area()->nama ?> <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''?></td>
                                 <td class="center-table"> <?= $checklist->auditee()->user()->nama ?> </td>
+                                <td class="center-table">
+                                    <?php foreach ($auditors as $auditor): ?>
+                                        <div class="d-flex py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-xs"><?= $auditor->user()->nama ?></h6>
+                                                <p class="text-xs text-secondary mb-0"><?= $auditor->user()->net_id ?></p>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </td>
                                 <td><span class="badge bg-gradient-<?= $colors[($checklist->status_id - 1) % count($colors)] ?>"><?= $checklist->status()->status ?></span></td>
                                 <td class="center-table align-content-center">
                                     <ul style="list-style: none; padding-left: 0;">

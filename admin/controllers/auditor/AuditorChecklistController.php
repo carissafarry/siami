@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers\auditor;
 
+use app\admin\middleware\AuthMiddleware;
 use app\admin\models\Ami;
 use app\admin\models\Checklist;
 use app\admin\models\ChecklistAuditor;
@@ -13,6 +14,16 @@ use app\includes\Response;
 
 class AuditorChecklistController extends Controller
 {
+    public function __construct()
+    {
+        $this->registerMiddleware(
+            new AuthMiddleware([
+                'index',
+                'update',
+                'detail_checklist_has_kriteria',
+            ])
+        );
+    }
     public function index(Request $request, Response $response, $param)
     {
         $last_ami = Ami::findOne(['id' => Ami::getLastInsertedRow()->id]);
@@ -23,7 +34,7 @@ class AuditorChecklistController extends Controller
         $current_auditor_user = App::$app->user->auditor();
         $checklists = $current_auditor_user->checklists(['ami_id' => $ami->id]);
         $colors = [
-            'primary', 'warning', 'info', 'danger', 'success',
+            'primary', 'warning', 'info', 'danger', 'warning', 'success',
         ];
 
         App::setLayout('layout');
@@ -155,6 +166,47 @@ class AuditorChecklistController extends Controller
             'primary', 'warning', 'info', 'danger', 'success',
         ];
 
+        //  Look for previous period checklist data
+        $checklist = Checklist::findOrFail(['id' => $param['checklist_id']]);
+        $prev_period_ami = Ami::findOne(['tahun' => ($checklist->ami()->tahun - 1)]);
+
+        $prev_period_checklist = false;
+        $is_used_in_prev_checklist_has_kriteria = false;
+        $prev_checklist_has_kriteria = null;
+        $prev_checklist_auditors = null;
+        $tidak_sesuai = false;
+
+        if ($prev_period_ami) {
+            $prev_period_checklist = Checklist::findOne([
+                'ami_id' => $prev_period_ami->id,
+                'area_id' => $checklist->area_id,
+            ]);
+
+            if ($prev_period_checklist) {
+                $prev_checklist_kriterias = $prev_period_checklist->pivot();
+                foreach ($prev_checklist_kriterias as $prev_checklist_kriteria) {
+                    if (preg_replace( "/\r|\n/", "", strtolower($checklist_has_kriteria->kriteria()->kriteria)) == preg_replace( "/\r|\n/", "", strtolower($prev_checklist_kriteria->kriteria()->kriteria))) {
+                        $is_used_in_prev_checklist_has_kriteria = true;
+                        $prev_checklist_has_kriteria = $prev_checklist_kriteria;
+                    }
+                }
+            }
+
+            if ($prev_checklist_has_kriteria) {
+                $prev_checklist_auditors = $prev_checklist_has_kriteria->checklist_auditors();
+            }
+
+//            if ($prev_period_checklist) {
+//                $prev_checklist_has_kriterias = ChecklistHasKriteria::findAll('checklist_has_kriteria', ['checklist_id' => $prev_period_checklist->id], ChecklistHasKriteria::class);
+//                foreach ($prev_checklist_has_kriterias as $prev_checklist_has_kriteria) {
+//                    $prev_kriterias[] = preg_replace( "/\r|\n/", "", strtolower(Kriteria::findOne(['id' => $prev_checklist_has_kriteria_id], null, null, null, 'kriteria')));
+//                }
+//                if (in_array(preg_replace("/\r|\n/", '', strtolower($checklist_has_kriteria->kriteria()->kriteria)), $prev_kriterias)) {
+//                    $is_used_in_prev_checklist_period = true;
+//                }
+//            }
+        }
+
         App::setLayout('layout');
         return App::view('auditor/checklist/detail_checklist_has_kriteria', [
             'checklist_id' => $param['checklist_id'],
@@ -163,6 +215,10 @@ class AuditorChecklistController extends Controller
             'checklist_auditor' => $checklist_auditor,
             'last_year_ami' => $last_year_ami,
             'prev_checklist' => $prev_checklist,
+            'is_used_in_prev_checklist_has_kriteria' => $is_used_in_prev_checklist_has_kriteria,
+            'prev_checklist_has_kriteria' => $prev_checklist_has_kriteria,
+            'prev_checklist_auditors' => $prev_checklist_auditors,
+            'prev_ami_period' => $prev_period_ami,
             'colors' => $colors,
         ]);
     }

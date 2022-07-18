@@ -179,6 +179,11 @@ class User extends DbModel
         );
     }
 
+    public static function spms($where=[])
+    {
+        return self::findAll('user_details', array_merge(['user_type' => 1], $where), User::class);
+    }
+
     public static function auditors($where=[])
     {
         return self::findAll('user_details', array_merge(['user_type' => 2], $where), User::class);
@@ -205,7 +210,8 @@ class User extends DbModel
 
         //  Temporary dummy data
         $hasil = [
-            'Name' => 'Nama ini dari server ',
+//            'Name' => 'Nama ini dari server ',
+            'Name' => strstr($email, '@', true),
             'Status' => 'active',
 //            'NIP' => '198203082008121001',
             'NIP' => '2103191050',

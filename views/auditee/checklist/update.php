@@ -102,7 +102,12 @@ $this->header_title = 'Update Checklist';
             <div class="card-header pb-0">
                 <div class="row">
                     <div class="col-sm-6 col-4">
-                        <h6>Data Kriteria</h6>
+                        <h6>
+                            Kriteria Checklist
+                            <span class="text-primary">
+                                <?= $checklist->area()->nama ?> <?= $checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : '' ?> <?= $checklist->ami()->tahun ?>
+                            </span>
+                        </h6>
                     </div>
                 </div>
             </div>
@@ -122,9 +127,6 @@ $this->header_title = 'Update Checklist';
                             </th>
                             <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                 Catatan
-                            </th>
-                            <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
-                                Ket Nilai
                             </th>
                             <?php if ($checklist->status_id >= 3) : ?>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -158,7 +160,6 @@ $this->header_title = 'Update Checklist';
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kode)) ?></span></td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br($kriteria->kriteria)) ?></span></td>
                                 <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->catatan ?: '-'))) ?></td>
-                                <td class="center-table" style="white-space: pre-wrap;"><?= html_entity_decode(nl2br(($kriteria->ket_nilai ?: '-'))) ?></td>
                                 <?php if ($checklist->status_id >= 3) : ?>
                                     <td class="center-table">
                                         <span class="badge bg-gradient-<?= $checklist_kriteria->tidak_sesuai == 1 ? 'danger' : 'success' ?>" style="white-space: pre-wrap;"><?= $checklist_kriteria->tidak_sesuai == 1 ? 'Tidak Sesuai' : 'Sesuai' ?></span>
