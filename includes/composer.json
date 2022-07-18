@@ -16,10 +16,16 @@
         "php": "7.4.*",
         "vlucas/phpdotenv": "^5.4",
         "ext-oci8": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "phpoffice/phpspreadsheet": "^1.24"
     }
     ,
     "require-dev": {
         "roave/security-advisories": "dev-latest"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
     }
 }
