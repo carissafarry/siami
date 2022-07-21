@@ -17,9 +17,8 @@ use app\includes\App;
 use app\includes\Controller;
 use app\includes\Request;
 use app\includes\Response;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ManajemenChecklistController extends Controller
 {
@@ -338,34 +337,106 @@ class ManajemenChecklistController extends Controller
     {
         $ami = Ami::findOne($param);
         $checklists = $ami->checklists();
-        
+
+        //  Create reader
+        $reader = IOFactory::createReader('Xlsx');
         $spreadsheet = new Spreadsheet();
         foreach ($checklists as $checklist) {
             if ($checklist->status_id >= 5) {
-                $checklist_has_kriterias = $checklist->pivot();
-                $worksheet = $spreadsheet->addSheet(new Worksheet($spreadsheet, $checklist->area()->nama . ' ' . ($checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : '')));
+                //  Load existing template file
+                $template_spreadsheet = $reader->load(APP_ROOT . "/" . 'contents/storage/Template_RTM.xlsx');
+                $laporanAuditSheet = clone $template_spreadsheet->getSheetByName('Laporan Audit');
+                $worksheet = $spreadsheet->addExternalSheet($laporanAuditSheet);
+
+                //  Set template contents
+                $worksheet->setTitle($checklist->area()->nama . ' ' . ($checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''));
                 $worksheet
-                    ->setCellValue('A1', 'No')
-                    ->setCellValue('B1', 'Kode Kriteria')
-                    ->setCellValue('C1', 'Tindak Lanjut')
+                    ->setCellValue("A5", "FM-PJM." . substr($checklist->no_identifikasi, -5) . ".Rev." . sprintf("%02d", $checklist->no_revisi))
+                    ->setCellValue("C4", 'Area: ' . $checklist->area()->nama. ' ' . ($checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''))
+                    ->setCellValue("Q1", $checklist->no_identifikasi)
+                    ->setCellValue("Q2", $checklist->no_revisi)
                 ;
-                $row = 2;
+                $tgl_terbit = date_create($checklist->tgl_terbit);
+                $worksheet
+                    ->setCellValue("Q3", date_format($tgl_terbit, 'd F Y'))
+                    ->setCellValue("D9", $checklist->area()->nama. ' ' . ($checklist->area()->is_prodi == 1 ? $checklist->area()->jurusan : ''))
+                    ->setCellValue("D10", $checklist->auditee()->user()->nama)
+                ;
+                if ($checklist->auditee2()) {
+                    $worksheet
+                        ->setCellValue("B11", 'Auditee2')
+                        ->setCellValue("C11", ':')
+                        ->setCellValue("D11", $checklist->auditee2()->user()->nama)
+                    ;
+                }
+
+                $auditor_row = 12;
+                if (count($checklist->auditors()) >= 3) {
+                    $worksheet
+                        ->setCellValue("B14", 'Auditor3')
+                        ->setCellValue("C14", ':')
+                    ;
+                }
+                foreach ($checklist->auditors() as $auditor) {
+                    $worksheet->setCellValue("D{$auditor_row}", $auditor->user()->nama);
+                    $auditor_row++;
+                }
+
+                $waktu_audit = date_create($checklist->waktu_audit);
+                $worksheet->setCellValue("D16", date_format($waktu_audit, "l, j F Y / H:i"));
+
+                $rtm_mulai = date_create($ami->rtm_mulai);
+                $rtm_selesai = date_create($ami->rtm_selesai);
+                $worksheet->setCellValue("P21", date_format($rtm_mulai, "l, j F Y / H:i") . ' - ' . date_format($rtm_selesai, "l, j F Y / H:i"));
+
+                //  Set main contents
+                $checklist_has_kriterias = $checklist->pivot();
+                $no = 1;
+                $kts_row = 23;
                 foreach ($checklist_has_kriterias as $checklist_has_kriteria) {
                     if ($checklist_has_kriteria->tidak_sesuai == 1) {
+                        if ($kts_row !== 23) {
+                            $worksheet->insertNewRowBefore($kts_row);
+                        }
                         $worksheet
-                            ->setCellValue("A{$row}", $row)
-                            ->setCellValue("B{$row}", $checklist_has_kriteria->kriteria()->kode)
-                            ->setCellValue("C{$row}", $checklist_has_kriteria->tindak_lanjut)
+                            ->mergeCells("C{$kts_row}:F{$kts_row}")
+                            ->mergeCells("H{$kts_row}:K{$kts_row}")
+                            ->mergeCells("O{$kts_row}:Q{$kts_row}")
+                            ->setCellValue("B{$kts_row}", $no)
+                            ->setCellValue("H{$kts_row}", html_entity_decode($checklist_has_kriteria->tindak_lanjut))
+                            ->setCellValue("O{$kts_row}", html_entity_decode($checklist_has_kriteria->tinjauan_efektivitas))
                         ;
+                        $ket_auditors = '';
+                        foreach ($checklist_has_kriteria->checklist_auditors() as $checklist_auditor) {
+                            if ($checklist_auditor) {
+                                $ket_auditors .= ($checklist_auditor->ket_auditor . '&#10;');
+                            }
+                        }
+                        $worksheet->setCellValue("C{$kts_row}", html_entity_decode($ket_auditors));
+                        $no++;
+                        $kts_row++;
                     }
-                    $row++;
+                }
+
+                //  Set signature contents
+                $highest_row = $worksheet->getHighestRow();
+                if ($checklist->auditee2()) {
+                    $worksheet
+                        ->setCellValue("E" . ($highest_row-5), "Auditee2:")
+                        ->setCellValue("E{$highest_row}", "=D11")
+                    ;
+                }
+                if (count($checklist->auditors()) >= 3) {
+                    $worksheet
+                        ->setCellValue("Q" . ($highest_row-5), "Auditor3:")
+                        ->setCellValue("Q{$highest_row}", "=D14")
+                    ;
                 }
             }
         }
-        $spreadsheet->removeSheetByIndex(0);
 
-        $writer = new Xlsx($spreadsheet);
-        $response->excel();
-        $writer->save('php://output');
+        //  Export to user
+        $spreadsheet->removeSheetByIndex(0);
+        $response->excel($spreadsheet, 'Rapat Tinjauan Manajemen');
     }
 }

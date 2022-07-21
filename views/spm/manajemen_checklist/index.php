@@ -27,7 +27,7 @@ $this->header_title = $this->breadcrumbs;
     </div>
     <?php if ($are_all_done): ?>
         <div class="col-lg-2 col-sm-2 col-md-2">
-            <a href="<?= APP_PATH ?>/spm/manajemen-checklist/export/<?= $ami->id ?>" target="__blank" class="btn bg-gradient-warning btn-sm btn-icon">
+            <a href="<?= APP_PATH ?>/spm/manajemen-checklist/export/<?= $ami->id ?>" class="btn bg-gradient-warning btn-sm btn-icon">
                 <i class="fas fa-file-download"></i>
                 <span>Export RTM</span>
             </a>

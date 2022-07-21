@@ -3,8 +3,7 @@
 namespace app\includes;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xls\Workbook;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Response
 {
@@ -52,9 +51,15 @@ class Response
         }
     }
 
-    public function excel($fileName='Rapat Tinjauan Manajemen')
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function excel(Spreadsheet $spreadsheet, $fileName='Exported File')
     {
+        $writer = new Xlsx($spreadsheet);
+        ob_end_clean();
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename={$fileName}.xlsx");
+        $writer->save('php://output');
     }
 }
