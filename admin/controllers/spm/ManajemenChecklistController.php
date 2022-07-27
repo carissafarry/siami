@@ -49,7 +49,7 @@ class ManajemenChecklistController extends Controller
 
         //  Check if any checklist is not done yet
         $checklist_statuses = Checklist::findAll('checklist', ['ami_id' => $ami->id], null, null, 'status_id');
-        if (in_array(1, $checklist_statuses) || in_array(2, $checklist_statuses) || in_array(3, $checklist_statuses) || in_array(4, $checklist_statuses)) {
+        if (in_array(1, $checklist_statuses) || in_array(2, $checklist_statuses) || in_array(3, $checklist_statuses) || in_array(4, $checklist_statuses) || empty($checklist_statuses)) {
             $are_all_done = false;
         }
         
@@ -321,6 +321,9 @@ class ManajemenChecklistController extends Controller
                 $checklist_auditor->delete(['id' => $checklist_auditor->id]);
             }
             if ($checklist_has_kriteria->checklist_auditors() == []) {
+                if (($checklist_has_kriteria->data_pendukung != '') && file_exists(APP_ROOT . "/" . $checklist_has_kriteria->data_pendukung)) {
+                    unlink(APP_ROOT . "/" . $checklist_has_kriteria->data_pendukung);
+                }
                 $checklist_has_kriteria->delete(['id' => $checklist_has_kriteria->id]);
             }
         }

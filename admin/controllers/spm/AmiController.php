@@ -82,7 +82,7 @@ class AmiController extends Controller
         $checklist_statuses = $ami->checklists('status_id');
         $count_statuses = array_count_values($checklist_statuses);
 
-        $are_all_audited = false;
+        $are_all_audited = true;
         $all_checklist_are_submitted = false;
 
         if ($waktu_audits != []) {

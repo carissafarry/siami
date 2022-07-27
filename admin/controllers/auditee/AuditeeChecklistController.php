@@ -107,7 +107,7 @@ class AuditeeChecklistController extends Controller
 
     public function detail_checklist_has_kriteria(Request $request, Response $response, $param)
     {
-        $checklist = Checklist::findOne(['id' => $param['checklist_id']]);
+        $checklist = Checklist::findOrFail(['id' => $param['checklist_id']]);
         $checklist_has_kriteria = ChecklistHasKriteria::findOne([
             'id' => $param['id'],
             'checklist_id' => $param['checklist_id'],
